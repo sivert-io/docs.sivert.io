@@ -1,9 +1,23 @@
 ---
 title: Shuffle tournament summary
-description: Background and design notes for the shuffle tournament type.
+description: How shuffle tournaments work and when to use them.
 ---
 
-Shuffle tournaments are a tournament type where players compete individually and teams are re-balanced automatically each round based on rating.
+Shuffle tournaments are a tournament type where players compete **individually**, and teams are **re-balanced automatically** between rounds based on rating.
 
-This page captures the original design notes and requirements (migrated from the legacy docs).
+## When to use shuffle
+
+- You don’t have fixed teams (mixes, PUGs, community events).
+- You want “fairer” matches round-to-round as ratings update.
+
+## What to expect
+
+- **Players, not teams, are the primary unit**: standings and ratings are per-player.
+- **Teams are re-generated** between rounds based on current ratings.
+- **New players start at a neutral rating** (and stabilize after a few games).
+
+## Operator tips
+
+- Keep the player pool size consistent (late joins/leaves can make balancing harder).
+- Use a short match format (BO1) for smoother rotations during events.
 
