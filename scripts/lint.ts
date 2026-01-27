@@ -1,20 +1,12 @@
 import { type FileObject, printErrors, scanURLs, validateFiles } from 'next-validate-link';
 import { InferPageType } from 'fumadocs-core/source';
-import { blog, source } from '@/lib/source';
+import { source } from '@/lib/source';
 
-type AnySource = typeof blog | typeof source;
+type AnySource = typeof source;
 
 async function checkLinks() {
   const scanned = await scanURLs({
     populate: {
-      '(home)/blog/[slug]': await Promise.all(
-        blog.getPages().map(async (page) => ({
-          value: {
-            slug: page.slugs[0],
-          },
-          hashes: await getHeadings(page),
-        })),
-      ),
       'docs/[[...slug]]': await Promise.all(
         source.getPages().map(async (page) => {
           return {
@@ -31,7 +23,7 @@ async function checkLinks() {
   console.log(`collected ${scanned.urls.size} URLs, ${scanned.fallbackUrls.length} fallbacks`);
 
   printErrors(
-    await validateFiles([...(await getFiles(source)), ...(await getFiles(blog))], {
+    await validateFiles([...(await getFiles(source))], {
       scanned,
       markdown: {
         components: {

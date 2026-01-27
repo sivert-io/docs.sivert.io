@@ -2,7 +2,7 @@ import { defineConfig } from 'fumadocs-mdx/config';
 import { visit } from 'unist-util-visit';
 import type { Root } from 'mdast';
 
-export { blog, docs } from './source.config';
+export { docs } from './source.config';
 
 function remarkElementIds() {
   return (tree: Root, vfile: unknown) => {

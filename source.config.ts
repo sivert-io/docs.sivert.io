@@ -1,6 +1,5 @@
 import {
   applyMdxPreset,
-  defineCollections,
   defineConfig,
   defineDocs,
   frontmatterSchema,
@@ -105,44 +104,6 @@ export const docs = defineDocs({
     schema: metaSchema.extend({
       description: z.string().optional(),
     }),
-  },
-});
-
-export const blog = defineCollections({
-  type: 'doc',
-  dir: 'content/blog',
-  schema: frontmatterSchema.extend({
-    author: z.string(),
-    date: z.iso.date().or(z.date()),
-  }),
-  async: true,
-  async mdxOptions(environment) {
-    const { rehypeCodeDefaultOptions } = await import('fumadocs-core/mdx-plugins/rehype-code');
-    const { remarkSteps } = await import('fumadocs-core/mdx-plugins/remark-steps');
-
-    return applyMdxPreset({
-      rehypeCodeOptions: {
-        langs: ['bash', 'ini', 'json', 'nginx', 'ts', 'js', 'html', 'tsx', 'mdx', 'yaml'],
-        langAlias: {
-          cfg: 'ini',
-        },
-        inline: 'tailing-curly-colon',
-        themes: {
-          light: 'catppuccin-latte',
-          dark: 'catppuccin-mocha',
-        },
-        transformers: [...(rehypeCodeDefaultOptions.transformers ?? []), transformerEscape()],
-      },
-      remarkCodeTabOptions: {
-        parseMdx: true,
-      },
-      remarkNpmOptions: {
-        persist: {
-          id: 'package-manager',
-        },
-      },
-      remarkPlugins: [remarkSteps],
-    })(environment);
   },
 });
 

@@ -1,9 +1,9 @@
 import { DocsLayout } from 'fumadocs-ui/layouts/docs';
 import { baseOptions, linkItems, logo } from '@/lib/layout.shared';
 import { source } from '@/lib/source';
-import { AISearch, AISearchPanel, AISearchTrigger } from '@/components/ai/search';
 import 'katex/dist/katex.min.css';
 import { getSection } from '@/lib/source/navigation';
+import { ProjectGithubInfo } from '@/components/docs/project-github-info';
 
 export default function Layout({ children }: LayoutProps<'/docs'>) {
   const base = baseOptions();
@@ -12,8 +12,17 @@ export default function Layout({ children }: LayoutProps<'/docs'>) {
     <DocsLayout
       {...base}
       tree={source.getPageTree()}
-      // just icon items
-      links={linkItems.filter((item) => item.type === 'icon')}
+      links={[
+        // global header icons (Discord + personal GitHub)
+        ...linkItems.filter((item) => item.type === 'icon'),
+        // per-project repo info (based on current /docs/<project> path)
+        {
+          type: 'custom',
+          on: 'nav',
+          secondary: true,
+          children: <ProjectGithubInfo className="hidden lg:block lg:-mx-2" />,
+        },
+      ]}
       nav={{
         ...base.nav,
         title: (
@@ -50,11 +59,6 @@ export default function Layout({ children }: LayoutProps<'/docs'>) {
       }}
     >
       {children}
-
-      <AISearch>
-        <AISearchPanel />
-        <AISearchTrigger />
-      </AISearch>
     </DocsLayout>
   );
 }
