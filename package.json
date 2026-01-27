@@ -6,7 +6,7 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "types:check": "fumadocs-mdx && next typegen && node -e \"const fs=require('fs');const path=require('path');for(const p of ['tsconfig.tsbuildinfo','.next/cache/.tsbuildinfo']){try{fs.rmSync(p,{force:true});}catch{}}const src='.next/dev/types/cache-life.d.ts';const dst='.next/types/cache-life.d.ts';fs.mkdirSync(path.dirname(dst),{recursive:true});const content=fs.existsSync(src)?fs.readFileSync(src,'utf8'):'export {};\\n';fs.writeFileSync(dst,content);\" && tsc --noEmit",
+    "types:check": "fumadocs-mdx && node -e \"const fs=require('fs');const path=require('path');for(const p of ['tsconfig.tsbuildinfo','.next/cache/.tsbuildinfo','.next/dev/types','.next/types']){try{fs.rmSync(p,{recursive:true,force:true});}catch{}}\" && next typegen && node -e \"const fs=require('fs');const path=require('path');const src='.next/dev/types/cache-life.d.ts';const dst='.next/types/cache-life.d.ts';fs.mkdirSync(path.dirname(dst),{recursive:true});const content=fs.existsSync(src)?fs.readFileSync(src,'utf8'):'export {};\\n';fs.writeFileSync(dst,content);\" && tsc --noEmit",
     "postinstall": "fumadocs-mdx"
   },
   "dependencies": {

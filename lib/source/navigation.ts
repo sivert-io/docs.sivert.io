@@ -5,9 +5,9 @@ export function getSection(path: string | undefined) {
 
   // Sivert Docs projects → reuse upstream section theming
   // (these map to `.framework`, `.ui`, `.headless` classes in `app/global.css`).
-  if (dir === 'matchzy') return 'framework';
-  if (dir === 'matchzy-enhanced') return 'ui';
-  if (dir === 'server-manager') return 'headless';
+  if (dir === 'mat') return 'framework';
+  if (dir === 'me') return 'ui';
+  if (dir === 'csm') return 'headless';
 
   return (
     {

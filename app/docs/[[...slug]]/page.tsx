@@ -39,14 +39,15 @@ export const revalidate = false;
 export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
   const params = await props.params;
   if (!params.slug || params.slug.length === 0) {
-    redirect('/docs/matchzy');
+    redirect('/docs/mat');
   }
 
-  // Short aliases (public-friendly): /docs/mat, /docs/me, /docs/csm
-  const [root] = params.slug;
-  if (root === 'mat') redirect('/docs/matchzy');
-  if (root === 'me') redirect('/docs/matchzy-enhanced');
-  if (root === 'csm') redirect('/docs/server-manager');
+  const [root, ...rest] = params.slug;
+
+  // Legacy slugs → canonical abbreviations (preserve subpaths).
+  if (root === 'matchzy') redirect(`/docs/mat${rest.length ? `/${rest.join('/')}` : ''}`);
+  if (root === 'matchzy-enhanced') redirect(`/docs/me${rest.length ? `/${rest.join('/')}` : ''}`);
+  if (root === 'server-manager') redirect(`/docs/csm${rest.length ? `/${rest.join('/')}` : ''}`);
 
   const page = source.getPage(params.slug);
 

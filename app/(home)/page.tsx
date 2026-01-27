@@ -18,7 +18,7 @@ export default function HomePage() {
             Browse docs
           </Link>
           <Link
-            href="/docs/matchzy/quick-start"
+            href="/docs/mat/quick-start"
             className="inline-flex items-center justify-center rounded-md border border-fd-border bg-fd-card px-4 py-2 text-sm font-medium hover:bg-fd-accent transition-colors"
           >
             Quick start: MAT
@@ -27,7 +27,7 @@ export default function HomePage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
           <Link
-            href="/docs/matchzy"
+            href="/docs/mat"
             className="rounded-lg border border-fd-border bg-fd-card p-5 hover:bg-fd-accent transition-colors"
           >
             <div className="w-full h-28 rounded-md border border-fd-border mb-4 flex items-center justify-center">
@@ -48,7 +48,7 @@ export default function HomePage() {
           </Link>
 
           <Link
-            href="/docs/matchzy-enhanced"
+            href="/docs/me"
             className="rounded-lg border border-fd-border bg-fd-card p-5 hover:bg-fd-accent transition-colors"
           >
             <div className="w-full h-28 rounded-md border border-fd-border mb-4 flex items-center justify-center">
@@ -69,7 +69,7 @@ export default function HomePage() {
           </Link>
 
           <Link
-            href="/docs/server-manager"
+            href="/docs/csm"
             className="rounded-lg border border-fd-border bg-fd-card p-5 hover:bg-fd-accent transition-colors"
           >
             <div className="w-full h-28 rounded-md border border-fd-border mb-4 flex items-center justify-center">
