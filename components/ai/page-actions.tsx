@@ -77,9 +77,9 @@ export function ViewOptions({
   githubUrl: string;
 }) {
   const items = useMemo(() => {
-    const fullMarkdownUrl =
-      typeof window !== 'undefined' ? new URL(markdownUrl, window.location.origin) : 'loading';
-    const q = `Read ${fullMarkdownUrl}, I want to ask questions about it.`;
+    // IMPORTANT: keep server + client output identical to avoid hydration mismatch.
+    // `markdownUrl` is already a stable relative URL (e.g. "/docs/mat/quick-start.mdx").
+    const q = `Read ${markdownUrl}, I want to ask questions about it.`;
 
     return [
       {
@@ -218,7 +218,7 @@ export function ViewOptions({
       <PopoverContent className="flex flex-col">
         {items.map((item) => (
           <a
-            key={item.href}
+            key={item.title}
             href={item.href}
             rel="noreferrer noopener"
             target="_blank"
