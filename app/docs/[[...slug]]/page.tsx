@@ -20,6 +20,7 @@ import { Banner } from 'fumadocs-ui/components/banner';
 import { Installation } from '@/components/preview/installation';
 import { Customisation } from '@/components/preview/customisation';
 import { DocsBody, DocsPage, PageLastUpdate } from 'fumadocs-ui/layouts/docs/page';
+import { GithubInfo } from 'fumadocs-ui/components/github-info';
 import { NotFound } from '@/components/not-found';
 import { getSuggestions } from './suggestions';
 import { PathUtils } from 'fumadocs-core/source';
@@ -73,6 +74,13 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
 
   const { body: Mdx, toc, lastModified } = await page.data.load();
 
+  const repoInfo =
+    {
+      mat: { owner: 'sivert-io', repo: 'matchzy-auto-tournament' },
+      me: { owner: 'sivert-io', repo: 'MatchZy-Enhanced' },
+      csm: { owner: 'sivert-io', repo: 'cs2-server-manager' },
+    }[root] ?? null;
+
   return (
     <DocsPage
       toc={toc}
@@ -88,6 +96,9 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
           markdownUrl={`${page.url}.mdx`}
           githubUrl={`https://github.com/${owner}/${repo}/blob/dev/apps/docs/content/docs/${page.path}`}
         />
+        {repoInfo ? (
+          <GithubInfo owner={repoInfo.owner} repo={repoInfo.repo} className="ms-auto" />
+        ) : null}
       </div>
       <div className="prose flex-1 text-fd-foreground/90">
         {page.data.preview && <PreviewRenderer preview={page.data.preview} />}
