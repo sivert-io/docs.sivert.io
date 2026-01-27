@@ -1,0 +1,72 @@
+---
+title: Team pages
+description: What teams see and how veto + server connect works.
+---
+
+Each team gets a public page at:
+
+```
+https://your-domain.com/team/team-pinger
+```
+
+No authentication is required — teams can bookmark and access freely.
+
+## What teams see
+
+### Upcoming matches
+
+- Match number and round
+- Opponent team
+- Match status
+- Start Map Veto button (for BO1/BO3/BO5)
+
+### Live matches
+
+- Current score
+- Map name
+- Server IP (click to copy)
+- Player connection status
+- Player ready status
+
+### Match history
+
+- Past results
+- Final scores
+- Maps played
+
+## Map veto
+
+For BO1/BO3/BO5 matches, teams veto maps directly on their page:
+
+1. Match status becomes Ready
+2. Start Map Veto button appears
+3. Teams open the veto interface
+4. Turn-based system — only the current team can act
+5. Maps are banned/picked per format
+6. Side selection for picked maps
+7. After veto completes, server auto-allocates
+
+## Connecting to server
+
+When a match is loaded:
+
+1. Server IP appears on team page
+2. Copy the connect command
+3. In CS2 console:
+
+```
+connect 192.168.1.100:27015
+```
+
+You’re auto-assigned to your team. Type `.ready` when ready to start.
+
+## Real-time updates
+
+Team pages update automatically via WebSocket:
+
+- Veto progress
+- Match scores
+- Player connections
+- Server allocation
+- Match completion
+

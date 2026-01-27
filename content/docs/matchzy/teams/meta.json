@@ -1,0 +1,10 @@
+{
+  "$schema": "../../../../.source/json-schema/docs.meta.json",
+  "title": "Teams & Players",
+  "defaultOpen": true,
+  "pages": [
+    "index",
+    "team-pages",
+    "map-veto"
+  ]
+}

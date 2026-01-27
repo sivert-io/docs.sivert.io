@@ -1,0 +1,14 @@
+---
+title: Build from source
+description: Build the csm binary locally (optional).
+---
+
+Most users should install from the prebuilt releases. If you want to build from source:
+
+```bash
+git clone https://github.com/sivert-io/cs2-server-manager.git
+cd cs2-server-manager
+go build -o csm ./src/cmd/cs2-tui
+sudo ./csm
+```
+

@@ -1,0 +1,49 @@
+---
+title: Test sharding
+description: Speeding up end-to-end tests by sharding the suite.
+---
+
+The E2E suite can be sharded to trade resources for speed.
+
+## Typical performance
+
+### Single worker
+
+- ~249 tests × 3 browsers = 747 runs
+- ~18–20 minutes
+- Low resource usage (1 Docker stack)
+
+### 3 shards
+
+- ~6–8 minutes
+- ~3× speedup
+- Ports: 3069, 3070, 3071
+
+### 5 shards (recommended)
+
+- ~4–5 minutes
+- ~4× speedup
+- Ports: 3069–3073
+
+### 10 shards
+
+- ~2–3 minutes
+- ~8–10× speedup
+- Ports: 3069–3078
+
+## Usage
+
+```bash
+# Quick test run (3 shards)
+yarn test:sharded:3
+
+# Balanced (5 shards) - default
+yarn test:sharded
+
+# Maximum speed (10 shards)
+yarn test:sharded:10
+
+# Custom shard count
+./scripts/test-e2e-sharded.sh 7
+```
+

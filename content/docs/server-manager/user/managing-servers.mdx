@@ -1,0 +1,34 @@
+---
+title: Managing servers
+description: Start/stop/restart servers and inspect logs with csm.
+---
+
+This guide covers everyday operations: starting, stopping, and inspecting your CS2 servers using the `csm` binary.
+
+## Using `csm`
+
+```bash
+sudo csm
+```
+
+## Common CLI commands
+
+```bash
+sudo csm start [server]
+sudo csm stop [server]
+sudo csm restart [server]
+sudo csm status
+
+sudo csm update-game
+sudo csm update-plugins
+sudo csm monitor
+```
+
+## Consoles and logs
+
+```bash
+sudo csm attach 1
+sudo csm logs 1 200
+sudo csm debug 1
+```
+

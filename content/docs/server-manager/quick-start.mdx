@@ -1,0 +1,42 @@
+---
+title: Quick Start
+description: Copy/paste installation and first run.
+---
+
+This guide gets you from zero to running CS2 servers in a few minutes.
+
+## Install
+
+```bash
+arch=$(uname -m); \
+case "$arch" in \
+  x86_64)  asset="csm-linux-amd64" ;; \
+  aarch64|arm64) asset="csm-linux-arm64" ;; \
+  *) echo "Unsupported architecture: $arch" && exit 1 ;; \
+esac; \
+tmp=$(mktemp); \
+curl -L "https://github.com/sivert-io/cs2-server-manager/releases/latest/download/$asset" -o "$tmp" && \
+sudo install -m 0755 "$tmp" /usr/local/bin/csm && \
+rm "$tmp" && \
+sudo csm            # launches the interactive TUI installer
+```
+
+## First run
+
+Re-open the TUI anytime with:
+
+```bash
+sudo csm
+```
+
+## Common one-liners
+
+```bash
+sudo csm status
+sudo csm start
+sudo csm stop
+sudo csm restart
+sudo csm update-game
+sudo csm update-plugins
+```
+

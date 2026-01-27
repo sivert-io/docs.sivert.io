@@ -1,0 +1,21 @@
+---
+title: Test parallelization
+description: Run Playwright tests faster using sharded Docker stacks.
+---
+
+The test suite can run in parallel using **test sharding**: splitting tests across multiple isolated Docker stacks.
+
+## Quick start
+
+```bash
+yarn test:sharded
+yarn test:sharded:3
+yarn test:sharded:10
+```
+
+## How it works (high level)
+
+- Each shard runs in its own Docker Compose stack (ports 3069, 3070, 3071, …)
+- Each shard has its own DB (`matchzy_tournament_shardN`)
+- Playwright runs `--shard=X/Y` so tests are split deterministically
+

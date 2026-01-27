@@ -1,0 +1,18 @@
+{
+  "title": "CSM",
+  "description": "Automated multi-server management for CS2.",
+  "icon": "Boxes",
+  "root": true,
+  "defaultOpen": true,
+  "pages": [
+    "---Overview---",
+    "index",
+    "quick-start",
+    "---Operators---",
+    "./user",
+    "---Developers---",
+    "./developer",
+    "---Reference---",
+    "./advanced"
+  ]
+}

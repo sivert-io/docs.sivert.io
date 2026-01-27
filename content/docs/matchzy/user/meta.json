@@ -1,0 +1,22 @@
+{
+  "title": "Operators",
+  "defaultOpen": true,
+  "pages": [
+    "---Setup---",
+    "index",
+    "admin-dashboard",
+    "admin-settings",
+    "server-setup",
+    "cs2-server-manager",
+    "teams",
+    "tournaments",
+    "maps",
+    "running-matches",
+    "manual-matches",
+    "shuffle-tournaments",
+    "shuffle-tournament-summary",
+    "match-recovery",
+    "feature-overview",
+    "screenshots"
+  ]
+}

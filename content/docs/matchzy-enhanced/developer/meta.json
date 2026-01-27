@@ -1,0 +1,5 @@
+{
+  "title": "Developers",
+  "defaultOpen": true,
+  "pages": ["index", "contributing", "from-source", "..."]
+}

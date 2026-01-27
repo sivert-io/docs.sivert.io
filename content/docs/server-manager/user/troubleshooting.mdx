@@ -1,0 +1,31 @@
+---
+title: Troubleshooting
+description: Common issues and fixes.
+---
+
+## Server won’t start
+
+Run the server in debug mode to see full output:
+
+```bash
+sudo csm debug 1
+```
+
+## Steamworks SDK init failure (missing steamclient.so)
+
+Fix (replace `cs2servermanager` if your CS2 user is different):
+
+```bash
+sudo -u cs2servermanager mkdir -p /home/cs2servermanager/.steam/sdk64
+sudo -u cs2servermanager ln -sf /home/cs2servermanager/.local/share/Steam/steamcmd/linux64/steamclient.so /home/cs2servermanager/.steam/sdk64/steamclient.so
+sudo csm restart
+```
+
+## Corrupted game files
+
+Reinstall the affected server:
+
+```bash
+sudo csm reinstall 2
+```
+

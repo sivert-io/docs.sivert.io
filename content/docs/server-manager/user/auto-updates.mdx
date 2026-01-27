@@ -1,0 +1,25 @@
+---
+title: Auto updates
+description: How CSM detects and applies safe CS2 updates.
+---
+
+CS2 Server Manager includes an automated update flow that works with MatchZy Enhanced’s built-in auto-updater and SteamCMD.
+
+## Log markers
+
+MatchZy writes:
+
+```text
+[MATCHZY_UPDATE_AVAILABLE] required_version=<number>
+[MATCHZY_UPDATE_SHUTDOWN] required_version=<number>
+```
+
+CSM’s monitor scans logs for shutdown markers and updates only when it is safe.
+
+## Install the cron monitor
+
+```bash
+sudo csm install-monitor-cron          # default */5 interval
+sudo csm install-monitor-cron "*/10"   # custom interval
+```
+

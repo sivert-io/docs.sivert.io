@@ -1,0 +1,53 @@
+---
+title: Reverse proxy (nginx, HTTPS)
+description: Run MAT behind nginx/HTTPS and avoid common cookie/redirect issues.
+---
+
+MAT runs as a single app (frontend + API) and does not configure your reverse proxy. This page is a community guide for putting MAT behind nginx with HTTPS.
+
+## nginx example
+
+### HTTP → HTTPS redirect
+
+```nginx
+server {
+    listen 80;
+    listen [::]:80;
+    server_name domain.com;
+    return 301 https://$host$request_uri;
+}
+```
+
+### MAT behind HTTPS
+
+```nginx
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name domain.com;
+
+    location / {
+        proxy_pass http://127.0.0.1:3069;
+        proxy_http_version 1.1;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    ssl_certificate     /etc/letsencrypt/live/domain.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/domain.com/privkey.pem;
+    include             /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam         /etc/letsencrypt/ssl-dhparams.pem;
+}
+```
+
+Important: `X-Forwarded-Proto` must be set to `$scheme` so MAT knows the public scheme and can set cookies/redirects correctly.
+
+## `FRONTEND_BASE_URL`
+
+Set `FRONTEND_BASE_URL` to the external URL users open in the browser:
+
+- `https://domain.com` for production
+- `http://localhost:3069` for local testing
+

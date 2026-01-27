@@ -1,0 +1,74 @@
+---
+title: Translating MatchZy Auto Tournament
+description: Help translate the web UI into your language.
+---
+
+Help translate MatchZy Auto Tournament into your language. The UI uses **i18next**.
+
+## Quick start
+
+### 1) Copy the English translation file
+
+```bash
+# Example for German
+cp client/src/locales/en/translation.json client/src/locales/de/translation.json
+
+# Example for Brazilian Portuguese
+cp client/src/locales/en/translation.json client/src/locales/pt-BR/translation.json
+
+# Example for Spanish
+cp client/src/locales/en/translation.json client/src/locales/es/translation.json
+```
+
+### 2) Translate values (not keys)
+
+Keep keys as-is; only translate the text values:
+
+```json
+{
+  "dashboard": {
+    "title": "Tournament Dashboard"
+  }
+}
+```
+
+### 3) Register your language in `client/src/i18n.ts`
+
+```ts
+// Add import at the top
+import de from './locales/de/translation.json';
+
+// Add to resources
+export const resources = {
+  en: { translation: en },
+  'zh-CN': { translation: zhCN },
+  de: { translation: de },
+} as const;
+
+// Update supportedLngs
+supportedLngs: ['en', 'zh-CN', 'de'],
+```
+
+### 4) Add it to the language switcher
+
+Edit `client/src/components/common/LanguageSwitcher.tsx`:
+
+```tsx
+<MenuItem value="de">Deutsch</MenuItem>
+```
+
+### 5) Test
+
+```bash
+cd client
+yarn dev
+```
+
+Then open `http://localhost:3069`, pick your language in the switcher, and click through the main pages.
+
+## More details
+
+For deeper information (terminology guidance, MUI locale support, etc.), see:
+
+- [i18n and translation](/docs/matchzy/developer/i18n-and-translation)
+

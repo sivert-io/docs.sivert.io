@@ -1,0 +1,33 @@
+---
+title: Testing
+description: How the MAT test suite is organized and how to run it.
+---
+
+This project uses Playwright for end-to-end and API tests.
+
+## Test layout
+
+- `tests/helpers/`: shared utilities and fixtures
+- `tests/api/`: API tests (no UI interaction)
+- `tests/ui/`: UI tests (browser interaction)
+- `tests/setup.spec.ts`: global setup (runs first)
+
+## Running tests
+
+```bash
+# Run all tests (uses Docker Compose)
+yarn test
+
+# UI mode (interactive)
+yarn test:ui
+
+# API only
+yarn test:api
+```
+
+## Tips
+
+- Prefer helpers to avoid duplication.
+- Keep test files reasonably small (split large suites).
+- Use tags like `@api`, `@ui`, `@veto` for filtering.
+

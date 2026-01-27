@@ -1,0 +1,20 @@
+{
+  "title": "MAT",
+  "description": "Automated CS2 tournament platform.",
+  "icon": "Trophy",
+  "root": true,
+  "defaultOpen": true,
+  "pages": [
+    "---Overview---",
+    "index",
+    "quick-start",
+    "---Operators---",
+    "./user",
+    "---Teams & Players---",
+    "./teams",
+    "---Developers---",
+    "./developer",
+    "---Reference---",
+    "./advanced"
+  ]
+}

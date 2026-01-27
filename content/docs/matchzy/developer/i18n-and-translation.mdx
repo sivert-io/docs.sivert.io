@@ -1,0 +1,18 @@
+---
+title: i18n and translation
+description: How frontend translations are structured and contributed.
+---
+
+MatchZy Auto Tournament ships with frontend internationalization (i18n) using i18next and react-i18next, plus Material UI locale support.
+
+If you want to contribute a translation, start with `TRANSLATING.md` in the repo.
+
+## Where translations live
+
+- `client/src/locales/`
+
+## How it works (high level)
+
+- `client/src/i18n.ts` configures i18next and loads resources
+- UI text uses `t('some.key')` everywhere
+

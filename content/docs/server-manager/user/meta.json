@@ -1,0 +1,14 @@
+{
+  "title": "Operators",
+  "defaultOpen": true,
+  "pages": [
+    "index",
+    "server-setup",
+    "managing-servers",
+    "configuration",
+    "auto-updates",
+    "troubleshooting",
+    "related-projects",
+    "..."
+  ]
+}

@@ -1,0 +1,28 @@
+---
+title: Configuration & overrides
+description: Keep custom configs persistent across updates.
+---
+
+CS2 Server Manager is designed so your custom configs survive updates. This page explains how configuration is structured and how to safely customize servers.
+
+## Overrides directory
+
+The `overrides/` folder contains configuration applied to all servers and is never deleted during updates.
+
+Example structure:
+
+```text
+overrides/game/csgo/
+├── cfg/MatchZy/
+└── addons/
+```
+
+## CSM root
+
+By default CSM uses `/opt/cs2-server-manager` unless you set `CSM_ROOT`.
+
+```bash
+export CSM_ROOT=/opt/cs2-server-manager
+cd /opt/cs2-server-manager && sudo csm
+```
+

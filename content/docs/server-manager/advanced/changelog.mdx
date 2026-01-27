@@ -1,0 +1,44 @@
+---
+title: Changelog
+description: Release history and notable changes for CS2 Server Manager.
+---
+
+This page mirrors the upstream `CHANGELOG.md` in the repository.
+
+## Unreleased
+
+### New Features
+
+#### IP ban management
+
+- `csm unban <server> <ip>`
+- `csm unban-all <server>`
+- `csm list-bans <server>`
+- TUI options under the Tools tab
+- Unban operations auto-reload the server ban list via tmux (no restart needed)
+- RCON IP bans are disabled by default for new servers to avoid Docker-network false positives
+
+### Fixed
+
+- Disabled RCON IP bans by default to prevent Docker IP false positives
+- Improved error handling for unban operations (missing ban files treated as success)
+
+## 1.5.9 (January 21, 2026)
+
+### New Features
+
+#### Config file editing in TUI
+
+- Edit MatchZy `config.cfg`
+- Edit MatchZy `database.json`
+- Edit CounterStrikeSharp `admins.json`
+- Automatically sync edited configs to all servers
+- Automatically chown files after editing
+
+### Documentation
+
+- Updated docs for config editing features
+- Added comprehensive changelog styling
+
+> The full changelog is available in the repository: see `cs2-server-manager/CHANGELOG.md`.
+

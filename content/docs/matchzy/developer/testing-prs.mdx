@@ -1,0 +1,25 @@
+---
+title: Testing pull requests
+description: How to test PRs locally or with Docker.
+---
+
+This guide describes how to test MAT pull requests using either local development or Docker compose.
+
+## Option 1: Local development
+
+```bash
+git clone https://github.com/sivert-io/matchzy-auto-tournament.git
+cd matchzy-auto-tournament
+yarn install
+yarn db
+yarn dev
+```
+
+## Option 2: Docker compose (build from source)
+
+```bash
+git clone https://github.com/sivert-io/matchzy-auto-tournament.git
+cd matchzy-auto-tournament
+docker compose -f docker/docker-compose.local.yml up -d --build
+```
+

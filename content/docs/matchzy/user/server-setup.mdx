@@ -1,0 +1,62 @@
+---
+title: CS2 server setup
+description: Configure CS2 servers manually (MatchZy Enhanced + RCON + webhooks).
+---
+
+Manual installation guide for setting up CS2 servers with the enhanced MatchZy plugin.
+
+> Recommended: Use CS2 Server Manager for automated setup. It installs everything you need with one command.
+
+## Prerequisites
+
+### Install CounterStrikeSharp
+
+Follow the official CounterStrikeSharp getting started guide: `https://docs.cssharp.dev/docs/guides/getting-started.html`
+
+After completing the guide, verify the plugin is loaded by typing `meta list` in your server console.
+
+## Install MatchZy Enhanced
+
+> Important: This project requires an enhanced fork of MatchZy that emits additional events used for automation.
+
+### Download
+
+Latest release & docs: `https://me.sivert.io/`
+
+### Install
+
+```bash
+cd /path/to/cs2/game/csgo
+unzip MatchZy-*.zip
+```
+
+Restart your CS2 server.
+
+### Verify
+
+Type `css_plugins list` in server console. You should see MatchZy listed.
+
+## Configure RCON
+
+Add these to your server's `autoexec.cfg` or `server.cfg`:
+
+```ini
+rcon_password "your-secure-rcon-password"
+hostport 27015
+```
+
+## Configure webhook reachability
+
+Your CS2 server must be able to reach the MAT API.
+
+```bash
+curl http://your-tournament-ip:3069/api/events/test
+```
+
+Should return: `{"message":"Test received"}`
+
+## Network configuration notes
+
+- Docker setup typically exposes MAT on port **3069**
+- Local dev uses port **3000** for the API
+

@@ -1,0 +1,27 @@
+---
+title: Quick Start
+description: Copy/paste installation and first run.
+---
+
+For most users, installing via CS2 Server Manager is the fastest way to get a tournament-ready server with MatchZy Enhanced preconfigured.
+
+## Install
+
+```bash
+arch=$(uname -m); \
+case "$arch" in \
+  x86_64)  asset="csm-linux-amd64" ;; \
+  aarch64|arm64) asset="csm-linux-arm64" ;; \
+  *) echo "Unsupported architecture: $arch" && exit 1 ;; \
+esac; \
+tmp=$(mktemp); \
+curl -L "https://github.com/sivert-io/cs2-server-manager/releases/latest/download/$asset" -o "$tmp" && \
+sudo install -m 0755 "$tmp" /usr/local/bin/csm && \
+rm "$tmp" && \
+sudo csm            # launches the interactive TUI installer
+```
+
+## First run
+
+After install, follow the interactive installer (TUI) to deploy servers. Then configure your `matchzy_loadmatch_url` to point at your MatchZy Auto Tournament instance.
+

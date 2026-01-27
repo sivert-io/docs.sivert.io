@@ -1,0 +1,27 @@
+---
+title: Logging system
+description: Where logs go and how to inspect them.
+---
+
+Every command is automatically logged for debugging.
+
+## View logs
+
+Via TUI:
+
+- Tools tab → View recent command logs
+
+From terminal:
+
+```bash
+csm logdir
+tail -f logs/csm.log
+```
+
+## Log files
+
+All logs live under `logs/`:
+
+- `csm.log` — consolidated log
+- `YYYY-MM-DD_HH-MM-SS_command-name.log` — per-command logs
+

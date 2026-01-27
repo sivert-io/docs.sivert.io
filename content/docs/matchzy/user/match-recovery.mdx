@@ -1,0 +1,25 @@
+---
+title: Match recovery
+description: How MAT recovers match state after a restart.
+---
+
+This guide explains how MatchZy Auto Tournament recovers match state when the application is restarted during live matches.
+
+## Overview
+
+On startup, MAT attempts to recover matches in `loaded` or `live` state by:
+
+1. Finding active matches in the DB
+2. Syncing state from servers via match reports
+3. Reconfiguring webhooks
+4. Reconfiguring demo uploads
+5. Refreshing connections
+
+## Manual recovery
+
+You can trigger recovery via the API:
+
+```
+POST /api/recovery/recover
+```
+

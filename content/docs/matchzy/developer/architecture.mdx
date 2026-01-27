@@ -1,0 +1,13 @@
+---
+title: Architecture
+description: Key systems and conventions inside MAT.
+---
+
+## Bracket generation system
+
+The bracket generation system uses a unified interface pattern that makes it easy to add new tournament types. All generators implement the `IBracketGenerator` interface.
+
+## MatchZy configuration system
+
+MAT automatically applies MatchZy Enhanced cvars based on tournament type (official vs shuffle vs manual) to provide consistent match behavior without manual per-server configuration.
+

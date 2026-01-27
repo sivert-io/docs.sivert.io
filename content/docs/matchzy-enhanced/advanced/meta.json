@@ -1,0 +1,5 @@
+{
+  "title": "Reference",
+  "defaultOpen": true,
+  "pages": ["index", "integration", "center-notifications", "llm-quick-reference", "changelog", "..."]
+}

@@ -1,0 +1,29 @@
+---
+title: Manual matches
+description: Create and run manual matches outside tournaments.
+---
+
+This guide explains how to create and run **manual matches** outside of a shuffle tournament, including how max rounds and overtime settings map to MatchZy and CS2.
+
+## When to use manual matches
+
+Use manual matches when you want to:
+
+- Spin up a one-off scrim or test match
+- Run a showmatch outside a bracket
+- Quickly create a match between two teams or ad-hoc lineups
+
+## Creating a manual match (UI)
+
+1. Go to **Matches**
+2. Click **Create Manual Match**
+3. Fill out the modal:
+   - Basic info (slug, server)
+   - Teams
+   - Maps & Rules (format, max rounds, overtime)
+4. Save — the UI persists the config and loads the match on the selected server.
+
+## Max rounds & overtime
+
+Manual matches primarily drive CS2 using standard cvars (e.g. `mp_maxrounds`, `mp_overtime_enable`, `mp_overtime_maxrounds`) and mirror effective settings into the match JSON config for MatchZy.
+

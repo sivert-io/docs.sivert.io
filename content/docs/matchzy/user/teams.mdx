@@ -1,0 +1,77 @@
+---
+title: Teams
+description: Create teams, import rosters, and manage players.
+---
+
+## Creating teams
+
+### Quick create
+
+1. Go to the **Teams** page
+2. Click **Create Team**
+3. Fill in:
+   - Team Name
+   - Team Tag (2–8 characters, e.g. `NAVI`, `G2`)
+   - Logo URL (optional)
+4. Add players (minimum 5):
+   - Steam ID, Steam32, or vanity URL
+   - Player name
+   - Skill Rating (optional, defaults to 1500)
+5. Click **Create Team**
+
+### Bulk import (JSON)
+
+Download the example file: [`TEAM_IMPORT_EXAMPLE.json`](/docs-assets/matchzy/examples/TEAM_IMPORT_EXAMPLE.json)
+
+Example format:
+
+```json
+[
+  {
+    "name": "Team Pinger",
+    "tag": "PING",
+    "players": [
+      { "steamId": "76561199486434142", "name": "Simpert", "elo": 3200 },
+      { "steamId": "76561198765432109", "name": "Player2" }
+    ]
+  }
+]
+```
+
+- `elo` is optional (defaults to 1500)
+- Import via Teams page → Import button
+
+## Public team pages
+
+Each team gets a public URL:
+
+```
+https://your-domain.com/team/team-pinger
+```
+
+Share with teams (no login needed). They can:
+
+- View upcoming matches
+- Participate in map veto
+- See live scores
+- Get server connection info
+- Monitor player connections
+
+## Managing players
+
+### Add players
+
+- Edit team → Add Player
+- Enter Steam ID or vanity URL (requires Steam API key in Settings)
+- Set initial Skill Rating (optional, useful for shuffle tournaments)
+
+### Backup players (during match)
+
+If a player can't connect:
+
+1. Open match details
+2. **Player Management** → Add Backup Player
+3. Search and select player
+4. Choose team
+5. System executes `css_add_player` via RCON
+

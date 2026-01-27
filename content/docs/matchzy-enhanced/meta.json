@@ -1,0 +1,18 @@
+{
+  "title": "ME",
+  "description": "Enhanced CS2 match management plugin.",
+  "icon": "Plug",
+  "root": true,
+  "defaultOpen": true,
+  "pages": [
+    "---Overview---",
+    "index",
+    "quick-start",
+    "---Operators---",
+    "./user",
+    "---Developers---",
+    "./developer",
+    "---Reference---",
+    "./advanced"
+  ]
+}

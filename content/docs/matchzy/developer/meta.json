@@ -1,0 +1,17 @@
+{
+  "title": "Developers",
+  "defaultOpen": true,
+  "pages": [
+    "index",
+    "contributing",
+    "architecture",
+    "auth-providers",
+    "i18n-and-translation",
+    "translating",
+    "testing",
+    "test-parallelization",
+    "test-sharding",
+    "testing-prs",
+    "..."
+  ]
+}

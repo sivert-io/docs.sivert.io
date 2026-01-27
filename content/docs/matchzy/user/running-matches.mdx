@@ -1,0 +1,71 @@
+---
+title: Running matches
+description: Match flow, admin controls, and common scenarios.
+---
+
+## Match flow
+
+### 1. Tournament start
+
+**For BO1/BO3/BO5 (with veto):**
+
+- Teams complete map veto
+- System attempts to auto-allocate a server
+- If no server is available, the system polls until one is available
+- Match loads automatically on the server
+
+**For Round Robin/Swiss (no veto):**
+
+- System immediately allocates servers
+- Matches load automatically
+
+### 2. Warmup phase
+
+Players connect to the server:
+
+```
+connect 192.168.1.100:27015
+```
+
+- Players auto-assigned to the correct team
+- Type `.ready` when ready
+- Match starts when all 10 players are ready
+
+### 3. Live match
+
+Real-time updates show:
+
+- Current score
+- Round number
+- Match phase (live, halftime, overtime, paused)
+
+### 4. Match complete
+
+- Winner auto-determined
+- Bracket auto-updates
+- Demo file auto-uploaded
+- Server freed for next match
+
+## Admin controls
+
+Available from the match details modal.
+
+### Match control
+
+- Pause / unpause
+- Swap teams
+- Restart round
+
+### Advanced actions
+
+- Skip veto
+- End warmup (force start)
+- End match / restart match
+- Restore backup
+- Broadcast message
+- Change map
+
+### Player management
+
+- Add backup player (substitute mid-match)
+

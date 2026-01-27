@@ -1,0 +1,28 @@
+---
+title: Migrating to 2.0
+description: Upgrade from 1.x to 2.0 (auth, sessions, and admin promotion).
+---
+
+Version 2.0 introduces Steam/SSO authentication, session-based admin login, and new database tables. This guide explains how to upgrade from 1.x and what to do if you hit migration or sign-in issues.
+
+## TL;DR (1.7.6 → 2.0 with existing data)
+
+1. Back up the DB (`pg_dump`).
+2. Stop the stack **without** `-v` (keep Postgres volume).
+3. Add to `.env`: `SESSION_SECRET`, `STEAM_API_KEY`, `FRONTEND_BASE_URL`, `AUTH_STEAM_ENABLED=true`.
+4. Upgrade and start 2.0.
+5. Promote at least one admin:
+
+```bash
+docker exec matchzy-postgres psql -U postgres -d matchzy_tournament -c \
+  "UPDATE players SET is_admin = 1 WHERE id = 'YOUR_STEAM_ID64';"
+```
+
+6. Then sign in with Steam.
+
+## Common issues
+
+- Missing `SESSION_SECRET` → logged out / redirect issues
+- Wrong `FRONTEND_BASE_URL` → redirect loops / redirect_uri mismatch
+- No admin promotion → you sign in but don’t see the dashboard
+

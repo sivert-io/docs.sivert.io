@@ -1,0 +1,16 @@
+---
+title: Integration
+description: How MatchZy Enhanced integrates with MatchZy Auto Tournament.
+---
+
+MatchZy Auto Tournament decides what to play (teams, maps, format) and where to send events/reports/demos. MatchZy runs on the CS2 server, loads match JSON, drives in-game flow, and emits events/reports/demos back to the platform.
+
+## Data flow (high level)
+
+1. MAT exposes the match JSON at `GET /matches/:slug.json`
+2. On the CS2 server you run `.match <slug>`
+3. MatchZy:
+   - Fetches the JSON from `matchzy_loadmatch_url`
+   - Runs the match lifecycle
+   - Sends webhooks/events to `matchzy_remote_log_url`
+
