@@ -13,7 +13,19 @@ Manual installation guide for setting up CS2 servers with the enhanced MatchZy p
 
 Follow the official CounterStrikeSharp getting started guide: `https://docs.cssharp.dev/docs/guides/getting-started.html`
 
-After completing the guide, verify the plugin is loaded by typing `meta list` in your server console.
+After completing the guide:
+
+- Verify **Metamod** is installed (server console):
+
+```text
+meta list
+```
+
+If CounterStrikeSharp is installed correctly, you can also verify it with:
+
+```text
+css_plugins list
+```
 
 ## Install MatchZy Enhanced
 
@@ -21,7 +33,8 @@ After completing the guide, verify the plugin is loaded by typing `meta list` in
 
 ### Download
 
-Latest release & docs: `https://me.sivert.io/`
+- Latest release: `https://github.com/sivert-io/MatchZy-Enhanced/releases/latest`
+- Docs: `/docs/me`
 
 ### Install
 
@@ -45,6 +58,20 @@ rcon_password "your-secure-rcon-password"
 hostport 27015
 ```
 
+## Connect the server to MAT
+
+Once the server can be reached by RCON, add it in MAT under **Servers**.
+
+MAT configures MatchZy Enhanced automatically over RCON (webhook URL, demo upload URL, auth headers, etc.) when:
+
+- The server is initialized, and
+- Matches are loaded on that server
+
+Make sure MAT has:
+
+- A configured **Webhook URL** in **Settings**
+- `SERVER_TOKEN` set in MAT’s `.env` (used as the `X-MatchZy-Token` header for demo uploads and server-to-MAT requests)
+
 ## Configure webhook reachability
 
 Your CS2 server must be able to reach the MAT API.
@@ -53,7 +80,11 @@ Your CS2 server must be able to reach the MAT API.
 curl http://your-tournament-ip:3069/api/events/test
 ```
 
-Should return: `{"message":"Test received"}`
+Should return something like:
+
+```json
+{ "success": true, "message": "events route is working" }
+```
 
 ## Network configuration notes
 

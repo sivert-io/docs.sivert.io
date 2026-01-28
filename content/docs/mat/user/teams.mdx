@@ -46,10 +46,12 @@ Example format:
 Each team gets a public URL:
 
 ```
-https://your-domain.com/team/team-pinger
+https://your-domain.com/team/<team-id>
 ```
 
-Share with teams (no login needed). They can:
+Share it with teams. The page itself is viewable without admin access, but **sensitive actions**
+(like veto actions and server connection details) are only shown to **verified roster members**
+(Steam-signed-in players who are on the team).
 
 - View upcoming matches
 - Participate in map veto
@@ -62,7 +64,8 @@ Share with teams (no login needed). They can:
 ### Add players
 
 - Edit team → Add Player
-- Enter Steam ID or vanity URL (requires Steam API key in Settings)
+- Enter Steam ID64 or a vanity URL
+  - Vanity URLs require `STEAM_API_KEY` to be configured on the MAT server (in `.env`)
 - Set initial Skill Rating (optional, useful for shuffle tournaments)
 
 ### Backup players (during match)

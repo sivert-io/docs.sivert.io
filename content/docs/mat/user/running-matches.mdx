@@ -29,7 +29,9 @@ connect 192.168.1.100:27015
 
 - Players auto-assigned to the correct team
 - Type `.ready` when ready
-- Match starts when all 10 players are ready
+- Match start is controlled by MatchZy “ready” settings (configured by MAT)
+  - By default, MatchZy requires **2** ready players (`matchzy_minimum_ready_required=2`)
+  - Your admins can change this in **Settings** (MatchZy defaults), or force-start when needed
 
 ### 3. Live match
 
@@ -43,7 +45,7 @@ Real-time updates show:
 
 - Winner auto-determined
 - Bracket auto-updates
-- Demo file auto-uploaded
+- Demo file uploaded (if demo recording + upload is configured)
 - Server freed for next match
 
 ## Admin controls

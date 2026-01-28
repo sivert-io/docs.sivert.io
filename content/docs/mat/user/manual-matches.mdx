@@ -21,9 +21,16 @@ Use manual matches when you want to:
    - Basic info (slug, server)
    - Teams
    - Maps & Rules (format, max rounds, overtime)
-4. Save — the UI persists the config and loads the match on the selected server.
+4. Save — MAT persists the config and loads the match.
+   - If you selected a server, it loads there
+   - If you leave server empty, MAT can auto-allocate a server when one is available
 
 ## Max rounds & overtime
 
 Manual matches primarily drive CS2 using standard cvars (e.g. `mp_maxrounds`, `mp_overtime_enable`, `mp_overtime_maxrounds`) and mirror effective settings into the match JSON config for MatchZy.
+
+## Notes
+
+- Manual matches are treated as **round 0** matches internally (they’re not part of a bracket).
+- For safety, MAT only allows deleting matches that are manual (round 0).
 

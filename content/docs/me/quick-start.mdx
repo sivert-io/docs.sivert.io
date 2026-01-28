@@ -3,25 +3,49 @@ title: Quick Start
 description: Copy/paste installation and first run.
 ---
 
-For most users, installing via CS2 Server Manager is the fastest way to get a tournament-ready server with MatchZy Enhanced preconfigured.
+ME (MatchZy Enhanced) runs **inside your CS2 servers** (CounterStrikeSharp plugin).
 
-## Install
+## Recommended: install via CSM
 
-```bash
-arch=$(uname -m); \
-case "$arch" in \
-  x86_64)  asset="csm-linux-amd64" ;; \
-  aarch64|arm64) asset="csm-linux-arm64" ;; \
-  *) echo "Unsupported architecture: $arch" && exit 1 ;; \
-esac; \
-tmp=$(mktemp); \
-curl -L "https://github.com/sivert-io/cs2-server-manager/releases/latest/download/$asset" -o "$tmp" && \
-sudo install -m 0755 "$tmp" /usr/local/bin/csm && \
-rm "$tmp" && \
-sudo csm            # launches the interactive TUI installer
+CS2 Server Manager (CSM) is the easiest path (it installs **Metamod + CounterStrikeSharp + MatchZy Enhanced** and keeps everything updated).
+
+- CSM quick start: `/docs/csm/quick-start`
+
+## Manual installation (step-by-step)
+
+### 1) Prerequisites
+
+- CS2 dedicated server
+- Metamod + CounterStrikeSharp installed and working
+- .NET 8 runtime
+
+### 2) Download the latest release
+
+- Latest ME release: `https://github.com/sivert-io/MatchZy-Enhanced/releases/latest`
+
+Download the `.zip` from **Assets**.
+
+### 3) Extract to `game/csgo/`
+
+Extract the archive into your server’s `game/csgo/` folder (keep the folder structure).
+
+After extraction you should have something like:
+
+- `game/csgo/addons/counterstrikesharp/plugins/MatchZy/MatchZy.dll`
+- `game/csgo/cfg/MatchZy/`
+
+### 4) Restart and verify
+
+Restart your CS2 server, then in the server console run:
+
+```text
+css_plugins list
 ```
 
-## First run
+You should see MatchZy listed.
 
-After install, follow the interactive installer (TUI) to deploy servers. Then configure your `matchzy_loadmatch_url` to point at your MatchZy Auto Tournament instance.
+## Next
+
+- Configure ME: `/docs/me/user/configuration`
+- Commands reference: `/docs/me/user/commands`
 

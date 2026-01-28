@@ -10,16 +10,32 @@ This guide explains how MatchZy Auto Tournament recovers match state when the ap
 On startup, MAT attempts to recover matches in `loaded` or `live` state by:
 
 1. Finding active matches in the DB
-2. Syncing state from servers via match reports
-3. Reconfiguring webhooks
-4. Reconfiguring demo uploads
+2. Syncing state from servers via match reports (if available)
+3. Verifying the server’s persistent MatchZy configuration (webhooks + demo uploads)
 5. Refreshing connections
 
 ## Manual recovery
 
-You can trigger recovery via the API:
+You can trigger recovery via the API (admin auth required):
 
 ```
 POST /api/recovery/recover
 ```
 
+Response includes a per-match summary (state synced / webhook verified / demo upload verified).
+
+## Replay recent events (advanced)
+
+If you need to re-process recent events for a specific match (for example after a crash or restart), you can replay events stored in the MAT database:
+
+```
+POST /api/recovery/replay/:matchSlug
+```
+
+Optional JSON body:
+
+```json
+{ "sinceTimestamp": 1730000000 }
+```
+
+If `sinceTimestamp` is omitted, MAT replays roughly the last hour of events.

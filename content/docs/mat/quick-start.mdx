@@ -5,9 +5,21 @@ description: Copy/paste installation and first run.
 
 Install and run MAT with Docker in a few minutes.
 
+## Requirements
+
+- Docker + Docker Compose
+
 ## Install
 
-### 1) Save as `docker-compose.yml`
+### Option A (recommended): run MAT without cloning the repo
+
+Create an empty folder on your server, for example:
+
+```bash
+mkdir -p mat && cd mat
+```
+
+#### 1) Save as `docker-compose.yml`
 
 ```yaml
 services:
@@ -66,66 +78,63 @@ volumes:
     driver: local
 ```
 
-### 2) Generate secrets (copy/paste)
+#### 2) Create `.env`
+
+Start by creating `.env` with the required values:
 
 ```bash
-# Generate session secret
-openssl rand -base64 32
-
-# Generate server token
-openssl rand -base64 24 | tr -d '=+/'
-```
-
-### 3) Save as `.env`
-
-```bash
-# API port (behind Docker this is usually 3000)
-PORT=3000
-
-# Session secret (REQUIRED - paste the value from step 2)
+# required
 SESSION_SECRET=
+SERVER_TOKEN=
+FRONTEND_BASE_URL=http://localhost:3069
+STEAM_API_KEY=
 
-# Database settings
-DB_HOST=127.0.0.1
-DB_PORT=5432
+# recommended defaults
+AUTH_STEAM_ENABLED=true
+LOG_LEVEL=info
+
+# database (defaults are fine for most installs)
 DB_USER=postgres
 DB_PASSWORD=postgres
 DB_NAME=matchzy_tournament
-
-# CS2 server authentication token (paste the generated value from step 2)
-SERVER_TOKEN=
-
-# Frontend base URL (use http:// for local, https:// for production)
-FRONTEND_BASE_URL=http://localhost:3069
-
-# Steam auth
-AUTH_STEAM_ENABLED=true
-# Get your Steam API key from: https://steamcommunity.com/dev/apikey
-STEAM_API_KEY=
-
-# Logging
-LOG_LEVEL=info
 ```
 
-### 4) Start
+Generate secrets (copy/paste the output into `.env`):
+
+```bash
+openssl rand -base64 32
+openssl rand -base64 24 | tr -d '=+/'
+```
+
+Get your Steam API key from `https://steamcommunity.com/dev/apikey` and paste it into `STEAM_API_KEY`.
+
+If you’re running behind a domain/reverse proxy, set `FRONTEND_BASE_URL` to your public URL (use `https://...`).
+
+#### 3) Start
 
 ```bash
 docker compose up -d
 ```
 
-### 5) Open
-
 Open `http://localhost:3069`.
 
-> Note: You can configure `SERVER_TOKEN` and `STEAM_API_KEY` in Settings after first login, but `SESSION_SECRET` must be set in `.env` for session persistence.
+#### 4) First admin login
 
-## Next
+- Click **Sign in with Steam**.
+- If there are **no admins yet**, the **first Steam user to sign in** is automatically promoted to admin.
 
-- Add CS2 servers (recommended: CS2 Server Manager)
-- Create teams
-- Create and start a tournament
+### Option B: clone the repo (dev / contributing)
 
 ```bash
-# TODO: paste first run steps here
+git clone https://github.com/sivert-io/matchzy-auto-tournament.git
+cd matchzy-auto-tournament
+cp example.env .env
+docker compose -f docker/docker-compose.yml up -d
 ```
+
+## Next steps
+
+- Install servers with CSM: `/docs/csm/quick-start`
+- Add servers to MAT: `/docs/mat/user/cs2-server-manager`
+- Manual server setup (no CSM): `/docs/mat/user/server-setup`
 
