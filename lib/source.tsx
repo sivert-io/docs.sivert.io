@@ -14,7 +14,7 @@ export const source = loader(
   multiple({
     docs: docs.toFumadocsSource(),
     openapi: await openapiSource(openapi, {
-      baseDir: 'openapi/(generated)',
+      baseDir: 'mat/api/(generated)',
     }),
   }),
   {

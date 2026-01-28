@@ -15,6 +15,7 @@
     "---Developers---",
     "./developer",
     "---Reference---",
-    "./advanced"
+    "./advanced",
+    "./api"
   ]
 }
