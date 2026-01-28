@@ -7,10 +7,11 @@ MatchZy Auto Tournament decides what to play (teams, maps, format) and where to 
 
 ## Data flow (high level)
 
-1. MAT exposes the match JSON at `GET /matches/:slug.json`
-2. On the CS2 server you run `.match <slug>`
+1. MAT exposes the match JSON at `GET /api/matches/:slug.json`
+2. On the CS2 server, MatchZy loads the match JSON via `matchzy_loadmatch_url`.
 3. MatchZy:
-   - Fetches the JSON from `matchzy_loadmatch_url`
    - Runs the match lifecycle
-   - Sends webhooks/events to `matchzy_remote_log_url`
+   - Sends match events to `matchzy_remote_log_url` (MAT receives them on `POST /api/events` and `POST /api/events/:matchSlugOrServerId`)
+   - Uploads match reports to `matchzy_report_endpoint` (MAT receives them on `POST /api/events/report`)
+   - Uploads demos to `matchzy_demo_upload_url` (MAT receives them on `POST /api/demos/:matchSlug/upload`)
 

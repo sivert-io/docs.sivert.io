@@ -16,25 +16,34 @@ The URL should point to a match JSON document (typically hosted by MatchZy Auto 
 ### Example
 
 ```bash
-matchzy_loadmatch_url "https://mat.example.com/matches/my-match-slug.json"
+matchzy_loadmatch_url "https://mat.example.com/api/matches/my-match-slug.json"
 ```
 
-If your match JSON endpoint requires a header (for example an API key):
+If your match JSON endpoint requires a header (for example a bearer token):
 
 ```bash
-matchzy_loadmatch_url "https://mat.example.com/matches/my-match-slug.json" "x-api-key" "REDACTED"
+matchzy_loadmatch_url "https://mat.example.com/api/matches/my-match-slug.json" "Authorization" "Bearer REDACTED"
 ```
 
 ## Event webhooks (remote log)
 
-MatchZy can send match events (webhooks) to your platform.
+MatchZy sends match events (webhooks) to your platform.
+
+MatchZy Auto Tournament accepts events on:
+
+- `POST /api/events`
+- `POST /api/events/:matchSlugOrServerId`
 
 - **Set endpoint**: `matchzy_remote_log_url "<url>"`
 - **Optional header**:
   - `matchzy_remote_log_header_key "<key>"`
   - `matchzy_remote_log_header_value "<value>"`
 
-These can be set in `cfg/MatchZy/config.cfg` so they persist across restarts.
+In MAT-style setups, these values are typically configured by the platform via RCON when a match is allocated:
+
+- `matchzy_remote_log_url "https://mat.example.com/api/events/<matchSlug>"`
+- `matchzy_remote_log_header_key "X-MatchZy-Token"`
+- `matchzy_remote_log_header_value "<serverToken>"`
 
 ## Demo uploads
 
@@ -44,6 +53,10 @@ If you record demos, MatchZy can upload them after each map:
 - **Optional header**:
   - `matchzy_demo_upload_header_key "<key>"`
   - `matchzy_demo_upload_header_value "<value>"`
+
+MatchZy Auto Tournament accepts demo uploads on:
+
+- `POST /api/demos/:matchSlug/upload`
 
 Related settings:
 - `matchzy_demo_recording_enabled`
@@ -57,6 +70,10 @@ MatchZy can upload a match report payload to your platform:
 - `matchzy_report_endpoint "<url>"`
 - `matchzy_report_token "<token>"`
 - `matchzy_report_server_id "<server_id>"`
+
+MatchZy Auto Tournament accepts match reports on:
+
+- `POST /api/events/report`
 
 You can also generate a report snapshot on demand:
 

@@ -12,21 +12,29 @@ These examples are meant to be copied into `game/csgo/cfg/MatchZy/config.cfg` an
 matchzy_autostart_mode 1
 matchzy_kick_when_no_match_loaded true
 
-// Remote log (events/webhooks)
-matchzy_remote_log_url "https://mat.example.com/api/events"
-matchzy_remote_log_header_key "x-api-key"
-matchzy_remote_log_header_value "REDACTED"
-
 // Demo recording + upload
 matchzy_demo_recording_enabled true
 matchzy_demo_path MatchZy/
 matchzy_demo_name_format "{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}"
-matchzy_demo_upload_url "https://mat.example.com/api/demos/upload"
+```
+
+In MatchZy Auto Tournament setups, the platform will typically set these per-match via RCON:
+
+```cfg
+// Events webhook
+matchzy_remote_log_url "https://mat.example.com/api/events/<matchSlug>"
+matchzy_remote_log_header_key "X-MatchZy-Token"
+matchzy_remote_log_header_value "<serverToken>"
+
+// Demo upload (note the match slug in the URL)
+matchzy_demo_upload_url "https://mat.example.com/api/demos/<matchSlug>/upload"
+matchzy_demo_upload_header_key "X-MatchZy-Token"
+matchzy_demo_upload_header_value "<serverToken>"
 
 // Match report upload
 matchzy_report_endpoint "https://mat.example.com/api/events/report"
-matchzy_report_token "REDACTED"
-matchzy_report_server_id "server-1"
+matchzy_report_token "<serverToken>"
+matchzy_report_server_id "<serverId>"
 ```
 
 ## Fast scrims (auto-ready)
