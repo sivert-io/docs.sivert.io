@@ -23,6 +23,38 @@ This page mirrors the upstream `CHANGELOG.md` in the repository.
 - Disabled RCON IP bans by default to prevent Docker IP false positives
 - Improved error handling for unban operations (missing ban files treated as success)
 
+## 1.6.13 (January 28, 2026)
+
+### New Features
+
+- Automatic Steam Runtime launcher for CounterStrikeSharp compatibility on newer distros (Debian 13+/Ubuntu 25.04+).
+  - Auto-installs Steam Runtime via SteamCMD (app `1628350`) when needed.
+  - Override with `CSM_STEAMRT=1` or `CSM_STEAMRT=0`.
+
+### Changed
+
+- Refactored addon/config deployment flows to make fresh installs more reliable.
+- Refactored GSLT handling and removed unused code paths.
+
+## 1.6.12 (January 28, 2026)
+
+### New Features
+
+- Install wizard disk space estimation (shows current usage, projected space after install, and warnings when short).
+
+## 1.6.11 (January 28, 2026)
+
+### Fixed
+
+- Bootstrap auto-recovers from interrupted `dpkg` state (`dpkg --configure -a`) before running APT operations.
+- Improved install wizard/TUI logging so long-running steps show live progress more consistently.
+
+## 1.6.9 (January 28, 2026)
+
+### Fixed
+
+- Improved SteamCMD install guidance and error messaging on systems where `steamcmd` is missing/unavailable.
+
 ## 1.5.9 (January 21, 2026)
 
 ### New Features
