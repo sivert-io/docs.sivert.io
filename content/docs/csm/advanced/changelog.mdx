@@ -3,74 +3,877 @@ title: Changelog
 description: Release history and notable changes for CS2 Server Manager.
 ---
 
-This page mirrors the upstream `CHANGELOG.md` in the repository.
+This page is generated from git tags and commit subjects in the `cs2-server-manager` repository.
+
+- **MAJOR**: \(X.0.0\)
+- **MINOR**: \(X.Y.0\)
+- **PATCH**: \(X.Y.Z\)
 
 ## Unreleased
 
-### New Features
+*No unreleased changes yet.*
 
-#### IP ban management
+## v1.6.13 (2026-01-28) — **PATCH**
 
-- `csm unban <server> <ip>`
-- `csm unban-all <server>`
-- `csm list-bans <server>`
-- TUI options under the Tools tab
-- Unban operations auto-reload the server ban list via tmux (no restart needed)
-- RCON IP bans are disabled by default for new servers to avoid Docker-network false positives
+### Features
 
-### Fixed
+- Enhance CounterStrikeSharp compatibility on newer Linux distros
 
-- Disabled RCON IP bans by default to prevent Docker IP false positives
-- Improved error handling for unban operations (missing ban files treated as success)
+### Refactors
 
-## 1.6.13 (January 28, 2026)
+- Refactor bootstrap and update processes for improved addon management
+- Refactor GSLT handling and clean up unused functions
 
-### New Features
+### Chore/Release
 
-- Automatic Steam Runtime launcher for CounterStrikeSharp compatibility on newer distros (Debian 13+/Ubuntu 25.04+).
-  - Auto-installs Steam Runtime via SteamCMD (app `1628350`) when needed.
-  - Override with `CSM_STEAMRT=1` or `CSM_STEAMRT=0`.
+- chore: release v1.6.13
 
-### Changed
+## v1.6.12 (2026-01-28) — **PATCH**
 
-- Refactored addon/config deployment flows to make fresh installs more reliable.
-- Refactored GSLT handling and removed unused code paths.
+### Features
 
-## 1.6.12 (January 28, 2026)
+- Implement disk space estimation in install wizard
 
-### New Features
+### Chore/Release
 
-- Install wizard disk space estimation (shows current usage, projected space after install, and warnings when short).
+- chore: release v1.6.12
 
-## 1.6.11 (January 28, 2026)
+## v1.6.11 (2026-01-28) — **PATCH**
 
-### Fixed
+### Features
 
-- Bootstrap auto-recovers from interrupted `dpkg` state (`dpkg --configure -a`) before running APT operations.
-- Improved install wizard/TUI logging so long-running steps show live progress more consistently.
+- Enhance logging capabilities in TUI model
 
-## 1.6.9 (January 28, 2026)
+### Chore/Release
 
-### Fixed
+- chore: release v1.6.11
 
-- Improved SteamCMD install guidance and error messaging on systems where `steamcmd` is missing/unavailable.
+### Other
 
-## 1.5.9 (January 21, 2026)
+- Improve dpkg error handling in bootstrap process
 
-### New Features
+## v1.6.10 (2026-01-28) — **PATCH**
 
-#### Config file editing in TUI
+### Chore/Release
 
-- Edit MatchZy `config.cfg`
-- Edit MatchZy `database.json`
-- Edit CounterStrikeSharp `admins.json`
-- Automatically sync edited configs to all servers
-- Automatically chown files after editing
+- chore: release v1.6.10
 
-### Documentation
+## v1.6.9 (2026-01-28) — **PATCH**
 
-- Updated docs for config editing features
-- Added comprehensive changelog styling
+### Docs
 
-> The full changelog is available in the repository: see `cs2-server-manager/CHANGELOG.md`.
+- Enhance error handling and documentation for SteamCMD installation
+
+### Chore/Release
+
+- chore: release v1.6.9
+
+## v1.6.8 (2026-01-28) — **PATCH**
+
+### Docs
+
+- Remove deprecated documentation files and assets
+
+### Chore/Release
+
+- chore: release v1.6.8
+
+## v1.6.7 (2026-01-26) — **PATCH**
+
+### Features
+
+- Enhance MatchZy extraction and syncing logic in PluginUpdater
+
+### Chore/Release
+
+- chore: release v1.6.7
+
+## v1.6.6 (2026-01-26) — **PATCH**
+
+### Chore/Release
+
+- chore: release v1.6.6
+
+## v1.6.5 (2026-01-25) — **PATCH**
+
+### Fixes
+
+- Fix version handling in release script and update TUI version constant
+
+### Chore/Release
+
+- chore: release v1.6.5
+
+### Other
+
+- Refine config syncing logic in updateSharedConfigsFromPluginBundle
+
+## v1.6.4 (2026-01-24) — **PATCH**
+
+### Features
+
+- Implement port management and cleanup in TmuxManager
+- Enhance server debugging and argument handling in start.sh and tmux.go
+
+### Chore/Release
+
+- chore: release v1.6.4
+
+## v1.6.3 (2026-01-24) — **PATCH**
+
+### Features
+
+- Enhance TUI and server management functionality
+
+### Docs
+
+- Add command logging documentation and enhance logging features
+
+### Chore/Release
+
+- chore: release v1.6.3
+
+### Other
+
+- Improve Go command detection and user permissions handling in start.sh
+
+## v1.6.2 (2026-01-24) — **PATCH**
+
+### Features
+
+- Enhance troubleshooting guide and improve plugin update logging
+- Enhance user creation and ownership management in CS2 setup
+- Add missing functions and fix disk space check
+- Enhance server management with IP unban functionality and disk space checks
+
+### Refactors
+
+- Refactor code for improved readability and consistency
+
+### Docs
+
+- Enhance troubleshooting documentation and Steam SDK setup
+
+### Chore/Release
+
+- chore: release v1.6.2
+- Update go.mod to adjust dependency for muesli/reflow
+
+## v1.6.1 (2026-01-22) — **PATCH**
+
+### Refactors
+
+- Refactor TUI menu items for server configuration management
+
+### Chore/Release
+
+- chore: release v1.6.1
+
+---
+
+## v1.6.0 (2026-01-22) — **MINOR**
+
+> **MINOR release**
+
+### Features
+
+- Implement RCON ban settings management in server configuration
+
+### Chore/Release
+
+- chore: release v1.6.0
+- Update CHANGELOG.md for v1.6.0 release
+
+## v1.5.10 (2026-01-22) — **PATCH**
+
+### Features
+
+- Add unban and list-bans commands to CLI and TUI
+- Enhance error handling and logging across various components
+
+### Chore/Release
+
+- chore: release v1.5.10
+- Update CHANGELOG.md with v1.5.9 release
+
+## v1.5.9 (2026-01-21) — **PATCH**
+
+### Features
+
+- Add CHANGELOG.md documenting recent fixes and features
+- Add edit functionality for MatchZy configuration files
+
+### Docs
+
+- Update documentation for new features
+
+### Chore/Release
+
+- chore: release v1.5.9
+
+### Other
+
+- Restructure CHANGELOG.md to match MatchZy Enhanced format and styling
+- Create comprehensive CHANGELOG.md with all versions from git history
+- Create comprehensive CHANGELOG.md based on git history
+
+## v1.5.8 (2026-01-21) — **PATCH**
+
+### Chore/Release
+
+- chore: release v1.5.8
+- Update MySQL host configuration for Docker mode to use localhost
+- Update copyright year in mkdocs to 2026
+
+## v1.5.7 (2026-01-19) — **PATCH**
+
+### Features
+
+- Enhance debugging output and adjust gameinfo path in server detection
+
+### Chore/Release
+
+- chore: release v1.5.7
+
+## v1.5.6 (2026-01-19) — **PATCH**
+
+### Features
+
+- Add update-config command for server configuration management
+
+### Refactors
+
+- Refactor buffer handling in server configuration functions for improved flexibility
+- Refactor logging in ReinstallServerInstanceWithContext for improved clarity and functionality
+
+### Chore/Release
+
+- chore: release v1.5.6
+- Update .gitignore to include 'csm' and 'overrides' directories
+
+## v1.5.5 (2026-01-19) — **PATCH**
+
+### Features
+
+- Enhance file ownership management and TUI functionality
+
+### Chore/Release
+
+- chore: release v1.5.5
+
+## v1.5.4 (2026-01-19) — **PATCH**
+
+### Features
+
+- Implement server reinstallation feature in CLI and TUI
+
+### Docs
+
+- Update documentation for server management and configuration
+
+### Chore/Release
+
+- chore: release v1.5.4
+
+## v1.5.3 (2026-01-19) — **PATCH**
+
+### Features
+
+- Enhance TmuxManager to detect and utilize server ports
+- Enhance default overrides handling and cleanup on cancellation
+
+### Chore/Release
+
+- chore: release v1.5.3
+
+### Other
+
+- Refine bootstrap process and error handling for steamcmd installation
+
+## v1.5.2 (2026-01-18) — **PATCH**
+
+### Features
+
+- Enhance steamcmd process management and install wizard cancellation handling
+- Enhance install wizard logging during bootstrap process
+
+### Chore/Release
+
+- chore: release v1.5.2
+
+### Other
+
+- Improve process management during steamcmd execution in bootstrap
+
+## v1.5.1 (2026-01-18) — **PATCH**
+
+### Features
+
+- Enhance install wizard cancellation handling and reset state on quit
+
+### Chore/Release
+
+- chore: release v1.5.1
+
+---
+
+## v1.5.0 (2026-01-18) — **MINOR**
+
+> **MINOR release**
+
+### Docs
+
+- Enhance project documentation and server configuration management
+
+### Chore/Release
+
+- chore: release v1.5.0
+- Remove deprecated MatchZy configuration files and enhance install wizard for new settings
+
+## v1.4.5 (2025-12-29) — **PATCH**
+
+### Refactors
+
+- Refactor initWizardDefaults to improve server count detection
+
+### Chore/Release
+
+- chore: release v1.4.5
+
+## v1.4.4 (2025-12-29) — **PATCH**
+
+### Refactors
+
+- Refactor MySQL host configuration in bootstrap process
+
+### Chore/Release
+
+- chore: release v1.4.4
+
+## v1.4.3 (2025-12-21) — **PATCH**
+
+### Refactors
+
+- Refactor server management and enhance bootstrapping process
+
+### Chore/Release
+
+- chore: release v1.4.3
+
+## v1.4.2 (2025-12-21) — **PATCH**
+
+### Features
+
+- Enhance server management prompts with disk space estimates
+
+### Chore/Release
+
+- chore: release v1.4.2
+- Update syncMasterToServerWithContext to use masterDir for authoritative game files
+- Remove unused tailContains function from monitor.go to streamline code and improve maintainability.
+
+## v1.4.1 (2025-12-19) — **PATCH**
+
+### Chore/Release
+
+- chore: release v1.4.1
+- Update plugin deployment process to sync configurations from shared directory
+
+---
+
+## v1.4.0 (2025-12-19) — **MINOR**
+
+> **MINOR release**
+
+### Features
+
+- Enhance auto-update functionality with MatchZy integration
+
+### Chore/Release
+
+- chore: release v1.4.0
+
+## v1.3.10 (2025-12-19) — **PATCH**
+
+### Refactors
+
+- Refactor plugin management and update process
+
+### Chore/Release
+
+- chore: release v1.3.10
+
+## v1.3.9 (2025-12-19) — **PATCH**
+
+### Chore/Release
+
+- chore: release v1.3.9
+
+### Other
+
+- Clear existing persistent log file before starting tmux session to prevent log growth
+
+## v1.3.8 (2025-12-18) — **PATCH**
+
+### Chore/Release
+
+- chore: release v1.3.8
+
+### Other
+
+- Ensure CS2 user ownership of home directory after updates and plugin deployments
+
+## v1.3.7 (2025-12-18) — **PATCH**
+
+### Features
+
+- Add confirmation prompt before release in release.sh
+
+### Refactors
+
+- Refactor bootstrap and install wizard to remove RequireExistingMaster option
+
+### Chore/Release
+
+- chore: release v1.3.7
+
+## v1.3.6 (2025-12-18) — **PATCH**
+
+### Chore/Release
+
+- chore: release v1.3.6
+
+## v1.3.5 (2025-12-18) — **PATCH**
+
+### Chore/Release
+
+- chore: release v1.3.5
+- Update .gitignore to include .env and cs2-tui files for better project management
+
+### Other
+
+- Ensure ownership of home directory for CS2 user during bootstrap process to prevent permission issues
+
+## v1.3.4 (2025-12-18) — **PATCH**
+
+### Features
+
+- Implement RequireExistingMaster option in bootstrap and install wizard
+
+### Chore/Release
+
+- chore: release v1.3.4
+- Remove cs2-tui binary and enhance TmuxManager to derive game and TV ports from autoexec.cfg, ensuring compatibility with legacy launch flags for server startup. Update command execution in Debug method to reflect new port handling.
+
+## v1.3.3 (2025-12-18) — **PATCH**
+
+### Features
+
+- Enhance error handling and output visibility in TmuxManager
+- Enhance TUI logging and viewport management
+- Enhance install wizard layout and external DB configuration rendering
+
+### Chore/Release
+
+- chore: release v1.3.3
+
+### Other
+
+- Refine install wizard height management for improved stability
+
+## v1.3.2 (2025-12-18) — **PATCH**
+
+### Features
+
+- Add install wizard field activation logic and improve cursor navigation
+
+### Refactors
+
+- Refactor CSM configuration handling and update documentation
+
+### Chore/Release
+
+- chore: release v1.3.2
+
+## v1.3.1 (2025-12-18) — **PATCH**
+
+### Docs
+
+- Enhance documentation for CSM configuration and logging
+- Update .gitignore and enhance troubleshooting documentation
+
+### Chore/Release
+
+- chore: release v1.3.1
+
+---
+
+## v1.3.0 (2025-12-18) — **MINOR**
+
+> **MINOR release**
+
+### Chore/Release
+
+- chore: release v1.3.0
+- Remove deprecated installation and auto-update scripts
+
+### Merges
+
+- Merge pull request #9 from sivert-io/pre-merge-803d281
+
+## v1.2.8 (2025-12-25) — **PATCH**
+
+### Features
+
+- Enhance server instance creation by adding hostname prefix detection
+
+### Chore/Release
+
+- chore: release v1.2.8
+
+## v1.2.7 (2025-12-25) — **PATCH**
+
+### Chore/Release
+
+- chore: release v1.2.7
+
+## v1.2.6 (2025-12-25) — **PATCH**
+
+### Chore/Release
+
+- chore: release v1.2.6
+
+## v1.2.5 (2025-12-25) — **PATCH**
+
+### Features
+
+- Enhance server configuration and installation wizard
+
+### Chore/Release
+
+- chore: release v1.2.5
+
+## v1.2.4 (2025-12-25) — **PATCH**
+
+### Features
+
+- Enhance MatchZy database configuration handling
+- Implement per-server auto-update functionality and enhance monitoring
+- Enhance RunAutoUpdateMonitor with root privilege check
+- Add PR description for revert-to-339728e merge
+
+### Refactors
+
+- Refactor TUI styles and error handling
+
+### Chore/Release
+
+- chore: release v1.2.4
+
+### Merges
+
+- Merge pull request #6 from sivert-io/copilot/revert-to-previous-commit
+
+### Other
+
+- CSM: TUI + Go-native flows refactor
+- Revert to commit 339728e: restore project to pre-Go-CLI state
+- Initial plan
+- Improve quit confirmation handling in TUI
+
+## v1.2.3 (2025-12-11) — **PATCH**
+
+### Chore/Release
+
+- chore: release v1.2.3
+
+## v1.2.2 (2025-12-11) — **PATCH**
+
+### Refactors
+
+- Refactor dependency installation logging and ensureBootstrapDependencies function
+
+### Chore/Release
+
+- chore: release v1.2.2
+
+## v1.2.1 (2025-12-11) — **PATCH**
+
+### Features
+
+- Enhance install wizard and quit confirmation handling
+
+### Chore/Release
+
+- chore: release v1.2.1
+
+---
+
+## v1.2.0 (2025-12-11) — **MINOR**
+
+> **MINOR release**
+
+### Features
+
+- Enhance install wizard and menu item descriptions
+
+### Chore/Release
+
+- chore: release v1.2.0
+
+## v1.1.13 (2025-12-11) — **PATCH**
+
+### Features
+
+- Implement force update functionality in TUI
+
+### Chore/Release
+
+- chore: release v1.1.13
+
+## v1.1.12 (2025-12-11) — **PATCH**
+
+### Refactors
+
+- Refactor TUI model for improved readability and consistency
+
+### Chore/Release
+
+- chore: release v1.1.12
+
+## v1.1.11 (2025-12-11) — **PATCH**
+
+### Features
+
+- Implement context support for bootstrap operations in TUI
+- Enhance plugin update logging and TUI progress display
+
+### Chore/Release
+
+- chore: release v1.1.11
+
+### Other
+
+- Increase timeout for self-update downloads to 5 minutes to accommodate slow connections, enhancing reliability during updates.
+
+## v1.1.10 (2025-12-11) — **PATCH**
+
+### Features
+
+- Implement update caching mechanism in TUI
+
+### Chore/Release
+
+- chore: release v1.1.10
+
+## v1.1.9 (2025-12-11) — **PATCH**
+
+### Features
+
+- Implement self-update progress tracking in TUI
+
+### Refactors
+
+- Refactor TUI model to improve menu item management
+
+### Chore/Release
+
+- chore: release v1.1.9
+
+## v1.1.8 (2025-12-11) — **PATCH**
+
+### Features
+
+- Enhance CLI functionality with global flags and improved help output
+
+### Chore/Release
+
+- chore: release v1.1.8
+
+## v1.1.7 (2025-12-11) — **PATCH**
+
+### Features
+
+- Implement log streaming for steamcmd installation process
+
+### Chore/Release
+
+- chore: release v1.1.7
+
+## v1.1.6 (2025-12-11) — **PATCH**
+
+### Features
+
+- Implement live log tailing in install wizard for better user feedback
+
+### Chore/Release
+
+- chore: release v1.1.6
+
+## v1.1.5 (2025-12-11) — **PATCH**
+
+### Features
+
+- Enhance TUI output and footer display
+
+### Refactors
+
+- Refactor install wizard to support sequential steps
+
+### Chore/Release
+
+- chore: release v1.1.5
+
+## v1.1.4 (2025-12-11) — **PATCH**
+
+### Refactors
+
+- Refactor install wizard output handling in TUI
+
+### Chore/Release
+
+- chore: release v1.1.4
+
+## v1.1.3 (2025-12-11) — **PATCH**
+
+### Features
+
+- Enhance TUI model input handling and self-update process
+
+### Chore/Release
+
+- chore: release v1.1.3
+
+## v1.1.2 (2025-12-11) — **PATCH**
+
+### Refactors
+
+- Refactor output handling in TUI model to improve readability
+
+### Chore/Release
+
+- chore: release v1.1.2
+
+## v1.1.1 (2025-12-11) — **PATCH**
+
+### Features
+
+- Enhance self-update process with permission checks and update prompts
+
+### Chore/Release
+
+- chore: release v1.1.1
+
+---
+
+## v1.1.0 (2025-12-11) — **MINOR**
+
+> **MINOR release**
+
+### Features
+
+- Implement core CSM functionality with new features and configurations
+
+### Docs
+
+- Add link to full documentation site in README
+- Update README to enhance installation instructions and usage guidelines for `csm`
+
+### Chore/Release
+
+- chore: release v1.1.0
+
+## v1.0.4 (2025-12-11) — **PATCH**
+
+### Chore/Release
+
+- chore: release v1.0.4
+
+## v1.0.3 (2025-12-11) — **PATCH**
+
+### Chore/Release
+
+- chore: release v1.0.3
+
+## v1.0.2 (2025-12-11) — **PATCH**
+
+### Features
+
+- Enhance release script with git push functionality and improve Discord webhook handling
+
+### Chore/Release
+
+- chore: release v1.0.2
+
+## v1.0.1 (2025-12-11) — **PATCH**
+
+### Features
+
+- Enhance release script with git commit/tag functionality and update version to v1.0.0
+
+### Chore/Release
+
+- chore: release v1.0.1
+
+---
+
+## v1.0.0 (2025-12-11) — **MAJOR**
+
+> **MAJOR release**
+
+### Features
+
+- Implement Go-based CLI for CS2 Server Manager and remove legacy scripts
+- Add CNAME file for custom domain configuration
+- Add community guidelines and contribution templates
+- Enhance update.sh for improved cleanup and extraction processes
+- Add utilities for database verification and public IP retrieval
+- Add .steam directory creation in bootstrap_cs2.sh
+- Add map thumbnail extraction and conversion functionality
+- Add one-line installer script for CS2 Server Manager
+- Enhance manage.sh with auto-update monitor installation
+- Add auto-update monitor functionality
+- Add files via upload
+- Implement MatchZy database configuration and management in manage.sh
+- Add Docker requirements and MatchZy database provisioning
+
+### Refactors
+
+- Refactor input handling in install.sh for interactive prompts
+
+### Docs
+
+- Update quick-start documentation to clarify installation instructions for the `csm` binary by linking directly to the GitHub Releases page.
+- Add support and related projects sections to documentation
+- Add license and credits section to documentation and update color variables in extra.css
+- Add related projects documentation and update mkdocs configuration
+- Remove deprecated csm-icon.svg and update README to reference new icon location. The icon has been replaced with docs/icon.svg for better organization.
+- Add related project links to documentation
+- Add documentation and workflow files for CS2 Server Manager
+- Add demo recording configuration and documentation
+- Revise README.md for clarity and conciseness
+- Update installation instructions in install.sh and README.md for clarity
+- Revise README for clarity and additional features
+
+### Chore/Release
+
+- Update Discord webhook script and release process
+- Update installation instructions and remove deprecated configuration files
+- Update extra.css to reflect Material Design 3 Rosé theme
+- Update CNAME configuration for custom domain
+- update site url
+- Update demo upload URL comment in config.cfg for clarity
+- Update MySQL host in database.json to use localhost for local development
+- Remove debug_plugin_download.sh script as it is no longer needed for plugin download diagnostics.
+- Update install.sh to conditionally clear terminal
+
+### Other
+
+- Refine link styles in extra.css for Material Design 3 Rosé theme
+- Refine extra.css for Material Design 3 CS2 Rosé theme
+- Refine color variables in extra.css for Material Design 3 Rosé theme
+- Ensure database.json is fully populated with correct Docker DB credentials
+- Improve log viewing and overrides management
+- Improve dependency installation handling in install.sh
+- init
 

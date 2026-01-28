@@ -3,26 +3,711 @@ title: Changelog
 description: Release notes for MatchZy Enhanced.
 ---
 
-MatchZy Enhanced releases are published on GitHub, and the most recent highlights are summarized here.
+This page is generated from git tags and commit subjects in the `MatchZy-Enhanced` repository.
+
+- **MAJOR**: \(X.0.0\)
+- **MINOR**: \(X.Y.0\)
+- **PATCH**: \(X.Y.Z\)
 
 ## Unreleased
 
-*No unreleased changes yet.*
+### Chore/Release
 
-## 1.4.11 (January 26, 2026)
+- chore: update contribution guidelines and links
+- chore: remove outdated documentation files
+- chore: update CHANGELOG for v1.4.11 release
 
-### Changed
+## v1.4.11 (2026-01-26) — **PATCH**
 
-- Improved MatchZy configuration defaults/clarity.
-- Enhanced auto-ready simulation and debugging features.
-- Improved match management and notification systems.
-- Removed outdated documentation files/old docs site artifacts.
+### Features
 
-## 1.4.10 (January 25, 2026)
+- feat: enhance auto-ready simulation and debugging features
+- feat: enhance match management and notification systems
 
-### New Features
+### Refactors
 
-- Implemented auto-ready system for players.
+- refactor: update MatchZy configuration for clarity and usability
 
-> See full release history on GitHub: `https://github.com/sivert-io/MatchZy-Enhanced/releases`
+### Other
+
+- Release v1.4.11
+
+## v1.4.10 (2026-01-25) — **PATCH**
+
+### Features
+
+- feat: implement auto-ready system for players
+
+### Chore/Release
+
+- chore: update CHANGELOG for v1.4.9 release
+
+### Other
+
+- Release v1.4.10
+
+## v1.4.9 (2026-01-24) — **PATCH**
+
+### Features
+
+- feat: enhance notification system with duration support
+- feat: add center HTML notifications for match events
+
+### Fixes
+
+- fix: enhance event retry queue management
+
+### Chore/Release
+
+- chore: update CHANGELOG for v1.4.8 release
+
+### Other
+
+- Release v1.4.9
+
+## v1.4.8 (2026-01-24) — **PATCH**
+
+### Fixes
+
+- fix: improve event delivery and retry mechanisms
+- fix: resolve CS2 API threading issues in event retry queue
+
+### Other
+
+- Release v1.4.8
+
+## v1.4.7 (2026-01-24) — **PATCH**
+
+### Chore/Release
+
+- chore: update CHANGELOG and documentation for server configuration requirements
+
+### Other
+
+- Release v1.4.7
+
+## v1.4.6 (2026-01-22) — **PATCH**
+
+### Chore/Release
+
+- chore: update version handling in release script and modify console output in MatchZy.cs
+
+### Other
+
+- Release v1.4.6
+
+## v1.4.5 (2026-01-22) — **PATCH**
+
+### Chore/Release
+
+- chore: update module author and description for enhanced clarity
+
+### Other
+
+- Release v1.4.5
+
+## v1.4.4 (2026-01-22) — **PATCH**
+
+### Fixes
+
+- fix: enhance database connection logging and error handling
+
+### Chore/Release
+
+- chore: update .gitignore to include .env and log files
+
+### Other
+
+- Release v1.4.4
+
+## v1.4.3 (2026-01-22) — **PATCH**
+
+### Fixes
+
+- fix: ensure database connection is properly managed
+
+### Chore/Release
+
+- chore: update CHANGELOG for v1.4.2 release
+
+### Other
+
+- Release v1.4.3
+
+## v1.4.2 (2026-01-21) — **PATCH**
+
+### Features
+
+- feat: add match won messages in multiple languages and improve side selection timer logic
+
+### Other
+
+- Release v1.4.2
+
+## v1.4.1 (2026-01-21) — **PATCH**
+
+### Fixes
+
+- fix: improve changelog extraction logic to handle release commits and non-existent tags
+
+### Refactors
+
+- refactor: improve event retry and cleanup timer logic
+
+### Other
+
+- Release v1.4.1
+
+---
+
+## v1.4.0 (2026-01-20) — **MINOR**
+
+> **MINOR release**
+
+### Features
+
+- feat: persist and load remote log header key and value
+- feat: add bulletproof event delivery system with server tracking
+- feat: bulletproof event delivery system with server tracking (v1.3.6)
+
+### Chore/Release
+
+- chore: remove outdated API documentation files
+
+### Other
+
+- Release v1.4.0
+- release stuff
+- Updated changelog
+
+## v1.3.5 (2026-01-20) — **PATCH**
+
+### Docs
+
+- Update changelog and documentation for version 1.3.4
+
+### Other
+
+- Release v1.3.5
+
+## v1.3.4 (2026-01-20) — **PATCH**
+
+### Features
+
+- Add reload configuration command for MatchZy plugin
+
+### Docs
+
+- Update changelog and documentation for version 1.3.1
+
+### Other
+
+- Release v1.3.4
+
+## v1.3.3 (2026-01-20) — **PATCH**
+
+### Features
+
+- Enhance release script with pre-checks and improved version handling
+- Enhance match management features with new configuration options and command logic
+
+### Refactors
+
+- Refactor score calculation logic in ConsoleCommands for clarity and update module version to 1.3.2
+
+### Docs
+
+- Update commands and configuration documentation to enhance match management features
+- Update README.md to remove versioning from player features section
+- Revise README.md for clarity and feature updates
+- Update mkdocs.yml to streamline documentation structure and exclude unnecessary files
+
+### Other
+
+- Release v1.3.3
+
+---
+
+## v1.3.0 (2026-01-19) — **MINOR**
+
+> **MINOR release**
+
+### Refactors
+
+- Refactor score awarding logic for forfeits in ConsoleCommands and Utility
+
+### Docs
+
+- Enhance demo recording configuration and performance tips in documentation
+- Remove outdated documentation files for demo upload, API endpoint specification, configuration loading behavior, and localization guide
+- Implement new features for enhanced tournament automation in README and configuration
+- Update commands documentation for practice utilities and MatchZy convars
+
+### Other
+
+- Release v1.3.0
+
+## v1.2.2 (2026-01-06) — **PATCH**
+
+### Features
+
+- Add debug chat feature for event logging
+
+### Docs
+
+- Enhance command documentation and player communication
+
+### Other
+
+- Release v1.2.2
+
+## v1.2.1 (2025-12-30) — **PATCH**
+
+### Features
+
+- Enhance player whitelist handling to allow admin bypass
+
+### Other
+
+- Release v1.2.1
+
+---
+
+## v1.2.0 (2025-12-30) — **MINOR**
+
+> **MINOR release**
+
+### Features
+
+- Add remote backup and per-match admin features
+
+### Chore/Release
+
+- Update hostname format in configuration
+
+### Other
+
+- Release v1.2.0
+
+## v1.1.5 (2025-12-29) — **PATCH**
+
+### Features
+
+- Enhance overtime configuration handling in MatchManagement and Utility
+
+### Other
+
+- Release v1.1.5
+
+## v1.1.4 (2025-12-29) — **PATCH**
+
+### Other
+
+- Release v1.1.4
+- Refine overtime handling in match management
+
+## v1.1.3 (2025-12-29) — **PATCH**
+
+### Docs
+
+- Refine overtime segments handling and documentation
+
+### Other
+
+- Release v1.1.3
+
+## v1.1.2 (2025-12-29) — **PATCH**
+
+### Docs
+
+- Enhance overtime tie resolution logic and documentation
+
+### Other
+
+- Release v1.1.2
+
+## v1.1.1 (2025-12-29) — **PATCH**
+
+### Features
+
+- Add tournament overtime and regulation configuration
+
+### Other
+
+- Release v1.1.1
+
+---
+
+## v1.1.0 (2025-12-29) — **MINOR**
+
+> **MINOR release**
+
+### Features
+
+- Add tournamentNextMatch identifier for queued matches
+- Implement match queuing and auto-loading after reset
+
+### Other
+
+- Release v1.1.0
+
+## v1.0.26 (2025-12-29) — **PATCH**
+
+### Features
+
+- Add missing using directive for Utils module in G5API.cs
+- Implement connected clients tracking for simulation and normal matches
+
+### Other
+
+- Release v1.0.26
+
+## v1.0.25 (2025-12-21) — **PATCH**
+
+### Features
+
+- Enhance simulation and normal match settings enforcement
+
+### Other
+
+- Release v1.0.25
+
+## v1.0.24 (2025-12-20) — **PATCH**
+
+### Features
+
+- Implement HLTV/SourceTV exclusion from readiness tracking
+
+### Other
+
+- Release v1.0.24
+
+## v1.0.23 (2025-12-20) — **PATCH**
+
+### Chore/Release
+
+- Update simulation initialization logic for first map in series
+
+### Other
+
+- Release v1.0.23
+
+## v1.0.22 (2025-12-20) — **PATCH**
+
+### Features
+
+- Enhance simulation mode readiness logic and event handling
+
+### Other
+
+- Release v1.0.22
+
+## v1.0.21 (2025-12-20) — **PATCH**
+
+### Features
+
+- Enhance logging for series and map checkpoints
+
+### Other
+
+- Release v1.0.21
+
+## v1.0.20 (2025-12-19) — **PATCH**
+
+### Features
+
+- Add simulation timescale configuration for enhanced match control
+
+### Other
+
+- Release v1.0.20
+
+## v1.0.19 (2025-12-19) — **PATCH**
+
+### Features
+
+- Enhance simulation mode behavior and logging
+
+### Other
+
+- Release v1.0.19
+
+## v1.0.18 (2025-12-19) — **PATCH**
+
+### Features
+
+- Add MatchZy-safe auto-updater to prevent server restarts during matches
+
+### Refactors
+
+- Refactor MatchZy configuration and enhance simulation state management
+
+### Docs
+
+- Update documentation for MatchZy auto-updater and tournament status
+
+### Other
+
+- Release v1.0.18
+
+## v1.0.17 (2025-12-19) — **PATCH**
+
+### Features
+
+- Enhance bot behavior in simulation mode
+
+### Other
+
+- Release v1.0.17
+
+## v1.0.16 (2025-12-19) — **PATCH**
+
+### Features
+
+- Enhance bot management and simulation flow in SimulationMode
+
+### Refactors
+
+- Refactor simulation flow management for improved readiness
+
+### Other
+
+- Release v1.0.16
+
+## v1.0.15 (2025-12-19) — **PATCH**
+
+### Features
+
+- Enhance logging and simulation flow management
+
+### Other
+
+- Release v1.0.15
+
+## v1.0.14 (2025-12-18) — **PATCH**
+
+### Features
+
+- Enhance simulation ready flow management
+
+### Refactors
+
+- Refactor Load method and improve event handling in MatchZy
+
+### Other
+
+- Release v1.0.14
+
+## v1.0.13 (2025-12-18) — **PATCH**
+
+### Features
+
+- Enhance player connection handling and bot management in simulation mode
+
+### Other
+
+- Release v1.0.13
+
+## v1.0.12 (2025-12-18) — **PATCH**
+
+### Other
+
+- Release v1.0.12
+- Ensure bots remain active in simulation mode by enforcing 'bot_join_after_player 0' command. This prevents bot removal when no human players are connected, supporting fully simulated matches.
+
+## v1.0.11 (2025-12-18) — **PATCH**
+
+### Refactors
+
+- Refactor bot management and simulation handling
+
+### Other
+
+- Release v1.0.11
+
+## v1.0.10 (2025-12-18) — **PATCH**
+
+### Refactors
+
+- Refactor bot management logic in Utility.cs
+
+### Other
+
+- Release v1.0.10
+
+## v1.0.9 (2025-12-18) — **PATCH**
+
+### Chore/Release
+
+- Update configuration files and clean up bot management
+
+### Other
+
+- Release v1.0.9
+
+## v1.0.8 (2025-12-18) — **PATCH**
+
+### Refactors
+
+- Refactor simulation handling in MatchZy
+
+### Other
+
+- Release v1.0.8
+
+## v1.0.7 (2025-12-18) — **PATCH**
+
+### Refactors
+
+- Refactor warmup configuration handling
+
+### Other
+
+- Release v1.0.7
+
+## v1.0.6 (2025-12-18) — **PATCH**
+
+### Features
+
+- Implement warmup configuration adjustments for simulation mode
+
+### Other
+
+- Release v1.0.6
+
+## v1.0.5 (2025-12-18) — **PATCH**
+
+### Features
+
+- Implement simulation flow handling during map changes
+- Add final confirmation step in release script
+
+### Docs
+
+- Enhance documentation for MatchZy commands and configuration
+
+### Other
+
+- Release v1.0.5
+
+## v1.0.4 (2025-12-18) — **PATCH**
+
+### Features
+
+- Enhance remote logging configuration and event handling
+
+### Refactors
+
+- Refactor documentation in index.md for clarity and consistency
+
+### Docs
+
+- Enhance documentation for MatchZy Enhanced
+
+### Chore/Release
+
+- Update index.md to hide navigation and table of contents
+- Update accent colors in extra.css for improved consistency and clarity
+- Update link colors in extra.css for improved consistency
+
+### Other
+
+- Release v1.0.4
+
+## v1.0.3 (2025-12-10) — **PATCH**
+
+### Chore/Release
+
+- Update changelog generation in release.sh to include commits between the previous and current tags, improving accuracy for GitHub releases.
+
+### Other
+
+- Release v1.0.3
+
+## v1.0.2 (2025-12-10) — **PATCH**
+
+### Other
+
+- Release v1.0.2
+
+## v1.0.1 (2025-12-10) — **PATCH**
+
+### Features
+
+- Enhance simulation mode handling in MatchZy
+- Add simulation bot disconnection feature after series end
+- Add Discord webhook script and update .gitignore
+
+### Refactors
+
+- Refactor documentation structure in index.md
+
+### Other
+
+- Release v1.0.1
+
+---
+
+## v1.0.0 (2025-12-09) — **MAJOR**
+
+> **MAJOR release**
+
+### Features
+
+- Enhance match reset and map change notifications
+- Enhance match report upload functionality
+- Add match report upload functionality
+- Implement match report command and enhance player connection tracking
+- Add version display commands and update dependencies
+- Enhance logging for various match events including player connections, disconnections, and match state changes. Added detailed logs for event sending processes and conditions for skipping events when the match is not set up. Improved backup management logging for round restoration and side swaps.
+- Add test event functionality with new console command for sending test events to the remote log URL. Introduced MatchZyTestEvent class for structured event data. Enhanced logging for event sending process, including success and error notifications to console and players.
+- Add event handling for player connections, disconnections, and match state changes. Implemented events for player readiness, unreadiness, match pauses, unpauses, and round transitions. Enhanced backup management with backup loaded events. Updated event classes for better data handling.
+
+### Fixes
+
+- Fix player table creation script
+
+### Refactors
+
+- Refactor match report command for improved async handling
+- Refactor event logging to improve clarity and consistency. Updated conditions for sending player connect and disconnect events based on RemoteLogURL configuration. Enhanced logging for player readiness checks and added a method to generate short URLs for better readability in chat messages.
+
+### Docs
+
+- Add logo and enhance README for MatchZy plugin
+- Add API endpoint specifications and configuration loading behavior documentation
+
+### Chore/Release
+
+- chore: bump version to 0.8.24
+- chore: bump version to 0.8.23
+- chore: bump version to 0.8.22
+- chore: bump version to 0.8.20
+- chore: bump version to 0.8.19
+- chore: bump version to 0.8.18
+- remove /noclip chat command
+
+### Merges
+
+- Merge branch 'dev' of https://github.com/sivert-io/MatchZy into dev
+- Merge branch 'dev' of https://github.com/shobhit-pathak/MatchZy into dev
+- Merge pull request #351 from crashzk/patch-1
+- Merge pull request #353 from mfgredo/fix-player-table-sql
+- Merge pull request #354 from michihupf/dev
+- Merge branch 'dev' of github.com:michihupf/MatchZy into dev
+
+### Other
+
+- Release v0.8.27 - Demo recording improvements and auto-kick after series end
+- Release v0.8.26 - Enhanced demo upload with debug logging and chat notifications
+- Release v0.8.25
+- v0.8.17: Add tournament status ConVars and automated release system
+- 0.8.15: noclip command fix
+- 0.8.15: noclip command fix
+- 0.8.15: noclip command fix
+- 0.8.15: noclip command fix
+
+---
+
+> Full upstream history (pre v1.x) is available in the repository git log.
 
