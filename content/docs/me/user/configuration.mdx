@@ -3,18 +3,25 @@ title: Configuration
 description: Key convars and config files for tournament integration.
 ---
 
-MatchZy reads configuration from:
+MatchZy configuration lives in a few places:
 
 - ConVars (`matchzy_*`)
 - Config files under `cfg/MatchZy/`
 - JSON match configs loaded from a URL (typically MatchZy Auto Tournament)
 
-## Key integration convars
+If you’re integrating MatchZy with MatchZy Auto Tournament, start here:
 
-- `matchzy_loadmatch_url`
-- `matchzy_remote_log_url` + optional header key/value
-- `matchzy_match_report_url` (optional)
-- `matchzy_demo_upload_url` (optional)
+## Most important pages
 
-See the upstream doc for the full reference (migrated content will be expanded here over time).
+- **ConVars reference**: [`ConVars`](/docs/me/user/convars)
+- **Config files**: [`Config files`](/docs/me/user/config-files)
+- **Integration endpoints**: [`Integration endpoints`](/docs/me/user/integration-endpoints)
+- **Copy/paste examples**: [`Examples`](/docs/me/user/examples)
+
+## Key integration settings (quick list)
+
+- `matchzy_loadmatch_url`: loads a match JSON config from a URL.
+- `matchzy_remote_log_url`: where MatchZy sends event webhooks (with optional header key/value).
+- `matchzy_report_endpoint` (optional): where MatchZy uploads match reports.
+- `matchzy_demo_upload_url` (optional): where MatchZy uploads demos.
 

@@ -1,0 +1,47 @@
+---
+title: Examples
+description: Copy/paste MatchZy Enhanced configuration examples.
+---
+
+These examples are meant to be copied into `game/csgo/cfg/MatchZy/config.cfg` and adjusted for your environment.
+
+## Minimal tournament server (MAT-style integration)
+
+```cfg
+// MatchZy defaults
+matchzy_autostart_mode 1
+matchzy_kick_when_no_match_loaded true
+
+// Remote log (events/webhooks)
+matchzy_remote_log_url "https://mat.example.com/api/events"
+matchzy_remote_log_header_key "x-api-key"
+matchzy_remote_log_header_value "REDACTED"
+
+// Demo recording + upload
+matchzy_demo_recording_enabled true
+matchzy_demo_path MatchZy/
+matchzy_demo_name_format "{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}"
+matchzy_demo_upload_url "https://mat.example.com/api/demos/upload"
+
+// Match report upload
+matchzy_report_endpoint "https://mat.example.com/api/events/report"
+matchzy_report_token "REDACTED"
+matchzy_report_server_id "server-1"
+```
+
+## Fast scrims (auto-ready)
+
+```cfg
+matchzy_autoready_enabled true
+matchzy_autoready_start_delay 5
+matchzy_minimum_ready_required 2
+```
+
+## Debugging (safe defaults)
+
+```cfg
+matchzy_debug_console true
+matchzy_debug_chat false
+matchzy_events_enabled true
+```
+

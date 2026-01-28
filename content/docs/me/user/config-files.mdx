@@ -1,0 +1,48 @@
+---
+title: Config files
+description: What lives in cfg/MatchZy and when each file is used.
+---
+
+MatchZy Enhanced reads configuration from files under `cfg/MatchZy/` on your server.
+
+On a CS2 server, these files typically live at:
+
+- `game/csgo/cfg/MatchZy/`
+
+## `config.cfg` (main configuration)
+
+`config.cfg` is executed automatically when the plugin loads. This is where you set your default `matchzy_*` configuration for the server.
+
+- **Reload without restart**: run `matchzy_reload_config` to re-execute `MatchZy/config.cfg`.
+- **What to put here**: only MatchZy / CounterStrikeSharp ConVars and commands (avoid unrelated server commands).
+
+## Match flow config files
+
+These files are executed by MatchZy when it transitions between phases/modes:
+
+- **`warmup.cfg`**: warmup / pre-live setup.
+- **`knife.cfg`**: knife round settings.
+- **`live.cfg`**: live match settings (standard 5v5).
+- **`live_wingman.cfg`**: live match settings for Wingman.
+- **`live_override.cfg`**: optional overrides applied on top of live settings.
+- **`live_wingman_override.cfg`**: optional overrides applied on top of wingman live settings.
+
+If you’re unsure where to start, keep these files close to defaults and use `config.cfg` + the match JSON config to control most behavior.
+
+## Practice / testing modes
+
+- **`prac.cfg`**: practice mode configuration.
+- **`dryrun.cfg`**: dry-run/testing configuration.
+- **`sleep.cfg`**: “sleep mode” configuration.
+
+## Whitelist / humans / persistence
+
+- **`whitelist.cfg`**: generated/managed whitelist file used by MatchZy when whitelist is enabled.
+- **`humans.cfg`**: helper file used by MatchZy for “humans only” operations (e.g. filtering bots/spectators).
+
+## JSON config files
+
+- **`admins.json`**: MatchZy admin configuration.
+- **`database.json`**: database configuration for MatchZy persistence/features.
+- **`savednades.json`**: nade saving/loading data (practice utilities).
+

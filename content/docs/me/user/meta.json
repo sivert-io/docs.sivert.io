@@ -1,5 +1,15 @@
 {
   "title": "Operators",
   "defaultOpen": true,
-  "pages": ["index", "installation", "configuration", "commands", "..."]
+  "pages": [
+    "index",
+    "installation",
+    "configuration",
+    "convars",
+    "config-files",
+    "integration-endpoints",
+    "examples",
+    "commands",
+    "..."
+  ]
 }

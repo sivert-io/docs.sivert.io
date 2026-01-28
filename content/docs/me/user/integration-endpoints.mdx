@@ -1,0 +1,74 @@
+---
+title: Integration endpoints
+description: How MatchZy loads match JSON and where it sends events, reports, and demos.
+---
+
+This page covers the MatchZy settings you use when integrating a CS2 server with MatchZy Auto Tournament (or any external controller).
+
+## Loading a match JSON
+
+MatchZy loads a match by fetching JSON from a URL:
+
+- **Command**: `matchzy_loadmatch_url <url> [header_key header_value]`
+
+The URL should point to a match JSON document (typically hosted by MatchZy Auto Tournament).
+
+### Example
+
+```bash
+matchzy_loadmatch_url "https://mat.example.com/matches/my-match-slug.json"
+```
+
+If your match JSON endpoint requires a header (for example an API key):
+
+```bash
+matchzy_loadmatch_url "https://mat.example.com/matches/my-match-slug.json" "x-api-key" "REDACTED"
+```
+
+## Event webhooks (remote log)
+
+MatchZy can send match events (webhooks) to your platform.
+
+- **Set endpoint**: `matchzy_remote_log_url "<url>"`
+- **Optional header**:
+  - `matchzy_remote_log_header_key "<key>"`
+  - `matchzy_remote_log_header_value "<value>"`
+
+These can be set in `cfg/MatchZy/config.cfg` so they persist across restarts.
+
+## Demo uploads
+
+If you record demos, MatchZy can upload them after each map:
+
+- **Endpoint**: `matchzy_demo_upload_url "<url>"`
+- **Optional header**:
+  - `matchzy_demo_upload_header_key "<key>"`
+  - `matchzy_demo_upload_header_value "<value>"`
+
+Related settings:
+- `matchzy_demo_recording_enabled`
+- `matchzy_demo_path`
+- `matchzy_demo_name_format`
+
+## Match reports
+
+MatchZy can upload a match report payload to your platform:
+
+- `matchzy_report_endpoint "<url>"`
+- `matchzy_report_token "<token>"`
+- `matchzy_report_server_id "<server_id>"`
+
+You can also generate a report snapshot on demand:
+
+- `matchzy_match_report`
+
+## Server identity and status (for dashboards/allocators)
+
+These values help a controller understand what the server is doing:
+
+- `matchzy_server_id`
+- `matchzy_tournament_status`
+- `matchzy_tournament_match`
+- `matchzy_tournament_next_match`
+- `matchzy_tournament_updated`
+

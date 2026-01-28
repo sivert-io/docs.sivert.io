@@ -1,0 +1,157 @@
+---
+title: ConVars & commands
+description: Full MatchZy Enhanced matchzy_* reference.
+---
+
+This is the full reference for MatchZy Enhanced `matchzy_*` configuration.
+
+Notes:
+- **Defaults** are taken from MatchZy Enhanced code and the shipped `cfg/MatchZy/config.cfg`.
+- If you set ConVars in `config.cfg`, those values override code defaults.
+- Rows with an **empty Default** are typically **commands** (they don’t have a persistent default value).
+
+## Core match flow
+
+| ConVar | Default | Description |
+| --- | --- | --- |
+| `matchzy_allow_force_ready` | `true` | Allow admins to force ready players during match setup (`!forceready`). Default: true |
+| `matchzy_autostart_mode` | `1` | Which mode MatchZy starts in on plugin load. 0 = neither (idle), 1 = match mode, 2 = practice mode. Default: 1 |
+| `matchzy_kick_when_no_match_loaded` | `false` | If true, server becomes "match mode only": no match loaded -> kick everyone / prevent joining. Use case: tournament servers where only pre-loaded match players should be able to play. Default: false |
+| `matchzy_knife_enabled_default` | `true` | Default knife-round requirement. (Admins can toggle via `.roundknife`.) Default: true |
+| `matchzy_minimum_ready_required` | `2` | Minimum ready players required to start a match. 0 means "everyone connected must ready". Default: 2 |
+| `matchzy_playout_enabled_default` | `false` | Default playout mode (play max rounds). (Admins can toggle via `.playout`.) Default: false |
+| `matchzy_reset_cvars_on_series_end` | `true` | Reset match JSON cvar overrides back to originals at series end. Default: true |
+| `matchzy_whitelist_enabled_default` | `false` | Default whitelist toggle state. (Admins can toggle via `.whitelist`.) Default: false |
+
+## Ready / auto-ready
+
+| ConVar | Default | Description |
+| --- | --- | --- |
+| `matchzy_autoready_check_delay` | `0.3` | Delay (seconds) after team assignment before checking ready state. Use case: increase if your server/team-change events arrive before Team is fully set. Default: 0.3 |
+| `matchzy_autoready_enabled` | `false` | Automatically simulate players typing `.ready` when they become eligible. Use case: fast scrims or managed environments where players are expected ready on join. Default: false |
+| `matchzy_autoready_ready_delay` | `2` | Delay (seconds) before auto-ready simulates `.ready` (also used for sim bots). Default: 2 |
+| `matchzy_autoready_simulation_allow_start_without_humans` | `false` | Allow starting knife/live with 0 humans connected while simulation is active. WARNING: can still be risky on some CS2 versions; keep off unless testing. Default: false |
+| `matchzy_autoready_simulation_bot_spawn_delay` | `5` | Delay between spawning the two testing bots (seconds). Default: 5 |
+| `matchzy_autoready_simulation_enabled` | `false` | Auto-ready simulation helper (development/testing only). Spawns 2 bots during warmup (1 CT + 1 T) so you can test ready/auto-ready without joining. Default: false |
+| `matchzy_autoready_simulation_knife_start_command_delay` | `0` | Delay between safe/diagnostic knife transition commands (seconds). Default: 0 |
+| `matchzy_autoready_simulation_knife_start_mode` | `0` | Safe/diagnostic knife transition mode (only used when `knife_use_safe_mode` is true). 0=restart_then_warmup_end, 1=warmup_end_then_restart(delayed), 2=restart_then_warmup_end(delayed), 3=warmup_end_only, 4=restart_only, 5=step_through_knife_cfg, 6=enter_knife_no_commands Default: 0 |
+| `matchzy_autoready_simulation_knife_use_safe_mode` | `false` | When starting knife with 0 humans, use the safe/diagnostic knife transition modes. If false, MatchZy behaves like a normal server and `exec`s `MatchZy/knife.cfg` immediately. Default: false |
+| `matchzy_autoready_start_delay` | `5` | Countdown delay (seconds) once auto-ready conditions are met. Default: 5 |
+
+## Demos / series end
+
+| ConVar | Default | Description |
+| --- | --- | --- |
+| `matchzy_demo_name_format` | `"{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}"` | Demo filename format (without .dem). Available tokens: {TIME}, {MATCH_ID}, {MAP}, {MAPNUMBER}, {TEAM1}, {TEAM2} Default: "{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}" |
+| `matchzy_demo_path` | `MatchZy/` | Demo save path relative to `csgo/` (must end with `/`). Default: MatchZy/ |
+| `matchzy_demo_recording_enabled` | `true` | Automatically start demo recording when the match goes live. Note: requires GOTV (`tv_enable 1`) to actually record. Default: true |
+| `matchzy_demo_upload_header_key` | `""` | Optional custom header for demo upload. Default: "" |
+| `matchzy_demo_upload_header_value` | `""` | Default: "" |
+| `matchzy_demo_upload_url` | `""` | Demo upload URL (HTTP). Leave empty to disable uploads. Default: "" |
+| `matchzy_match_report` | `` | Returns a structured JSON snapshot of the current match state |
+| `matchzy_report_endpoint` | `""` | Match report upload endpoint. Default: "" |
+| `matchzy_report_server_id` | `""` | Match report server ID. Default: "" |
+| `matchzy_report_token` | `""` | Match report token (sent as header). Default: "" |
+| `matchzy_series_end_kick_delay_demo_no_upload` | `10` | Extra delay when demos are enabled but no upload URL is configured. Default: 10 |
+| `matchzy_series_end_kick_delay_demo_upload` | `60` | Extra delay when demos are enabled and upload URL is configured (to allow upload). Default: 60 |
+| `matchzy_series_end_kick_delay_no_demo` | `5` | Extra delay before kicking players at series end (added to `mp_match_restart_delay`). Default: 5 |
+
+## Pauses
+
+| ConVar | Default | Description |
+| --- | --- | --- |
+| `matchzy_both_teams_unpause_required` | `true` | Require both teams to `.unpause` for non-admin pauses. Default: true |
+| `matchzy_enable_tech_pause` | `true` | Enable `.tech` command. Default: true |
+| `matchzy_max_pauses_per_team` | `0` | Maximum pauses per team (0 = unlimited). Default: 0 |
+| `matchzy_max_tech_pauses_allowed` | `2` | Max number of tech pauses per team. Default: 2 |
+| `matchzy_pause_after_restore` | `true` | Pause after round restore (`.stop`) so players can coordinate before resuming. Default: true |
+| `matchzy_pause_duration` | `0` | Maximum pause duration seconds (0 = unlimited). Default: 0 |
+| `matchzy_tech_pause_duration` | `300` | Tech pause duration (seconds). Set -1 for infinite. Default: 300 |
+| `matchzy_tech_pause_flag` | `""` | Permission flag required for `.tech`. Empty means anyone can use it. Default: "" |
+| `matchzy_use_pause_command_for_tactical_pause` | `false` | If true, `.pause` behaves like tactical pause; otherwise it's a normal pause. Default: false |
+
+## Chat / UI
+
+| ConVar | Default | Description |
+| --- | --- | --- |
+| `matchzy_admin_chat_prefix` | `[{Red}ADMIN{Default}]` | Prefix for admin chat (`.asay`). Default: "[{Red}ADMIN{Default}]" |
+| `matchzy_center_html_notifications` | `false` | Center-screen HTML notifications (match live, pause, side selection, etc). Default: false |
+| `matchzy_chat_messages_timer_delay` | `13` | Delay (seconds) before repeating reminder messages (unready list, paused reminder, etc). Default: 13 |
+| `matchzy_chat_prefix` | `[{Green}MatchZy{Default}]` | MatchZy chat prefix used for most messages. Default: "[{Green}MatchZy{Default}]" |
+| `matchzy_debug_chat` | `false` | Print debug logs into in-game chat (very spammy). Default: false |
+| `matchzy_hostname_format` | `"{TEAM1} vs {TEAM2}"` | Hostname format while a match is running. Tokens: {TEAM1}, {TEAM2}, etc. Set "" to disable and keep your own hostname. Default: "{TEAM1} vs {TEAM2}" |
+| `matchzy_match_start_message` | `""` | Optional “match is starting” message. Use $$$ for new lines. Set "" to disable. Default: "" |
+| `matchzy_notification_duration_global` | `5` | Center notification durations. Default: 5 |
+| `matchzy_notification_duration_player` | `6` | Default: 6 |
+
+## Gameplay / QoL
+
+| ConVar | Default | Description |
+| --- | --- | --- |
+| `matchzy_enable_damage_report` | `true` | Damage report after each round. Default: true |
+| `matchzy_ffw_check_interval` | `10` | FFW check/warning interval (seconds). Default: 10 |
+| `matchzy_ffw_enabled` | `false` | FFW (forfeit/walkover) when a team fully disconnects. Default: false |
+| `matchzy_ffw_time` | `240` | Time before forfeit (seconds) once a team is missing. Default: 240 |
+| `matchzy_gg_enabled` | `false` | Enable `.gg` vote-forfeit. Default: false |
+| `matchzy_gg_min_score_diff` | `0` | Minimum score difference required before `.gg` is allowed (0 disables). Default: 0 |
+| `matchzy_gg_threshold` | `0.8` | Percent of team required to `.gg` (0.0 - 1.0). Default: 0.8 |
+| `matchzy_side_selection_enabled` | `true` | Side selection timer after knife. Default: true |
+| `matchzy_side_selection_reminder_interval` | `10` | Reminder interval for side selection messages (seconds). Default: 10 |
+| `matchzy_side_selection_time` | `60` | Side selection time limit in seconds. Default: 60 |
+| `matchzy_smoke_color_enabled` | `false` | Player-specific smoke color. Default: false |
+| `matchzy_stop_command_no_damage` | `false` | If true, `.stop` becomes unavailable after opposing-team damage occurs. Default: false |
+
+## Events / webhooks / integration
+
+| ConVar | Default | Description |
+| --- | --- | --- |
+| `matchzy_event_cleanup_interval` | `3600` | Event cleanup interval in seconds. Default: 3600 |
+| `matchzy_event_retry_interval` | `30` | Event retry interval in seconds. Default: 30 |
+| `matchzy_events_enabled` | `true` | Master switch for event/webhook sending + retry queue. Default: true |
+| `matchzy_loadmatch` | `` | Loads a match from the given JSON file path (relative to the csgo/ directory) |
+| `matchzy_loadmatch_url` | `` | Loads a match from the given URL |
+| `matchzy_remote_log_header_key` | `""` | Optional custom header for remote log endpoint. Default: "" |
+| `matchzy_remote_log_header_value` | `""` | Default: "" |
+| `matchzy_remote_log_url` | `""` | Remote log webhook URL for match events. Leave empty to disable. Default: "" |
+
+## Status / tournament server metadata
+
+| ConVar | Default | Description |
+| --- | --- | --- |
+| `matchzy_server_id` | `` | Server identifier for event tracking and match reports |
+| `matchzy_tournament_match` | `""` | Match slug/identifier currently loaded on this server |
+| `matchzy_tournament_next_match` | `""` | Next match slug/identifier queued for this server |
+| `matchzy_tournament_status` | `"idle"` | Current status of the server (idle/loading/warmup/knife/live/paused/halftime/postgame/error) |
+| `matchzy_tournament_updated` | `"0"` | Unix timestamp of last tournament status update |
+
+## Dev / debugging
+
+| ConVar | Default | Description |
+| --- | --- | --- |
+| `matchzy_check_for_updates` | `` | Check whether this CS2 server is up to date according to Steam. |
+| `matchzy_crash_debug_breadcrumbs` | `true` | Transition breadcrumbs (warmup/knife/live checkpoints) to a log file. Writes to: addons/counterstrikesharp/plugins/MatchZy/logs/matchzy_breadcrumbs.log Default: true |
+| `matchzy_debug_console` | `true` | Print verbose debug logs into the server console. Default: true |
+
+## Other
+
+| ConVar | Default | Description |
+| --- | --- | --- |
+| `matchzy_addplayer` | `` | Adds player to the provided team |
+| `matchzy_clear_event_queue` | `` | Clears all pending/failed events from the retry queue |
+| `matchzy_everyone_is_admin` | `false` | Give everyone admin (development only). Default: false |
+| `matchzy_get_match_stats` | `` | Returns complete match statistics as JSON for a given match ID |
+| `matchzy_get_pending_events` | `` | Shows how many events are queued for retry |
+| `matchzy_listbackups` | `` | List all the backups for the provided matchid |
+| `matchzy_loadbackup` | `` | Restore the backup from the provided file |
+| `matchzy_loadbackup_url` | `` | Loads a backup from the given URL |
+| `matchzy_max_saved_last_grenades` | `512` | Max number of saved grenade “last nades” per-map per-client (0 = unlimited). Default: 512 |
+| `matchzy_reload_config` | `` | Re-executes MatchZy/config.cfg to reload MatchZy plugin configuration |
+| `matchzy_remote_backup_header_key` | `""` | Optional custom header for remote backup upload. Default: "" |
+| `matchzy_remote_backup_header_value` | `""` | Default: "" |
+| `matchzy_remote_backup_url` | `""` | Remote backup upload URL. Default: "" |
+| `matchzy_removeplayer` | `` | Removes the player from all the teams |
+| `matchzy_save_nades_as_global_enabled` | `false` | Save nades globally (shared) instead of per-player. Default: false |
+| `matchzy_show_credits_on_match_start` | `true` | Show credits message on match start. Default: true |
+| `matchzy_stop_command_available` | `false` | Enable `.stop` (round restore) command. Default: false |
+| `matchzy_version` | `` | Displays the current MatchZy version |
+
