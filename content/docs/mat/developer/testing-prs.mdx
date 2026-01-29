@@ -23,3 +23,26 @@ cd matchzy-auto-tournament
 docker compose -f docker/docker-compose.local.yml up -d --build
 ```
 
+## Development tools and simulation mode
+
+When testing PRs, you may want to enable **Dev Tools** and **simulation mode**.
+
+### Enable Dev Tools (menu + `/dev`)
+
+Dev Tools are enabled when:
+
+- you run the Vite dev server (local development), or
+- you build with `VITE_ENABLE_DEV_PAGE=true` (useful for PR review builds / staging).
+
+> Dev Tools are for developers. Do not enable them for real tournaments unless you know why you need them.
+
+### Enable simulation mode in production-like environments
+
+Simulation mode is **disabled by default in production** for safety. If you are running a production-like build (for example `docker-compose.local.yml`) and you want simulation mode to persist when you save settings, you must set:
+
+```bash
+MATCHZY_ENABLE_SIMULATION_IN_PROD=true
+```
+
+Once enabled, you can toggle **Simulate matches** in Settings (Developer / Simulation section) and optionally adjust the **simulation timescale**.
+

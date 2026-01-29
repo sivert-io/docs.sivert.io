@@ -37,3 +37,32 @@ Click **“Sync CS2 Maps”** and wait until you see a success message. Existing
 
 The platform automatically applies MatchZy Enhanced configuration to matches based on tournament type (official vs shuffle vs manual). No manual configuration required.
 
+## Developer / Simulation (testing only)
+
+These settings are intended for **developers** and **test/staging environments**.
+
+### Dev Tools visibility
+
+The Developer / Simulation section is only visible when Dev Tools are enabled:
+
+- in local development, or
+- when the frontend is built with `VITE_ENABLE_DEV_PAGE=true`.
+
+### Simulation mode
+
+**What it is:**  
+Simulation mode runs matches as bot-driven demo matches to help test tournament flows without real players.
+
+**Safety:**  
+In production, simulation mode is **disabled by default**. To allow it in a production-like environment (for example local Docker builds), set:
+
+```bash
+MATCHZY_ENABLE_SIMULATION_IN_PROD=true
+```
+
+Only enable this in test/staging environments.
+
+### Simulation timescale
+
+The simulation timescale controls how fast simulated matches run. Higher values speed up bots and round flow.
+

@@ -31,3 +31,10 @@ yarn test:api
 - Keep test files reasonably small (split large suites).
 - Use tags like `@api`, `@ui`, `@veto` for filtering.
 
+## Simulation mode for testing
+
+Simulation mode can be useful when you want to test match flows without real players.
+
+- Dev Tools must be enabled (dev mode, or `VITE_ENABLE_DEV_PAGE=true`).
+- In production-like environments, simulation mode is gated behind `MATCHZY_ENABLE_SIMULATION_IN_PROD=true`.
+
