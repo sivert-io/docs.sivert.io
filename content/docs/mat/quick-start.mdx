@@ -106,9 +106,9 @@ openssl rand -base64 32
 openssl rand -base64 24 | tr -d '=+/'
 ```
 
-Get your Steam API key from `https://steamcommunity.com/dev/apikey` and paste it into `STEAM_API_KEY`.
+Get your Steam API key from the [Steam Web API key page](https://steamcommunity.com/dev/apikey) and paste it into `STEAM_API_KEY`.
 
-If you’re running behind a domain/reverse proxy, set `FRONTEND_BASE_URL` to your public URL (use `https://...`).
+If you’re running behind a domain/reverse proxy, set `FRONTEND_BASE_URL` to your public HTTPS URL (for example [https://your-domain.com](https://your-domain.com)).
 
 #### 3) Start
 
@@ -116,7 +116,7 @@ If you’re running behind a domain/reverse proxy, set `FRONTEND_BASE_URL` to yo
 docker compose up -d
 ```
 
-Open `http://localhost:3069`.
+Open [http://localhost:3069](http://localhost:3069).
 
 #### 4) First admin login
 
