@@ -8,7 +8,7 @@ export function createMetadata(override: Metadata): Metadata {
       title: override.title ?? undefined,
       description: override.description ?? undefined,
       url: 'https://docs.sivert.io',
-      images: '/banner.png',
+      images: '/og/site/image.webp',
       siteName: 'docs.sivert.io',
       ...override.openGraph,
     },
@@ -17,7 +17,7 @@ export function createMetadata(override: Metadata): Metadata {
       creator: '@sivert_io',
       title: override.title ?? undefined,
       description: override.description ?? undefined,
-      images: '/banner.png',
+      images: '/og/site/image.webp',
       ...override.twitter,
     },
     alternates: {
