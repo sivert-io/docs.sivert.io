@@ -42,7 +42,7 @@ Notes:
 
 | ConVar | Default | Description |
 | --- | --- | --- |
-| `matchzy_demo_name_format` | `"{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}"` | Demo filename format (without .dem). Available tokens: {TIME}, {MATCH_ID}, {MAP}, {MAPNUMBER}, {TEAM1}, {TEAM2} Default: "{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}" |
+| `matchzy_demo_name_format` | `"{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}"` | Demo filename format (without .dem). Available tokens: `{TIME}`, `{MATCH_ID}`, `{MAP}`, `{MAPNUMBER}`, `{TEAM1}`, `{TEAM2}` Default: `"{TIME}_{MATCH_ID}_{MAP}_{TEAM1}_vs_{TEAM2}"` |
 | `matchzy_demo_path` | `MatchZy/` | Demo save path relative to `csgo/` (must end with `/`). Default: MatchZy/ |
 | `matchzy_demo_recording_enabled` | `true` | Automatically start demo recording when the match goes live. Note: requires GOTV (`tv_enable 1`) to actually record. Default: true |
 | `matchzy_demo_upload_header_key` | `""` | Optional custom header for demo upload. Default: "" |
@@ -74,12 +74,12 @@ Notes:
 
 | ConVar | Default | Description |
 | --- | --- | --- |
-| `matchzy_admin_chat_prefix` | `[{Red}ADMIN{Default}]` | Prefix for admin chat (`.asay`). Default: "[{Red}ADMIN{Default}]" |
+| `matchzy_admin_chat_prefix` | `[{Red}ADMIN{Default}]` | Prefix for admin chat (`.asay`). Default: `"[{Red}ADMIN{Default}]"` |
 | `matchzy_center_html_notifications` | `false` | Center-screen HTML notifications (match live, pause, side selection, etc). Default: false |
 | `matchzy_chat_messages_timer_delay` | `13` | Delay (seconds) before repeating reminder messages (unready list, paused reminder, etc). Default: 13 |
-| `matchzy_chat_prefix` | `[{Green}MatchZy{Default}]` | MatchZy chat prefix used for most messages. Default: "[{Green}MatchZy{Default}]" |
+| `matchzy_chat_prefix` | `[{Green}MatchZy{Default}]` | MatchZy chat prefix used for most messages. Default: `"[{Green}MatchZy{Default}]"` |
 | `matchzy_debug_chat` | `false` | Print debug logs into in-game chat (very spammy). Default: false |
-| `matchzy_hostname_format` | `"{TEAM1} vs {TEAM2}"` | Hostname format while a match is running. Tokens: {TEAM1}, {TEAM2}, etc. Set "" to disable and keep your own hostname. Default: "{TEAM1} vs {TEAM2}" |
+| `matchzy_hostname_format` | `"{TEAM1} vs {TEAM2}"` | Hostname format while a match is running. Tokens: `{TEAM1}`, `{TEAM2}`, etc. Set "" to disable and keep your own hostname. Default: `"{TEAM1} vs {TEAM2}"` |
 | `matchzy_match_start_message` | `""` | Optional “match is starting” message. Use $$$ for new lines. Set "" to disable. Default: "" |
 | `matchzy_notification_duration_global` | `5` | Center notification durations. Default: 5 |
 | `matchzy_notification_duration_player` | `6` | Default: 6 |
