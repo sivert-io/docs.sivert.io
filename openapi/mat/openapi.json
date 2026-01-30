@@ -78,6 +78,58 @@
             "type": "integer",
             "description": "Unix timestamp of last update",
             "example": 1699000000
+          },
+          "pluginVersion": {
+            "type": "string",
+            "nullable": true,
+            "description": "MatchZy Enhanced version reported by the server (from server_configured).",
+            "example": "1.4.12"
+          },
+          "hostname": {
+            "type": "string",
+            "nullable": true,
+            "description": "CS2 server hostname (from hostname convar, reported by MatchZy Enhanced).",
+            "example": "NTLAN #1"
+          },
+          "lastSeen": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Unix timestamp of last event received from this server (heartbeat).",
+            "example": 1769805517
+          },
+          "status": {
+            "type": "string",
+            "nullable": true,
+            "description": "Tracked server status (online/offline/unknown).",
+            "example": "online"
+          },
+          "persistentConfigSent": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Unix timestamp when MAT last sent persistent MatchZy config via RCON.",
+            "example": 1769805400
+          },
+          "cs2RequiredVersion": {
+            "type": "integer",
+            "nullable": true,
+            "description": "If set, the server reported a required CS2 update (Steam required_version).",
+            "example": 14134
+          },
+          "cs2UpdatePhase": {
+            "type": "string",
+            "nullable": true,
+            "description": "Best-effort phase reported by MatchZy Enhanced ('available' when update is detected, 'shutdown' right before quitting).",
+            "enum": [
+              "available",
+              "shutdown"
+            ],
+            "example": "available"
+          },
+          "cs2UpdateRequiredAt": {
+            "type": "integer",
+            "nullable": true,
+            "description": "Unix timestamp when the update-required state was last reported.",
+            "example": 1769805517
           }
         }
       },

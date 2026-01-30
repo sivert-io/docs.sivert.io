@@ -16,6 +16,10 @@ MatchZy writes:
 
 CSM’s monitor scans logs for shutdown markers and updates only when it is safe.
 
+## MAT admin warning (optional)
+
+If you also use **MatchZy Auto Tournament (MAT)** and have MatchZy Enhanced configured with `matchzy_remote_log_url`, the plugin will send a webhook event to MAT when a CS2 update is required (`event=cs2_update_required`). MAT will show a large warning on the **Servers** page so admins notice immediately.
+
 ## Install the cron monitor
 
 ```bash

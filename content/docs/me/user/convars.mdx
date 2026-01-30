@@ -114,6 +114,8 @@ Notes:
 | `matchzy_remote_log_header_value` | `""` | Default: "" |
 | `matchzy_remote_log_url` | `""` | Remote log webhook URL for match events. Leave empty to disable. Default: "" |
 
+> Note: When MatchZy-safe auto-updater detects a required CS2 update, it emits an additional webhook event (`event=cs2_update_required`) to `matchzy_remote_log_url` so external systems (like MAT) can warn admins.
+
 ## Status / tournament server metadata
 
 | ConVar | Default | Description |

@@ -86,6 +86,38 @@ Should return something like:
 { "success": true, "message": "events route is working" }
 ```
 
+## CS2 updates (auto-updater + admin warning)
+
+MatchZy Enhanced includes a **MatchZy-safe auto-updater**: it checks Steam for CS2 updates and will only restart the server when MatchZy status is safe (idle/postgame/error).
+
+When an update is required, MatchZy Enhanced will:
+
+- Log markers in the server console:
+
+```text
+[MATCHZY_UPDATE_AVAILABLE] required_version=<number>
+[MATCHZY_UPDATE_SHUTDOWN] required_version=<number>
+```
+
+- Send a webhook event to MAT (if `matchzy_remote_log_url` is configured):
+
+```json
+{
+  "event": "cs2_update_required",
+  "matchid": -1,
+  "server_id": "s_1",
+  "required_version": 14134,
+  "phase": "available",
+  "timestamp": 1769805517
+}
+```
+
+In the MAT admin UI, the **Servers** page will show a large warning when any server reports this.
+
+### Fixing “CS2 update required”
+
+Update the server installation (e.g. SteamCMD / your host manager) and restart the server. When the server comes back up and sends `server_configured` (Startup), MAT clears the stale warning.
+
 ## Network configuration notes
 
 - Docker setup typically exposes MAT on port **3069**
