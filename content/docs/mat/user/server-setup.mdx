@@ -98,7 +98,9 @@ Should return something like:
 
 ## CS2 updates (auto-updater + admin warning)
 
-MatchZy Enhanced includes a **MatchZy-safe auto-updater**: it checks Steam for CS2 updates and will only restart the server when MatchZy status is safe (idle/postgame/error).
+MatchZy Enhanced includes a **MatchZy-safe update checker**: it checks Steam for CS2 updates while avoiding live matches.
+
+By default (MAT-oriented), it is **warn-only**: it emits markers/events so your external server manager/admin can update/restart servers on your schedule. Automatic quitting can be enabled explicitly.
 
 When an update is required, MatchZy Enhanced will:
 
@@ -123,6 +125,15 @@ When an update is required, MatchZy Enhanced will:
 ```
 
 In the MAT admin UI, the **Servers** page will show a large warning when any server reports this.
+
+### MAT Steam verification (no waiting for plugin event)
+
+MAT can also verify CS2 build freshness directly by:
+
+- Fetching the installed CS2 **BuildID** via RCON `version`
+- Checking Steam `ISteamApps/UpToDateCheck`
+
+This is used to block allocation to out-of-date servers even if the plugin has not emitted `cs2_update_required` yet, and MAT performs a final preflight check when starting a tournament.
 
 ### Fixing “CS2 update required”
 

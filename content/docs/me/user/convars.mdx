@@ -136,6 +136,9 @@ Notes:
 | ConVar | Default | Description |
 | --- | --- | --- |
 | `matchzy_check_for_updates` | `` | Check whether this CS2 server is up to date according to Steam. |
+| `matchzy_safeautoupdater_enabled` | `true` | Enable/disable the MatchZy-safe CS2 update checker (Steam UpToDateCheck). When enabled, MatchZy can emit update markers/events, and may optionally restart/quit depending on `matchzy_safeautoupdater_action`. Default: true |
+| `matchzy_safeautoupdater_action` | `"warn_only"` | What to do when a CS2 update is detected. `warn_only` emits markers/events only (MAT-friendly). `restart` kicks players and quits the server when MatchZy is idle/postgame/error. Default: warn_only |
+| `matchzy_safeautoupdater_offline_backoff_seconds` | `1800` | Backoff time (seconds) after DNS/network/offline failures during Steam checks. Default: 1800 (30 minutes) |
 | `matchzy_crash_debug_breadcrumbs` | `true` | Transition breadcrumbs (warmup/knife/live checkpoints) to a log file. Writes to: addons/counterstrikesharp/plugins/MatchZy/logs/matchzy_breadcrumbs.log Default: true |
 | `matchzy_debug_console` | `true` | Print verbose debug logs into the server console. Default: true |
 
