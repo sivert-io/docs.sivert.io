@@ -15,3 +15,19 @@ MatchZy Auto Tournament decides what to play (teams, maps, format) and where to 
    - Uploads match reports to `matchzy_report_endpoint` (MAT receives them on `POST /api/events/report`)
    - Uploads demos to `matchzy_demo_upload_url` (MAT receives them on `POST /api/demos/:matchSlug/upload`)
 
+## Server bootstrap (fast initialization)
+
+To minimize RCON churn, MAT can initialize servers with a bootstrap pull:
+
+1. MAT sets `matchzy_bootstrap_url`, `matchzy_bootstrap_token`, and `matchzy_server_id` via RCON.
+2. MatchZy Enhanced fetches `GET /api/servers/:id/bootstrap` (authenticated with `X-MatchZy-Token`).
+3. The API responds with a compact payload (typically `commands[]`) that the plugin applies and persists in its own DB.
+
+This makes new servers become “ready/green” faster and avoids long sequences of delayed RCON commands.
+
+## Server health (DB reachability)
+
+MatchZy Enhanced emits `event=server_health` (server-level webhook) to report whether the plugin can reach its database.
+
+MAT stores the latest DB health per server and shows a persistent admin warning if any enabled server reports DB down.
+

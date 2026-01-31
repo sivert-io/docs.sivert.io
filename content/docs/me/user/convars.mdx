@@ -113,8 +113,13 @@ Notes:
 | `matchzy_remote_log_header_key` | `""` | Optional custom header for remote log endpoint. Default: "" |
 | `matchzy_remote_log_header_value` | `""` | Default: "" |
 | `matchzy_remote_log_url` | `""` | Remote log webhook URL for match events. Leave empty to disable. Default: "" |
+| `matchzy_bootstrap_url` | `""` | Optional bootstrap URL for server initialization. When set together with `matchzy_bootstrap_token`, MatchZy Enhanced fetches a single payload (commands) and applies/persists it locally. Default: "" |
+| `matchzy_bootstrap_token` | `""` | Token used to authenticate bootstrap fetch (sent as `X-MatchZy-Token`). Default: "" |
 
-> Note: When MatchZy-safe auto-updater detects a required CS2 update, it emits an additional webhook event (`event=cs2_update_required`) to `matchzy_remote_log_url` so external systems (like MAT) can warn admins.
+> Note: MatchZy Enhanced may emit additional **server-level events** (not tied to a match) to the `matchzy_remote_log_url`, such as:
+>
+> - `event=cs2_update_required` (MatchZy-safe auto-updater detected a required CS2 update)
+> - `event=server_health` (plugin DB reachability snapshot)
 
 ## Status / tournament server metadata
 

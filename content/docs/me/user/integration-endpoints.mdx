@@ -45,6 +45,34 @@ In MAT-style setups, these values are typically configured by the platform via R
 - `matchzy_remote_log_header_key "X-MatchZy-Token"`
 - `matchzy_remote_log_header_value "<serverToken>"`
 
+### Server-level health events
+
+MatchZy Enhanced also emits a **server-level health event** (not tied to a specific match):
+
+- `event: "server_health"`
+- `server_id`
+- `plugin_version`
+- `timestamp`
+- `db_ok` (whether MatchZy can reach its SQLite/MySQL database)
+- `db_type` (`"sqlite"` or `"mysql"`)
+- `db_error` (last error summary; best-effort)
+
+This is used by platforms like MAT to surface a **persistent admin warning** when backups/event queue may be impacted.
+
+Example payload:
+
+```json
+{
+  "event": "server_health",
+  "server_id": "s_1",
+  "plugin_version": "1.4.14",
+  "timestamp": 1769805517,
+  "db_ok": false,
+  "db_type": "mysql",
+  "db_error": "Unable to connect to any of the specified MySQL hosts."
+}
+```
+
 ## Demo uploads
 
 If you record demos, MatchZy can upload them after each map:
@@ -88,4 +116,19 @@ These values help a controller understand what the server is doing:
 - `matchzy_tournament_match`
 - `matchzy_tournament_next_match`
 - `matchzy_tournament_updated`
+
+## Bootstrap initialization (single payload)
+
+In MAT setups, servers can be initialized using a **bootstrap URL** so the controller doesn’t have to push many separate RCON commands.
+
+- The controller sets:
+  - `matchzy_bootstrap_url`
+  - `matchzy_bootstrap_token` (sent as `X-MatchZy-Token`)
+- The plugin fetches a single payload and applies it locally (persisting settings in its own DB).
+
+MatchZy Auto Tournament exposes:
+
+- `GET /api/servers/:id/bootstrap` (server-token auth via `X-MatchZy-Token`)
+
+The response includes a `commands[]` list which the plugin executes (webhook URL + headers, demo upload config, loadmatch auth headers, chat prefixes/core defaults, etc.).
 

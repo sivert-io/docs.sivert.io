@@ -62,7 +62,17 @@ hostport 27015
 
 Once the server can be reached by RCON, add it in MAT under **Servers**.
 
-MAT configures MatchZy Enhanced automatically over RCON (webhook URL, demo upload URL, auth headers, etc.) when:
+MAT configures MatchZy Enhanced automatically. Newer versions use a **bootstrap URL** so the server can pull a single payload and persist it locally (instead of MAT pushing many separate RCON commands).
+
+MAT’s initialization sets a small number of RCON values:
+
+- `matchzy_server_id`
+- `matchzy_bootstrap_url`
+- `matchzy_bootstrap_token`
+
+The MatchZy plugin then fetches `GET /api/servers/:id/bootstrap`, applies the returned `commands[]`, and persists them in its own DB.
+
+This is used to configure (webhook URL, demo upload URL, auth headers, core defaults, etc.) when:
 
 - The server is initialized, and
 - Matches are loaded on that server
@@ -117,6 +127,29 @@ In the MAT admin UI, the **Servers** page will show a large warning when any ser
 ### Fixing “CS2 update required”
 
 Update the server installation (e.g. SteamCMD / your host manager) and restart the server. When the server comes back up and sends `server_configured` (Startup), MAT clears the stale warning.
+
+## Plugin database health (admin warning)
+
+MatchZy Enhanced uses SQLite or MySQL to store:
+
+- Server config (persistent MatchZy settings)
+- Backup metadata and match stats
+- Event retry queue (reliable delivery)
+
+If the plugin cannot reach its DB, it will still run matches, but **backups and reliable event delivery may be impacted**.
+
+MatchZy Enhanced reports this to MAT via `event=server_health` (server-level webhook), and MAT shows:
+
+- A per-server **“Plugin DB DOWN”** chip on the Servers page
+- A **persistent global warning** while any enabled server reports DB down
+
+### Fixing “Plugin DB DOWN”
+
+Check the CS2 server logs (MatchZy output) and validate:
+
+- `cfg/MatchZy/database.json` is correct
+- MySQL is reachable from the game server host (firewall/DNS/user/password)
+- The DB user has permissions and the database exists
 
 ## Network configuration notes
 
