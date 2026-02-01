@@ -6,6 +6,8 @@
     "index",
     "admin-dashboard",
     "admin-settings",
+    "updating",
+    "fleet-health",
     "server-setup",
     "cs2-server-manager",
     "teams",

@@ -1,0 +1,126 @@
+---
+title: Updating MAT (Docker)
+description: Beginner-friendly guide for safely updating MAT when running via Docker.
+---
+
+This guide is for operators who run **MatchZy Auto Tournament (MAT)** via Docker and want a simple, safe upgrade workflow.
+
+## Before you update
+
+### 1) Find your MAT folder
+
+You should have a folder that contains at least:
+
+- `docker-compose.yml`
+- `.env`
+
+If you used the MAT Quick Start, you likely created a folder like `mat/` and placed those files there.
+
+### 2) Check what image you are using
+
+Open `docker-compose.yml` and look at the `image:` line for the `matchzy-tournament` service.
+
+Example (Docker Hub):
+
+```yaml
+services:
+  matchzy-tournament:
+    image: sivertio/matchzy-auto-tournament:latest
+```
+
+Example (GHCR):
+
+```yaml
+services:
+  matchzy-tournament:
+    image: ghcr.io/sivert-io/matchzy-auto-tournament:latest
+```
+
+> Tip: pinning a specific tag (instead of `latest`) makes rollbacks easier.
+
+## Data safety (Postgres)
+
+MAT stores its data in Postgres. With the default compose setup this is persisted in a Docker volume (often called `postgres-data`).
+
+**Upgrading the MAT container does not delete your Postgres volume**, but it’s still a good idea to take a backup before updating.
+
+### Quick backup (recommended)
+
+Run this inside your MAT folder (the one with `docker-compose.yml`):
+
+```bash
+mkdir -p backups
+docker compose exec -T postgres pg_dump -U "${DB_USER:-postgres}" "${DB_NAME:-matchzy_tournament}" > "backups/mat-$(date +%F-%H%M%S).sql"
+```
+
+If you don’t have a running `postgres` container (for example the stack is down), start it first:
+
+```bash
+docker compose up -d postgres
+```
+
+## Update steps (pull + restart)
+
+### 1) Pull the newest image
+
+```bash
+docker compose pull
+```
+
+If you are using **GHCR** and pulls fail, you may need to log in first:
+
+```bash
+docker login ghcr.io
+```
+
+Use a GitHub token with `read:packages` if your image is private.
+
+### 2) Restart containers
+
+```bash
+docker compose up -d
+```
+
+This recreates containers if the image changed and keeps your volumes.
+
+### 3) Watch logs and confirm health
+
+```bash
+docker compose logs -f matchzy-tournament
+```
+
+Then confirm the health endpoint responds:
+
+```bash
+curl -fsS http://localhost:3069/health
+```
+
+## Database migrations / schema changes
+
+MAT runs schema initialization/migrations on startup automatically.
+
+If an upgrade fails during startup:
+
+- Check logs: `docker compose logs -f matchzy-tournament`
+- Most issues are caused by missing/invalid environment variables (see `.env`) or DB connectivity.
+
+## Rollback (pin a tag)
+
+If you pinned tags, rollback is simply:
+
+1. Edit `docker-compose.yml` and set `image:` to the previous tag
+2. Run:
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+## Cleanup (optional)
+
+If you are short on disk space after many updates:
+
+```bash
+docker image prune -f
+```
+

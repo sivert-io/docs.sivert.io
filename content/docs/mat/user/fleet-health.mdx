@@ -1,0 +1,114 @@
+---
+title: Fleet health & CS2 updates
+description: How MAT decides if servers are healthy, reachable, and up-to-date.
+---
+
+This page explains **how MAT decides server health** and **how CS2 update status is detected**, so you can trust what the UI shows and quickly troubleshoot mismatches.
+
+## What “health” means in MAT
+
+MAT treats a server as **Online** when either:
+
+- it has sent **recent MatchZy events** to MAT (heartbeat-style), or
+- MAT can reach it via **RCON** (lightweight status reads)
+
+MAT also tracks whether:
+
+- the **server can reach MAT** (webhook reachability), and
+- the **MatchZy plugin DB** is reachable (for backups / persistence)
+
+## How MAT decides “CS2 update required”
+
+There are two signals, and MAT uses both:
+
+### 1) Plugin signal (fast warning)
+
+MatchZy Enhanced can detect CS2 updates via Steam `UpToDateCheck` and emits:
+
+- a server log marker: `[MATCHZY_UPDATE_AVAILABLE] required_version=<number>`
+- a webhook event to MAT: `event="cs2_update_required"` (if remote logging is configured)
+
+In MAT-oriented setups this is typically **warn-only** (no automatic restart).
+
+### 2) MAT verification (authoritative for allocation)
+
+MAT verifies CS2 version state independently by:
+
+- running RCON `version` and parsing the **BuildID**
+- calling Steam `ISteamApps/UpToDateCheck` using that BuildID
+- persisting `cs2_required_version` in MAT’s database
+
+This is the status used to:
+
+- show urgent “CS2 update required” warnings
+- **block allocating** outdated servers
+- block starting tournaments if any enabled server is outdated
+
+## Refresh timing (when it updates)
+
+MAT updates CS2 status in two ways:
+
+- **Manual refresh / admin status checks**: can run RCON `version` and Steam checks immediately (with short safety caching).
+- **Fleet monitor**: MAT runs periodic fleet checks to keep `cs2_required_version` accurate even if no plugin event arrives.
+
+Current defaults:
+
+- health monitor tick: **every 60s**
+- CS2 fleet check: **every 5 minutes**
+- “stale” full refresh window: **30 minutes**
+
+If a server is already marked outdated, MAT forces a re-check sooner so the status clears quickly after updating.
+
+## Operator snapshot endpoint
+
+MAT has a lightweight operator endpoint you can use for a quick snapshot:
+
+- `GET /api/health/fleet`
+
+It returns:
+
+- counts of enabled / outdated / stale servers
+- per-server timestamps like `cs2UpdateCheckedAt` and `cs2VersionFetchedAt`
+
+Example:
+
+```json
+{
+  "status": "ok",
+  "cs2Fleet": { "enabled": 4, "outdated": 1, "stale": 0, "neverChecked": 0 },
+  "servers": [
+    { "id": "s_1", "cs2BuildId": 12345, "cs2RequiredVersion": 14134, "cs2UpdateCheckedAt": 1700000000 }
+  ]
+}
+```
+
+## Troubleshooting checklist
+
+### UI says “CS2 update required” after you updated the server
+
+- Wait up to **one fleet check interval** (default 5 minutes).
+- If it doesn’t clear, run a **manual server refresh** from the MAT Servers page (forces an earlier re-check for outdated servers).
+- Check that RCON `version` output contains a BuildID (MAT can’t verify without it).
+
+### Fleet status is stale / never checked
+
+- Ensure MAT has outbound internet access to Steam Web API.
+- If you have a Steam Web API key, set `STEAM_API_KEY` in MAT for better reliability (MAT will fall back to no-key calls if not set).
+
+### CSM monitor doesn’t auto-update
+
+If you’re using `cs2-server-manager`:
+
+- `csm monitor` can react to the MatchZy marker `[MATCHZY_UPDATE_AVAILABLE] …`
+- but it will only run the update when the server is **stopped**
+
+If you want fully automatic “plugin triggers shutdown → monitor updates → server restarts”, you must explicitly enable restart behavior in MatchZy:
+
+- `matchzy_safeautoupdater_action restart`
+
+## Related docs
+
+- Updating MAT: `/docs/mat/user/updating`
+- CS2 server setup: `/docs/mat/user/server-setup`
+- CSM integration: `/docs/mat/user/cs2-server-manager`
+
