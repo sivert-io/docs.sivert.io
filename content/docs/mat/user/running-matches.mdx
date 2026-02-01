@@ -3,35 +3,33 @@ title: Running matches
 description: Match flow, admin controls, and common scenarios.
 ---
 
-## Match flow
+This page explains the operator view of a match: what happens, what to tell players, and what to do when something goes wrong.
+
+## Match flow (what you’ll see)
 
 ### 1. Tournament start
 
 **For BO1/BO3/BO5 (with veto):**
 
 - Teams complete map veto
-- System attempts to auto-allocate a server
-- If no server is available, the system polls until one is available
+- MAT allocates a server when one is available
 - Match loads automatically on the server
 
 **For Round Robin/Swiss (no veto):**
 
-- System immediately allocates servers
-- Matches load automatically
+- MAT allocates servers and loads matches automatically
 
 ### 2. Warmup phase
 
-Players connect to the server:
+Tell players to join the server using the connect string shown in the match page, for example:
 
 ```
 connect 192.168.1.100:27015
 ```
 
 - Players auto-assigned to the correct team
-- Type `.ready` when ready
-- Match start is controlled by MatchZy “ready” settings (configured by MAT)
-  - By default, MatchZy requires **2** ready players (`matchzy_minimum_ready_required=2`)
-  - Your admins can change this in **Settings** (MatchZy defaults), or force-start when needed
+- Players type `.ready` when ready
+- If you need to start anyway, use the match admin controls (see below)
 
 ### 3. Live match
 
@@ -45,7 +43,7 @@ Real-time updates show:
 
 - Winner auto-determined
 - Bracket auto-updates
-- Demo file uploaded (if demo recording + upload is configured)
+- Demos upload automatically if enabled
 - Server freed for next match
 
 ## Admin controls
@@ -58,10 +56,10 @@ Available from the match details modal.
 - Swap teams
 - Restart round
 
-### Advanced actions
+### Common operator actions
 
 - Skip veto
-- End warmup (force start)
+- Force start / end warmup
 - End match / restart match
 - Restore backup
 - Broadcast message
@@ -70,4 +68,14 @@ Available from the match details modal.
 ### Player management
 
 - Add backup player (substitute mid-match)
+
+## Common problems
+
+### Players can’t connect / server is down
+
+Start here:
+
+- **[Server health (common warnings)](/docs/mat/user/fleet-health)** (offline, IP banned, CS2 update required, Plugin DB DOWN)
+
+If the match is staged (ready/loaded) on the wrong server, you can also use the match admin controls to reallocate the server (when available).
 

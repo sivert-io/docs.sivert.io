@@ -3,7 +3,7 @@ title: Manual matches
 description: Create and run manual matches outside tournaments.
 ---
 
-This guide explains how to create and run **manual matches** outside of a shuffle tournament, including how max rounds and overtime settings map to MatchZy and CS2.
+Manual matches are for one-off games that are **not part of a tournament bracket**.
 
 ## When to use manual matches
 
@@ -21,16 +21,24 @@ Use manual matches when you want to:
    - Basic info (slug, server)
    - Teams
    - Maps & Rules (format, max rounds, overtime)
-4. Save — MAT persists the config and loads the match.
+4. Save — MAT creates the match and loads it on a server.
    - If you selected a server, it loads there
    - If you leave server empty, MAT can auto-allocate a server when one is available
 
-## Max rounds & overtime
+## Running the match
 
-Manual matches primarily drive CS2 using standard cvars (e.g. `mp_maxrounds`, `mp_overtime_enable`, `mp_overtime_maxrounds`) and mirror effective settings into the match JSON config for MatchZy.
+Players join using the connect string shown in the match page, then follow the normal flow:
+
+- join server
+- `.ready`
+- play
+
+If something goes wrong (server down / CS2 update required / IP banned), see:
+
+- **[Server health (common warnings)](/docs/mat/user/fleet-health)**
 
 ## Notes
 
-- Manual matches are treated as **round 0** matches internally (they’re not part of a bracket).
-- For safety, MAT only allows deleting matches that are manual (round 0).
+- Manual matches are separate from tournaments/brackets.
+- If you want a full tournament flow (teams, veto, bracket), use **Tournaments** instead.
 

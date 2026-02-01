@@ -3,24 +3,28 @@ title: Installation
 description: Install MatchZy Enhanced via CS2 Server Manager or manually.
 ---
 
-## Prerequisites
+If you are running tournaments with **MAT**, you should install MatchZy Enhanced using **CS2 Server Manager (CSM)**.
 
-- CS2 dedicated server
-- CounterStrikeSharp installed and working ([CounterStrikeSharp](https://github.com/roflmuffin/CounterStrikeSharp))
-- .NET 8 runtime on the server
+## Recommended: install with CSM
 
-## Option 1: CS2 Server Manager (recommended)
-
-If you’re using MatchZy with MatchZy Auto Tournament, this is the easiest path.
+CSM installs CS2 servers and MatchZy Enhanced for you.
 
 1. Follow the [CSM quick start](/docs/csm/quick-start)
-2. It will deploy one or more CS2 servers and install MatchZy Enhanced by default.
+2. Confirm MatchZy Enhanced is installed on your servers (CSM does this by default)
+3. Add servers in MAT: `/docs/mat/user/server-setup`
 
-## Option 2: Manual install
+## Manual install (advanced)
+
+Use this only if you are **not** using CSM.
 
 1. Download the latest release: [MatchZy-Enhanced releases](https://github.com/sivert-io/MatchZy-Enhanced/releases)
-2. Extract into `game/csgo/` so you end up with:
-   - `game/csgo/addons/counterstrikesharp/plugins/MatchZy/MatchZy.dll`
-   - `game/csgo/cfg/MatchZy/`
-3. Restart the server and verify plugin load.
+2. Extract into your CS2 server directory so MatchZy ends up under `game/csgo/`
+3. Restart the server
+4. Verify MatchZy loads (server console):
+
+```text
+css_plugins list
+```
+
+If you don’t see MatchZy, ensure CounterStrikeSharp is installed and working first.
 
