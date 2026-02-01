@@ -1,0 +1,47 @@
+---
+title: Server bootstrap (Advanced)
+description: How MAT configures MatchZy Enhanced servers (bootstrap payload, tokens, endpoints).
+---
+
+This page is for **advanced operators and developers**. Most users should follow: **[/docs/mat/user/server-setup](/docs/mat/user/server-setup)**.
+
+## What “bootstrap” means
+
+MAT configures MatchZy Enhanced servers automatically. Newer versions do this using a “bootstrap” flow so MAT does not have to push many separate RCON commands.
+
+At a high level:
+
+1. MAT sends a small set of RCON values to the server.
+2. MatchZy Enhanced fetches a JSON payload from MAT.
+3. MatchZy Enhanced applies the payload and persists the resulting config locally.
+
+## What MAT sets via RCON
+
+During initialization MAT sets:
+
+- `matchzy_server_id`
+- `matchzy_bootstrap_url`
+- `matchzy_bootstrap_token`
+
+## Bootstrap endpoint
+
+MatchZy Enhanced fetches:
+
+```text
+GET /api/servers/:id/bootstrap
+```
+
+The response contains a list of commands (for example webhook URL, demo upload URL, auth headers, and core defaults) that the plugin applies and stores.
+
+## Tokens / auth
+
+There are two common “token” concepts:
+
+- **Bootstrap token**: used by the plugin to fetch the bootstrap payload.
+- **Server token** (`SERVER_TOKEN` in MAT): used for server-to-MAT requests such as demo uploads (sent as `X-MatchZy-Token`).
+
+## Troubleshooting
+
+- If the server never goes “ready” in MAT, verify the CS2 host can reach MAT’s public API URL.
+- If demo uploads fail, verify `SERVER_TOKEN` on the MAT side and any reverse-proxy limits.
+

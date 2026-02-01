@@ -1,118 +1,68 @@
 ---
 title: CS2 server setup
-description: Configure CS2 servers manually (MatchZy Enhanced + RCON + webhooks).
+description: Set up CS2 servers and connect them to MAT.
 ---
 
-Manual installation guide for setting up CS2 servers with the enhanced MatchZy plugin.
+This page is written for **tournament operators**. The goal is simple: get servers online, add them to MAT, and make sure they can talk to each other.
 
-> Recommended: Use CS2 Server Manager for automated setup. It installs everything you need with one command.
+## Recommended setup (CSM)
 
-## Prerequisites
+If you’re running more than one server, use **CS2 Server Manager (CSM)**. It installs CS2, MatchZy Enhanced, and keeps things consistent.
 
-### Install CounterStrikeSharp
+1. Install and run CSM: **[CSM quick start](/docs/csm/quick-start)**
+2. In MAT, go to **Servers** and add your servers (host/port/RCON).
+3. Wait for each server to go green/healthy.
 
-Follow the official CounterStrikeSharp getting started guide: [Getting Started](https://docs.cssharp.dev/docs/guides/getting-started.html)
+If you see warnings, use: **[Server health (common warnings)](/docs/mat/user/fleet-health)**.
 
-After completing the guide:
+## Manual setup (advanced)
 
-- Verify **Metamod** is installed (server console):
+Use this only if you are not using CSM.
 
-```text
-meta list
-```
+### 1) Install prerequisites on the CS2 host
 
-If CounterStrikeSharp is installed correctly, you can also verify it with:
+- Install Metamod + CounterStrikeSharp (CSS)
+- Install MatchZy Enhanced (so it appears in `css_plugins list`)
 
-```text
-css_plugins list
-```
+MatchZy Enhanced docs: **[/docs/me](/docs/me)**
 
-## Install MatchZy Enhanced
+### 2) Configure RCON (MAT → server)
 
-> Important: This project requires an enhanced fork of MatchZy that emits additional events used for automation.
-
-### Download
-
-- Latest release: [MatchZy-Enhanced releases](https://github.com/sivert-io/MatchZy-Enhanced/releases/latest)
-- Docs: [MatchZy Enhanced docs](/docs/me)
-
-### Install
-
-```bash
-cd /path/to/cs2/game/csgo
-unzip MatchZy-*.zip
-```
-
-Restart your CS2 server.
-
-### Verify
-
-Type `css_plugins list` in server console. You should see MatchZy listed.
-
-## Configure RCON
-
-Add these to your server's `autoexec.cfg` or `server.cfg`:
+Set a correct RCON password and port in your server config:
 
 ```ini
 rcon_password "your-secure-rcon-password"
 hostport 27015
 ```
 
-## Connect the server to MAT
+Then, in MAT → **Servers**, add the server with the same host/port/password.
 
-Once the server can be reached by RCON, add it in MAT under **Servers**.
+### 3) Verify webhook reachability (server → MAT)
 
-MAT configures MatchZy Enhanced automatically. Newer versions use a **bootstrap URL** so the server can pull a single payload and persist it locally (instead of MAT pushing many separate RCON commands).
-
-MAT’s initialization sets a small number of RCON values:
-
-- `matchzy_server_id`
-- `matchzy_bootstrap_url`
-- `matchzy_bootstrap_token`
-
-The MatchZy plugin then fetches `GET /api/servers/:id/bootstrap`, applies the returned `commands[]`, and persists them in its own DB.
-
-This is used to configure (webhook URL, demo upload URL, auth headers, core defaults, etc.) when:
-
-- The server is initialized, and
-- Matches are loaded on that server
-
-Make sure MAT has:
-
-- A configured **Webhook URL** in **Settings**
-- `SERVER_TOKEN` set in MAT’s `.env` (used as the `X-MatchZy-Token` header for demo uploads and server-to-MAT requests)
-
-## Configure webhook reachability
-
-Your CS2 server must be able to reach the MAT API.
+Your CS2 host must be able to reach the MAT API. From the CS2 host:
 
 ```bash
-curl http://your-tournament-ip:3069/api/events/test
+curl http://your-mat-host:3069/api/events/test
 ```
 
-Should return something like:
+You should see:
 
 ```json
 { "success": true, "message": "events route is working" }
 ```
 
-## CS2 updates (auto-updater + admin warning)
+If this fails, fix DNS/firewall/reverse-proxy first.
 
-If MAT shows **CS2 update required**, you need to update your CS2 servers (Valve update) before continuing.
+## After any change: refresh status
 
-Quick fix if you use **CS2 Server Manager (CSM)**:
+After updating configs, plugins, or CS2 itself:
 
-- `sudo csm update-game`
-- `sudo csm restart` (or restart the specific server)
+1. Restart the server(s)
+2. Refresh servers in MAT (Servers page)
 
-After updating, refresh the server status in MAT (Servers page).
+## Advanced reference
 
-If you see warnings like **CS2 update required**, **IP banned**, or **Plugin DB DOWN**, use this troubleshooting page:
+If you want the internal details of how MAT configures servers (bootstrap payload, token, endpoints), see:
 
-- **[Server health (common warnings)](/docs/mat/user/fleet-health)**
-
-## Network configuration notes
-
-- Docker setup typically exposes MAT on port **3069**
-- Local dev uses port **3000** for the API
+- **[Server bootstrap (Advanced)](/docs/mat/advanced/server-bootstrap)**
 
