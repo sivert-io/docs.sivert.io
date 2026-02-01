@@ -13,13 +13,36 @@ This page is generated from git tags and commit subjects in the `matchzy-auto-to
 
 ### Features
 
-- feat: surface CS2 update-required warnings in the Servers UI
-- feat: ingest `cs2_update_required` server webhook event and persist required CS2 version per server
-- feat: add server reallocate endpoint + admin control to move staged matches off a bad server
-- feat: show installed CS2 build per server and persist last fetched build/version string
-- feat: report MatchZy plugin DB health via `server_health` and surface persistent admin warning
-- feat: speed up server initialization via bootstrap payload (`/api/servers/:id/bootstrap`)
-- feat: store server reachability proof (`server_can_reach_api_at`) from any successful server event
+- (none yet)
+
+### Fixes
+
+- (none yet)
+
+### Ops/Docs
+
+- (none yet)
+
+## v2.0.11 (2026-02-01) — **PATCH**
+
+### Features
+
+- Show urgent CS2 “update required” warnings in the Servers UI (persistent admin snackbar + per-server indicators)
+- Verify CS2 server version against Steam and block outdated/unverified servers from allocation (RCON `status` fallback + Steam UpToDateCheck)
+- Add match reallocation so admins can move staged matches off a bad/outdated server
+- Show and persist the installed CS2 build per server (build id + version string)
+- Report MatchZy plugin DB health via `server_health` and surface persistent admin warning (“Plugin DB DOWN”)
+- Speed up server initialization via bootstrap payload (`/api/servers/:id/bootstrap`) and track reachability (`server_can_reach_api_at`)
+- Add fleet CS2 monitoring + tournament start preflight to prevent starting with outdated servers
+
+### Fixes
+
+- Fix CS2 build parsing when RCON `version` output doesn’t include BuildID (use `status` version line fallback)
+- Fix plugin version comparison so newer-than-latest builds aren’t incorrectly flagged as “older”
+
+### Ops/Docs
+
+- Add `yarn docker:local:restart` helper for local Docker restarts
 
 ## v2.0.8 (2026-01-29) — **PATCH**
 
