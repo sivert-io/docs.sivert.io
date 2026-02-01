@@ -5,6 +5,15 @@ description: Copy/paste installation and first run.
 
 This guide gets you from zero to running CS2 servers in a few minutes.
 
+## What you need
+
+- A Linux host (VPS or dedicated)
+- `sudo` access
+- Enough disk space for CS2 installs (plan for **tens of GB per server**)
+- Network access for Steam downloads
+
+If you’re using MAT, you’ll also want working inbound connectivity to your CS2 servers (RCON) and outbound connectivity from the CS2 host to your MAT URL (webhooks).
+
 ## Install
 
 ```bash
@@ -31,6 +40,21 @@ Re-open the TUI anytime with:
 sudo csm
 ```
 
+During the installer, CSM will typically:
+
+- Create/manage a dedicated CS2 service user
+- Install CS2 server files (and copy/clone per-server instances)
+- Install/update the MatchZy Enhanced plugin (recommended)
+- Create an overrides directory for your persistent config
+
+## Where are my configs?
+
+Your persistent overrides live here by default:
+
+- `/home/<cs2user>/overrides/`
+
+See: **[Configuration & overrides](/docs/csm/user/configuration)**.
+
 ## Common one-liners
 
 ```bash
@@ -41,6 +65,12 @@ sudo csm restart
 sudo csm update-game
 sudo csm update-plugins
 ```
+
+## Troubleshooting install
+
+- If you get “Unsupported architecture”, run `uname -m` and ensure you’re on `x86_64` or `arm64`.
+- If downloads fail, check outbound HTTPS access (proxy/firewall) and try again.
+- If `sudo csm` fails with permissions errors, ensure you installed the binary to `/usr/local/bin/csm` and that it’s executable.
 
 ## Next
 

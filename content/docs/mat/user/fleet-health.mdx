@@ -23,17 +23,21 @@ If you installed servers with **CS2 Server Manager (CSM)**, the easiest fix is:
 
 This runs CSM’s built-in verifier/repair flow, which checks the MatchZy database container/user/database and recreates what’s missing.
 
+Then refresh the server status in MAT (Servers page).
+
 ### Fix (external MatchZy DB)
 
 If you use an external DB (no Docker provisioning), verify:
 
-- the MatchZy DB config file is correct on the server host: `/home/<cs2user>/overrides/game/csgo/cfg/MatchZy/database.json`
+- the MatchZy DB config file is correct on the server host: `/home/<cs2user>/overrides/game/csgo/cfg/MatchZy/database.json` (see: **[CSM Configuration & overrides](/docs/csm/user/configuration)**)
 - the DB host/port is reachable from the server host
 - credentials and permissions are correct
 
 You can still open `sudo csm` → **Tools** → **MatchZy DB: verify/repair** to get a helpful, human-readable diagnosis, but note:
 
-- if you’re using an external DB, you must ensure CSM is configured to **not** provision Docker DB (for example with `MATCHZY_SKIP_DOCKER=1`), otherwise it will assume the Docker-based workflow.
+- if you’re using an external DB, you must ensure CSM is configured to **not** provision a Docker DB (for example via a “skip docker DB” setting in your environment), otherwise it will assume the Docker-based workflow.
+
+Then refresh the server status in MAT (Servers page).
 
 ## CS2 update required
 
@@ -67,6 +71,8 @@ If MAT shows **Offline** / **RCON failed** / **Server can’t reach MAT**, it us
 - Verify the server host can reach MAT’s API URL (DNS + outbound connectivity)
 - If you changed domains/ports, re-run initialization (Servers page → Retry)
 
+Then refresh the server status in MAT (Servers page).
+
 ## IP banned (RCON)
 
 If MAT shows **IP Banned**, the server has temporarily banned MAT’s IP due to repeated RCON authentication failures.
@@ -81,6 +87,8 @@ If you use CSM, you can use its CLI helpers:
 - `csm list-bans <server>`
 - `sudo csm unban-all <server>` (or unban a specific IP: `sudo csm unban <server> <ip>`)
 
+Then refresh the server status in MAT (Servers page).
+
 ## Plugin version mismatch
 
 If MAT shows **Version Mismatch**, your server fleet is running different MatchZy Enhanced plugin versions.
@@ -93,6 +101,8 @@ If you use CSM:
 - restart servers (`sudo csm restart` or `sudo csm restart <server>`)
 
 If you update manually, install the same MatchZy Enhanced release on every server and restart them.
+
+Then refresh the server status in MAT (Servers page).
 
 ## Learn more (Advanced)
 
