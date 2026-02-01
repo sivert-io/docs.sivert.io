@@ -3,6 +3,7 @@
   "defaultOpen": true,
   "pages": [
     "index",
+    "docs-style",
     "contributing",
     "architecture",
     "auth-providers",

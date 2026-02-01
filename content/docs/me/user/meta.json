@@ -5,11 +5,12 @@
     "index",
     "installation",
     "configuration",
+    "commands",
+    "---Advanced reference---",
     "convars",
     "config-files",
     "integration-endpoints",
     "examples",
-    "commands",
     "..."
   ]
 }

@@ -1,29 +1,39 @@
 ---
 title: Auto updates
-description: How CSM detects and applies safe CS2 updates.
+description: How to keep CS2 servers updated safely.
 ---
 
-CS2 Server Manager includes an automated update flow that works with MatchZy Enhanced’s built-in auto-updater and SteamCMD.
+CS2 Server Manager (CSM) can help you keep your CS2 servers up to date with minimal downtime.
 
-## Log markers
+## When you should update
 
-MatchZy writes:
+Update when either:
 
-```text
-[MATCHZY_UPDATE_AVAILABLE] required_version=<number>
-[MATCHZY_UPDATE_SHUTDOWN] required_version=<number>
+- you see a **CS2 update required** warning in MAT, or
+- players can’t connect after a Valve update, or
+- you know Valve shipped an update and want to update before your next matches.
+
+## Quick update (recommended)
+
+```bash
+sudo csm update-game
+sudo csm restart
 ```
 
-CSM’s monitor scans logs for shutdown markers and updates only when it is safe.
-
-## MAT admin warning (optional)
-
-If you also use **MatchZy Auto Tournament (MAT)** and have MatchZy Enhanced configured with `matchzy_remote_log_url`, the plugin will send a webhook event to MAT when a CS2 update is required (`event=cs2_update_required`). MAT will show a large warning on the **Servers** page so admins notice immediately.
+This updates the shared game install and restarts servers.
 
 ## Install the cron monitor
+
+If you want CSM to automatically run checks on a schedule, install the monitor cron job:
 
 ```bash
 sudo csm install-monitor-cron          # default */5 interval
 sudo csm install-monitor-cron "*/10"   # custom interval
 ```
+
+## Learn more (Advanced)
+
+If you want the internal details (markers, how the monitor decides what to do), see:
+
+- `/docs/csm/advanced/auto-updates-internals`
 

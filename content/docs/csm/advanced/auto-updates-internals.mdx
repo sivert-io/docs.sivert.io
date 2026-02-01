@@ -1,0 +1,28 @@
+---
+title: Auto updates (Internals)
+description: How the auto-update monitor works under the hood.
+---
+
+This page is for **advanced operators and developers**.
+
+## Overview
+
+CSM’s update tooling is designed to be conservative and avoid unsafe restarts during matches.
+
+## What CSM watches for
+
+When used with MatchZy Enhanced, the server logs may include markers like:
+
+```text
+[MATCHZY_UPDATE_AVAILABLE] required_version=<number>
+[MATCHZY_UPDATE_SHUTDOWN] required_version=<number>
+```
+
+CSM can also detect legacy shutdown markers depending on your setup.
+
+## Operational guidance
+
+For the normal operator workflow, see:
+
+- `/docs/csm/user/auto-updates`
+

@@ -98,71 +98,18 @@ Should return something like:
 
 ## CS2 updates (auto-updater + admin warning)
 
-MatchZy Enhanced includes a **MatchZy-safe update checker**: it checks Steam for CS2 updates while avoiding live matches.
+If MAT shows **CS2 update required**, you need to update your CS2 servers (Valve update) before continuing.
 
-By default (MAT-oriented), it is **warn-only**: it emits markers/events so your external server manager/admin can update/restart servers on your schedule. Automatic quitting can be enabled explicitly.
+Quick fix if you use **CS2 Server Manager (CSM)**:
 
-For how MAT verifies and persists CS2 update status (and how often it refreshes), see: **[Fleet health & CS2 updates](/docs/mat/user/fleet-health)**.
+- `sudo csm update-game`
+- `sudo csm restart` (or restart the specific server)
 
-When an update is required, MatchZy Enhanced will:
+After updating, refresh the server status in MAT (Servers page).
 
-- Log markers in the server console:
+If you see warnings like **CS2 update required**, **IP banned**, or **Plugin DB DOWN**, use this troubleshooting page:
 
-```text
-[MATCHZY_UPDATE_AVAILABLE] required_version=<number>
-[MATCHZY_UPDATE_SHUTDOWN] required_version=<number>
-```
-
-- Send a webhook event to MAT (if `matchzy_remote_log_url` is configured):
-
-```json
-{
-  "event": "cs2_update_required",
-  "matchid": -1,
-  "server_id": "s_1",
-  "required_version": 14134,
-  "phase": "available",
-  "timestamp": 1769805517
-}
-```
-
-In the MAT admin UI, the **Servers** page will show a large warning when any server reports this.
-
-### MAT Steam verification (no waiting for plugin event)
-
-MAT can also verify CS2 build freshness directly by:
-
-- Fetching the installed CS2 **BuildID** via RCON `version`
-- Checking Steam `ISteamApps/UpToDateCheck`
-
-This is used to block allocation to out-of-date servers even if the plugin has not emitted `cs2_update_required` yet, and MAT performs a final preflight check when starting a tournament.
-
-### Fixing “CS2 update required”
-
-Update the server installation (e.g. SteamCMD / your host manager) and restart the server. When the server comes back up and sends `server_configured` (Startup), MAT clears the stale warning.
-
-## Plugin database health (admin warning)
-
-MatchZy Enhanced uses SQLite or MySQL to store:
-
-- Server config (persistent MatchZy settings)
-- Backup metadata and match stats
-- Event retry queue (reliable delivery)
-
-If the plugin cannot reach its DB, it will still run matches, but **backups and reliable event delivery may be impacted**.
-
-MatchZy Enhanced reports this to MAT via `event=server_health` (server-level webhook), and MAT shows:
-
-- A per-server **“Plugin DB DOWN”** chip on the Servers page
-- A **persistent global warning** while any enabled server reports DB down
-
-### Fixing “Plugin DB DOWN”
-
-Check the CS2 server logs (MatchZy output) and validate:
-
-- `cfg/MatchZy/database.json` is correct
-- MySQL is reachable from the game server host (firewall/DNS/user/password)
-- The DB user has permissions and the database exists
+- **[Server health (common warnings)](/docs/mat/user/fleet-health)**
 
 ## Network configuration notes
 

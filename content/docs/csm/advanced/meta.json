@@ -1,5 +1,5 @@
 {
   "title": "Reference",
   "defaultOpen": true,
-  "pages": ["index", "changelog", "logging-system", "..."]
+  "pages": ["index", "auto-updates-internals", "changelog", "logging-system", "..."]
 }

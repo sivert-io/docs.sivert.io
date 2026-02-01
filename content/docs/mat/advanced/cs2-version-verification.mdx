@@ -1,0 +1,57 @@
+---
+title: CS2 version verification (Advanced)
+description: How MAT decides whether a server is up to date.
+---
+
+This page is for **advanced operators and developers**.
+
+## What MAT is trying to answer
+
+When MAT shows **CS2 update required**, the operational question is:
+
+- “Is this server running an outdated CS2 build according to Steam?”
+
+MAT uses a Steam check (UpToDateCheck) and persists the result so allocation/tournament start can be blocked reliably.
+
+## What MAT sends to Steam
+
+Steam’s UpToDateCheck endpoint returns `required_version` (the server version that is required right now).
+
+MAT compares the server’s installed value against Steam’s response.
+
+Example response (XML):
+
+```xml
+<response>
+  <success>true</success>
+  <up_to_date>false</up_to_date>
+  <version_is_listable>false</version_is_listable>
+  <required_version>14134</required_version>
+  <message>Server version required: 1.41.3.4</message>
+</response>
+```
+
+## Where MAT gets the server’s version value
+
+Depending on the server environment, different RCON outputs are available:
+
+- `version` may include a literal **BuildID** (easy case)
+- some environments only return **Protocol version** for `version`
+- `status` typically contains a line like:
+
+```text
+version  : 1.41.3.4/14134 10680 secure  public
+```
+
+In that format, MAT extracts the trailing integer (`14134`) and uses that value for the Steam check. In practice it matches the `required_version` number Steam reports.
+
+## Operational takeaway
+
+If you are debugging “Could not verify CS2 version”, check the server’s RCON outputs:
+
+- Does `status` contain a `version  : .../<number>` line?
+- Can MAT reach the server via RCON?
+- Does MAT have outbound access to Steam Web API?
+
+For the user-focused fixes, see: **[Server health (common warnings)](/docs/mat/user/fleet-health)**.
+

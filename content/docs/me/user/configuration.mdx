@@ -3,25 +3,19 @@ title: Configuration
 description: Key convars and config files for tournament integration.
 ---
 
-MatchZy configuration lives in a few places:
+If you installed your servers with **CS2 Server Manager (CSM)** or you are running tournaments with **MAT**, you usually do **not** need to manually configure low-level MatchZy settings.
 
-- ConVars (`matchzy_*`)
-- Config files under `cfg/MatchZy/`
-- JSON match configs loaded from a URL (typically MatchZy Auto Tournament)
+## Recommended setup (CSM / MAT)
 
-If you’re integrating MatchZy with MatchZy Auto Tournament, start here:
+- Use CSM to install and keep plugins updated: `/docs/csm/quick-start`
+- Add servers in MAT and let MAT configure MatchZy automatically: `/docs/mat/user/server-setup`
 
-## Most important pages
+## Manual / custom setups (advanced)
 
-- **ConVars reference**: [`ConVars`](/docs/me/user/convars)
-- **Config files**: [`Config files`](/docs/me/user/config-files)
-- **Integration endpoints**: [`Integration endpoints`](/docs/me/user/integration-endpoints)
-- **Copy/paste examples**: [`Examples`](/docs/me/user/examples)
+If you are not using MAT and want to configure MatchZy yourself, use these reference pages:
 
-## Key integration settings (quick list)
-
-- `matchzy_loadmatch_url`: loads a match JSON config from a URL.
-- `matchzy_remote_log_url`: where MatchZy sends event webhooks (with optional header key/value).
-- `matchzy_report_endpoint` (optional): where MatchZy uploads match reports.
-- `matchzy_demo_upload_url` (optional): where MatchZy uploads demos.
+- **ConVars & commands**: `/docs/me/user/convars`
+- **Config files**: `/docs/me/user/config-files`
+- **Integration endpoints**: `/docs/me/user/integration-endpoints`
+- **Examples**: `/docs/me/user/examples`
 
