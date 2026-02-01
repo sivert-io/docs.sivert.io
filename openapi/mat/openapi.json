@@ -47,7 +47,7 @@
           "name": {
             "type": "string",
             "description": "Server display name",
-            "example": "NTLAN #1"
+            "example": "Server #1"
           },
           "host": {
             "type": "string",
@@ -89,7 +89,7 @@
             "type": "string",
             "nullable": true,
             "description": "CS2 server hostname (from hostname convar, reported by MatchZy Enhanced).",
-            "example": "NTLAN #1"
+            "example": "Server #1"
           },
           "lastSeen": {
             "type": "integer",
@@ -151,7 +151,7 @@
           "name": {
             "type": "string",
             "description": "Server display name",
-            "example": "NTLAN #1"
+            "example": "Server #1"
           },
           "host": {
             "type": "string",
@@ -176,7 +176,7 @@
           "name": {
             "type": "string",
             "description": "Server display name",
-            "example": "NTLAN #1 Updated"
+            "example": "Server #1 Updated"
           },
           "host": {
             "type": "string",
@@ -208,7 +208,7 @@
           },
           "serverName": {
             "type": "string",
-            "example": "NTLAN #1"
+            "example": "Server #1"
           },
           "command": {
             "type": "string",
@@ -701,7 +701,7 @@
                   },
                   "message": {
                     "type": "string",
-                    "example": "Welcome to NTLAN 2025!",
+                    "example": "Welcome to the tournament!",
                     "maxLength": 200
                   }
                 }
@@ -1539,7 +1539,7 @@
                 "properties": {
                   "name": {
                     "type": "string",
-                    "example": "NTLAN 2025 Spring Cup"
+                    "example": "Spring Cup 2026"
                   },
                   "type": {
                     "type": "string",
