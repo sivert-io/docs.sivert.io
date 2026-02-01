@@ -64,8 +64,8 @@ In MAT-oriented setups this is typically **warn-only** (no automatic restart).
 
 MAT verifies CS2 version state independently by:
 
-- running RCON `version` and parsing the **BuildID**
-- calling Steam `ISteamApps/UpToDateCheck` using that BuildID
+- running RCON `version` (and falling back to `status`) and extracting a Steam-checkable version number
+- calling Steam `ISteamApps/UpToDateCheck` using that number
 - persisting `cs2_required_version` in MAT’s database
 
 This is the status used to:
@@ -73,6 +73,18 @@ This is the status used to:
 - show urgent “CS2 update required” warnings
 - **block allocating** outdated servers
 - block starting tournaments if any enabled server is outdated
+
+Steam’s response contains the `required_version` MAT compares against. Example (XML format):
+
+```xml
+<response>
+  <success>true</success>
+  <up_to_date>false</up_to_date>
+  <version_is_listable>false</version_is_listable>
+  <required_version>14134</required_version>
+  <message>Server version required: 1.41.3.4</message>
+</response>
+```
 
 ### Fix
 
@@ -171,7 +183,7 @@ Example:
 
 - Wait up to **one fleet check interval** (default 5 minutes).
 - If it doesn’t clear, run a **manual server refresh** from the MAT Servers page (forces an earlier re-check for outdated servers).
-- Check that RCON `version` output contains a BuildID (MAT can’t verify without it).
+- Check that RCON `status` output contains a line like `version  : 1.41.3.4/14134 ...` (MAT can use the trailing `/14134` to verify against Steam).
 
 ### Fleet status is stale / never checked
 
