@@ -1,0 +1,39 @@
+---
+title: Match recovery (Advanced)
+description: API endpoints and internal recovery behavior.
+---
+
+This page is for **advanced operators and developers**.
+
+## What recovery does
+
+On startup (and when manually triggered), MAT attempts to recover matches that were in-progress.
+
+## Manual recovery endpoints
+
+Trigger a recovery pass:
+
+```text
+POST /api/recovery/recover
+```
+
+Replay recent events for a specific match:
+
+```text
+POST /api/recovery/replay/:matchSlug
+```
+
+Optional JSON body:
+
+```json
+{ "sinceTimestamp": 1730000000 }
+```
+
+If `sinceTimestamp` is omitted, MAT replays roughly the last hour of events.
+
+## Operator guidance
+
+For the user-focused checklist, see:
+
+- `/docs/mat/user/match-recovery`
+

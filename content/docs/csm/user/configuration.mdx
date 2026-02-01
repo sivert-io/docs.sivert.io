@@ -3,23 +3,59 @@ title: Configuration & overrides
 description: Keep custom configs persistent across updates.
 ---
 
-CS2 Server Manager is designed so your custom configs survive updates. This page explains how configuration is structured and how to safely customize servers.
+This page is for **operators**. It explains where to put your custom configs so they survive updates.
 
-## Overrides directory
+## Where your custom config lives
 
-The `overrides/` folder contains configuration applied to all servers and is never deleted during updates.
+CSM keeps two main kinds of files:
 
-Example structure:
+- **Base installs** (managed by CSM)
+- **Your overrides** (managed by you, kept across updates)
 
-```text
-overrides/game/csgo/
-├── cfg/MatchZy/
-└── addons/
+### Overrides (recommended)
+
+By default, CSM stores overrides under your CS2 service user:
+
+- `/home/<cs2user>/overrides/`
+
+Common paths:
+
+- Global game overrides: `/home/<cs2user>/overrides/game/`
+- MatchZy config: `/home/<cs2user>/overrides/game/csgo/cfg/MatchZy/`
+
+## What to edit (common tasks)
+
+### MatchZy database config
+
+If you need to edit MatchZy’s database config:
+
+- `/home/<cs2user>/overrides/game/csgo/cfg/MatchZy/database.json`
+
+If you use the CSM-managed MatchZy DB, you can also run:
+
+- `sudo csm` → Tools → **MatchZy DB: verify/repair**
+
+### CS2 config overrides
+
+If you need to override CS2 cfg files (advanced), place them under:
+
+- `/home/<cs2user>/overrides/game/csgo/cfg/`
+
+## Apply changes
+
+After editing overrides, restart servers:
+
+```bash
+sudo csm restart
 ```
 
 ## CSM root
 
-By default CSM uses `/opt/cs2-server-manager` unless you set `CSM_ROOT`.
+By default CSM stores its managed state under:
+
+- `/opt/cs2-server-manager`
+
+Most operators do not need to change this. If you do, CSM supports `CSM_ROOT`.
 
 ```bash
 export CSM_ROOT=/opt/cs2-server-manager

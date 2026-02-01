@@ -5,6 +5,7 @@
     "index",
     "reverse-proxy",
     "cs2-version-verification",
+    "match-recovery",
     "i18n-fallback-zero",
     "roadmap",
     "changelog",

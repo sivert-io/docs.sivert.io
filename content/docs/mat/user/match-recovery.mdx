@@ -3,39 +3,40 @@ title: Match recovery
 description: How MAT recovers match state after a restart.
 ---
 
-This guide explains how MatchZy Auto Tournament recovers match state when the application is restarted during live matches.
+This page is for **tournament operators**. Use it when MAT or your server host restarts mid-tournament and you need to get back to a stable state.
 
-## Overview
+## When you need recovery
 
-On startup, MAT attempts to recover matches in `loaded` or `live` state by:
+- MAT was restarted during a live match
+- A server was restarted and the match UI looks “stuck”
+- The bracket/match page doesn’t reflect what’s happening on the server
 
-1. Finding active matches in the DB
-2. Syncing state from servers via match reports (if available)
-3. Verifying the server’s persistent MatchZy configuration (webhooks + demo uploads)
-5. Refreshing connections
+## What to do first (safe steps)
 
-## Manual recovery
+1. Go to **Servers** and fix any fleet warnings first:
+   - **[Server health (common warnings)](/docs/mat/user/fleet-health)**
+2. Go to **Matches** and open the affected match.
+3. Check:
+   - Is the server online?
+   - Are players connected?
+   - Does the match show Live/Warmup/Ended?
 
-You can trigger recovery via the API (admin auth required):
+Often, just refreshing server status + waiting a minute is enough after a restart.
 
-```
-POST /api/recovery/recover
-```
+## Use the Match recovery tool
 
-Response includes a per-match summary (state synced / webhook verified / demo upload verified).
+1. Go to **Match recovery** in the sidebar
+2. Run recovery
+3. Re-open the match page and confirm the match state is correct
 
-## Replay recent events (advanced)
+## If recovery doesn’t work
 
-If you need to re-process recent events for a specific match (for example after a crash or restart), you can replay events stored in the MAT database:
+- Check server logs (CSM users: `sudo csm attach <server>` or `sudo csm logs <server> 200`)
+- Check MAT logs (Docker users: `docker compose logs -f matchzy-tournament` in your MAT folder)
+- If a match is staged on the wrong server and players can’t connect, reallocate the match to another server (Admin controls).
 
-```
-POST /api/recovery/replay/:matchSlug
-```
+## Learn more (Advanced)
 
-Optional JSON body:
+If you need the API endpoints and internal behavior, see:
 
-```json
-{ "sinceTimestamp": 1730000000 }
-```
-
-If `sinceTimestamp` is omitted, MAT replays roughly the last hour of events.
+- **[Match recovery (Advanced)](/docs/mat/advanced/match-recovery)**
