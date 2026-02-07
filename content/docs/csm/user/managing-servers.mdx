@@ -24,6 +24,32 @@ sudo csm update-plugins
 sudo csm monitor
 ```
 
+### Launcher modes (advanced)
+
+By default, CSM starts servers via Valve’s `game/cs2.sh`.
+
+If you run into startup issues on newer distros (often library mismatch issues), you can try:
+
+```bash
+# Use CSM's alternate launcher (game/csm.sh)
+sudo csm start --alternate
+sudo csm restart --alternate
+sudo csm debug --alternate 1
+```
+
+Or, to run the `cs2` binary directly (not recommended; troubleshooting only):
+
+```bash
+sudo csm start --binary
+sudo csm restart --binary
+sudo csm debug --binary 1
+```
+
+Notes:
+
+- `--alternate` and `--binary` are mutually exclusive.
+- You can combine the flag with a server number (e.g. `sudo csm start --alternate 2`).
+
 ## Consoles and logs
 
 ```bash

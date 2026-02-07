@@ -20,6 +20,47 @@ sudo csm status
 sudo csm logs 1 200
 ```
 
+### Try a different launcher mode
+
+By default, CSM launches via Valve’s `game/cs2.sh`.
+
+If you suspect a Linux runtime / library mismatch, try the alternate launcher (CSM-managed `game/csm.sh`):
+
+```bash
+sudo csm start --alternate
+```
+
+If you want to run the `cs2` binary directly (not recommended; troubleshooting only):
+
+```bash
+sudo csm start --binary
+```
+
+Notes:
+
+- `--alternate` and `--binary` are mutually exclusive.
+- You can target a single server: `sudo csm restart --alternate 2`
+
+### Verify what was actually launched
+
+Show the tmux pane start command (server 1):
+
+```bash
+sudo su - cs2servermanager -c 'tmux list-panes -a -F "#{session_name}: #{pane_current_command} | #{pane_start_command}"' | grep cs2-1
+```
+
+Show the real running process argv (server 1):
+
+```bash
+ps auxww | grep -E '/home/cs2servermanager/server-1/game/bin/linuxsteamrt64/cs2|/home/cs2servermanager/server-1/game/.*\.sh' | grep -v grep
+```
+
+Confirm environment (LD library path, etc.) for the running process:
+
+```bash
+sudo bash -lc 'pid=$(pgrep -f "/home/cs2servermanager/server-1/game/bin/linuxsteamrt64/cs2" | head -n1); tr "\0" "\n" < "/proc/$pid/environ" | grep -E "^(LD_LIBRARY_PATH|ENABLE_PATHMATCH|CSM_LAUNCH_MODE)="'
+```
+
 ## Steamworks SDK init failure (missing steamclient.so)
 
 ### Symptom

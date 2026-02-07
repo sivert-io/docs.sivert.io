@@ -66,6 +66,20 @@ sudo csm update-game
 sudo csm update-plugins
 ```
 
+## Advanced: alternate launch modes
+
+Most operators should stick with the defaults. If a server won’t start (often due to Linux library/runtime differences), try:
+
+```bash
+sudo csm start --alternate
+```
+
+Or (troubleshooting only):
+
+```bash
+sudo csm start --binary
+```
+
 ## Troubleshooting install
 
 - If you get “Unsupported architecture”, run `uname -m` and ensure you’re on `x86_64` or `arm64`.
