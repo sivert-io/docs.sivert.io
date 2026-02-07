@@ -11,10 +11,19 @@ This page is generated from git tags and commit subjects in the `cs2-server-mana
 
 ## Unreleased
 
+## v1.7.0 (2026-02-07) — **MINOR**
+
+### Features
+
+- Add optional launch modes for server startup:
+  - `--alternate` to use CSM-managed `game/csm.sh` (LD_LIBRARY_PATH workaround)
+  - `--binary` to run `bin/linuxsteamrt64/cs2` directly (troubleshooting only)
+- Keep Valve’s `game/cs2.sh` intact (no longer overwritten by CSM)
+- Avoid duplicated default flags when a legacy CSM-managed `cs2.sh` wrapper is detected
+
 ### Docs
 
-- Update README to reference new icon location and add icon asset
-- Improve MatchZy update detection messaging (recognize `[MATCHZY_UPDATE_AVAILABLE]` marker)
+- Document launch modes (`cs2.sh` default, `--alternate`, `--binary`) and verification commands in CSM docs
 
 ## v1.6.13 (2026-01-28) — **PATCH**
 
