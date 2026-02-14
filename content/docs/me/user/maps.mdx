@@ -1,0 +1,55 @@
+---
+title: Maps (including workshop)
+description: How MatchZy Enhanced loads standard maps vs workshop maps.
+---
+
+MatchZy Enhanced can load both **stock maps** (like `de_mirage`) and **workshop maps**.
+
+## Workshop maps in match JSON
+
+When you load a match via `matchzy_loadmatch_url`, MatchZy reads `maplist[]` from the match JSON.
+
+- **Normal maps**: use the map name, for example `de_mirage`
+- **Workshop maps**: use the **workshop PublishedFileId as a numeric string**, for example `"3100869952"`
+
+If the `maplist` entry is numeric, MatchZy will change the map using:
+
+- `host_workshop_map "<id>"`
+
+Example:
+
+```json
+{
+  "matchid": 12345,
+  "num_maps": 1,
+  "maplist": ["1234567890"],
+  "team1": { "name": "Team One", "players": { "76561198000000001": "Player1" } },
+  "team2": { "name": "Team Two", "players": { "76561198000000006": "Player6" } }
+}
+```
+
+## Mixing stock + workshop maps (BO3 example)
+
+```json
+{
+  "matchid": 12345,
+  "num_maps": 3,
+  "maplist": ["de_mirage", "1234567890", "de_anubis"],
+  "team1": { "name": "Team One", "players": { "76561198000000001": "Player1" } },
+  "team2": { "name": "Team Two", "players": { "76561198000000006": "Player6" } }
+}
+```
+
+## Admin map changes (manual)
+
+If you are changing maps manually (outside match JSON), MatchZy’s map-change helper also supports workshop IDs:
+
+- **Normal**: `css_map de_mirage`
+- **Shorthand**: `css_map mirage` (MatchZy will prefix `de_`)
+- **Workshop**: `css_map 1234567890` (numeric → `host_workshop_map`)
+
+## Common pitfalls
+
+- If you provide a non-numeric workshop string (for example a path-like format), MatchZy will treat it as a normal map and attempt `changelevel` instead.
+- Workshop downloads/availability are handled by the CS2 server + Steam; if the server can’t fetch the map, `host_workshop_map` will fail.
+

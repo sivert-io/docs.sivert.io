@@ -25,6 +25,69 @@ If your match JSON endpoint requires a header (for example a bearer token):
 matchzy_loadmatch_url "https://mat.example.com/api/matches/my-match-slug.json" "Authorization" "Bearer REDACTED"
 ```
 
+## Example match JSON (copy/paste)
+
+MatchZy validates that your payload includes these required top-level fields:
+
+- `maplist` (array)
+- `num_maps` (int)
+- `team1` (object with `name` and `players`)
+- `team2` (object with `name` and `players`)
+
+### Minimal 5v5 (one map)
+
+```json
+{
+  "matchid": 12345,
+  "num_maps": 1,
+  "maplist": ["de_mirage"],
+
+  "team1": {
+    "name": "Team One",
+    "players": {
+      "76561198000000001": "Player1",
+      "76561198000000002": "Player2",
+      "76561198000000003": "Player3",
+      "76561198000000004": "Player4",
+      "76561198000000005": "Player5"
+    }
+  },
+  "team2": {
+    "name": "Team Two",
+    "players": {
+      "76561198000000006": "Player6",
+      "76561198000000007": "Player7",
+      "76561198000000008": "Player8",
+      "76561198000000009": "Player9",
+      "76561198000000010": "Player10"
+    }
+  }
+}
+```
+
+### Workshop maps
+
+MatchZy Enhanced supports workshop maps **when the `maplist` entry is a numeric workshop PublishedFileId**. When the map string is numeric, MatchZy will change maps using `host_workshop_map "<id>"`.
+
+Example (one workshop map):
+
+```json
+{
+  "matchid": 12345,
+  "num_maps": 1,
+  "maplist": ["1234567890"],
+
+  "team1": { "name": "Team One", "players": { "76561198000000001": "Player1" } },
+  "team2": { "name": "Team Two", "players": { "76561198000000006": "Player6" } }
+}
+```
+
+Notes:
+
+- `maplist` entries that are **not numeric** are treated as normal maps and are loaded with `changelevel` (e.g. `de_mirage`, `de_anubis`, etc.).
+- If you want to run a BO3, set `"num_maps": 3` and provide **at least** 3 entries in `maplist`.
+- For more details (including mixing stock + workshop maps), see **[Maps (including workshop)](/docs/me/user/maps)**.
+
 ## Event webhooks (remote log)
 
 MatchZy sends match events (webhooks) to your platform.
