@@ -1,0 +1,13 @@
+services:
+  docs:
+    build:
+      context: .
+    container_name: project-docs
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+    ports:
+      # Bind only on localhost; expose publicly via Cloudflared.
+      - "127.0.0.1:3000:3000"
+
