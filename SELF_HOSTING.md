@@ -120,3 +120,70 @@ After that, pushing to `main` will:
 - Keep the container bound to `127.0.0.1` and only expose via Cloudflared.
 - If you want *zero build work* on the server, we can switch to “build Docker image in CI → push to GHCR → server pulls latest”.
 
+## 5) Optional: self-updating server (no inbound ports)
+
+If you don’t want a “deploy on commit” workflow, you can have the server pull and rebuild on a timer.
+
+This repo includes a safe updater script: `scripts/auto_update.sh`.
+
+### Setup (cron)
+
+On the server:
+
+```bash
+cd ~/apps/project-docs
+chmod +x scripts/auto_update.sh
+```
+
+Edit your crontab:
+
+```bash
+crontab -e
+```
+
+Add (every 5 minutes):
+
+```cron
+*/5 * * * * REPO_DIR=/home/<user>/apps/project-docs BRANCH=main /home/<user>/apps/project-docs/scripts/auto_update.sh >> /var/log/project-docs-autoupdate.log 2>&1
+```
+
+### Setup (systemd timer, preferred on Linux servers)
+
+Create `/etc/systemd/system/project-docs-autoupdate.service`:
+
+```ini
+[Unit]
+Description=Project Docs auto-update
+
+[Service]
+Type=oneshot
+User=<user>
+Environment=REPO_DIR=/home/<user>/apps/project-docs
+Environment=BRANCH=main
+WorkingDirectory=/home/<user>/apps/project-docs
+ExecStart=/home/<user>/apps/project-docs/scripts/auto_update.sh
+```
+
+Create `/etc/systemd/system/project-docs-autoupdate.timer`:
+
+```ini
+[Unit]
+Description=Run project-docs auto-update every 5 minutes
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=5min
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+```
+
+Enable it:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now project-docs-autoupdate.timer
+systemctl list-timers --all | grep project-docs
+```
+
