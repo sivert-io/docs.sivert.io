@@ -21,7 +21,8 @@ export async function GET(): Promise<Response> {
     return {
       id: page.url,
       structured: structuredData,
-      tag: getSection(page.slugs[0]),
+      // Used by Orama Cloud tag filter in the Search UI.
+      tag: page.slugs?.[0] ?? getSection(page.slugs?.[0]),
       url: page.url,
       title: page.data.title,
       description: page.data.description,
