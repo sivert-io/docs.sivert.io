@@ -30,29 +30,19 @@ const items = [
     value: undefined,
   },
   {
-    name: 'Framework',
-    description: 'Only results about framework guides',
-    value: 'framework',
+    name: 'MAT',
+    description: 'MatchZy Auto Tournament docs',
+    value: 'mat',
   },
   {
-    name: 'UI',
-    description: 'Only results about Fumadocs UI',
-    value: 'ui',
+    name: 'ME',
+    description: 'MatchZy Enhanced docs',
+    value: 'me',
   },
   {
-    name: 'Core',
-    description: 'Only results about Fumadocs Core',
-    value: 'headless',
-  },
-  {
-    name: 'MDX',
-    description: 'Only results about Fumadocs MDX',
-    value: 'mdx',
-  },
-  {
-    name: 'CLI',
-    description: 'Only results about Fumadocs CLI',
-    value: 'cli',
+    name: 'CSM',
+    description: 'CS2 Server Manager docs',
+    value: 'csm',
   },
 ];
 
@@ -60,14 +50,20 @@ export default function CustomSearchDialog(props: SharedProps) {
   const [open, setOpen] = useState(false);
   const [tag, setTag] = useState<string | undefined>();
   const [search, setSearch] = useState('');
-  const query = hasOrama
-    ? useDocsSearch({
-        type: 'orama-cloud',
-        // `hasOrama` guarantees `orama` is non-null.
-        client: orama!,
-        tag,
-      }).query
-    : { isLoading: false, data: 'empty' as const, error: undefined };
+  const query = useDocsSearch(
+    hasOrama
+      ? {
+          type: 'orama-cloud',
+          // `hasOrama` guarantees `orama` is non-null.
+          client: orama!,
+          tag,
+        }
+      : {
+          // Local/self-hosted search via `app/api/search/route.ts`
+          type: 'fetch',
+          tag,
+        },
+  ).query;
   const { full } = useTreeContext();
   const router = useRouter();
   const searchMap = useMemo(() => {
@@ -174,7 +170,7 @@ export default function CustomSearchDialog(props: SharedProps) {
               Powered by Orama
             </a>
           ) : (
-            <span className="text-xs text-nowrap text-fd-muted-foreground">Search not configured</span>
+            <span className="text-xs text-nowrap text-fd-muted-foreground">Local search</span>
           )}
         </SearchDialogFooter>
       </SearchDialogContent>
