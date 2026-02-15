@@ -1,6 +1,6 @@
 ARG GIT_COMMIT_SHA=unknown
 
-FROM node:20-alpine AS deps
+FROM node:20-bookworm-slim AS deps
 WORKDIR /app
 ARG GIT_COMMIT_SHA
 
@@ -13,11 +13,11 @@ COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --ignore-scripts
 
 
-FROM node:20-alpine AS build
+FROM node:20-bookworm-slim AS build
 WORKDIR /app
 ARG GIT_COMMIT_SHA
 RUN corepack enable
-RUN apk add --no-cache git
+RUN apt-get update && apt-get install -y --no-install-recommends git ca-certificates && rm -rf /var/lib/apt/lists/*
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -29,7 +29,7 @@ RUN yarn run postinstall
 RUN yarn build
 
 
-FROM node:20-alpine AS runner
+FROM node:20-bookworm-slim AS runner
 WORKDIR /app
 ARG GIT_COMMIT_SHA
 LABEL org.opencontainers.image.revision=$GIT_COMMIT_SHA
