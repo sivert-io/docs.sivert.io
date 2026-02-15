@@ -21,6 +21,18 @@ If you don’t see the maps you expect:
 
 This updates the map list without breaking existing tournaments.
 
+## Steam Workshop maps (auto-fill)
+
+MAT supports adding **Steam Workshop maps** by pasting a **Workshop URL or PublishedFileId** in the **Add Map** modal.
+
+- Paste a Workshop URL/ID and wait briefly — MAT will auto-fetch:
+  - **Map ID** (numeric PublishedFileId)
+  - **Display name**
+  - **Preview image URL**
+- You can still edit any field before saving.
+
+When you use a workshop map in a match, MAT will send the **numeric map id** to the server. MatchZy Enhanced treats numeric map strings as workshop ids and changes maps using `host_workshop_map "<id>"`.
+
 ## Create a map pool
 
 1. Go to **Maps & Map Pools**
