@@ -6,22 +6,25 @@ export const revalidate = false;
 
 // Self-hosted search endpoint (used by `useDocsSearch({ type: "fetch" })`).
 // This keeps search working even when Orama Cloud is not configured.
-export const { staticGET: GET } = createFromSource(source, {
+const server = createFromSource(source, {
   language: 'english',
   async buildIndex(page) {
-    // `structuredData` exists for both MDX and OpenAPI sources but the exact type
-    // differs between sources; treat it as `any` for indexing purposes.
-    const loaded = (await page.data.load()) as { structuredData: any };
+    // `structuredData` exists for both MDX and OpenAPI sources, but MDX uses a
+    // lazy loader (`load()`), while OpenAPI pages expose data directly.
+    const loaded = await (page.data as any).load?.();
+    const structuredData = (page.data as any).structuredData ?? loaded?.structuredData ?? [];
 
     return {
       title: page.data.title ?? page.url,
       description: page.data.description ?? '',
       url: page.url,
       id: page.url,
-      structuredData: loaded.structuredData,
+      structuredData,
       // Use the top-level slug (mat/me/csm) for filtering in the UI.
       tag: page.slugs?.[0] ?? getSection(page.slugs?.[0]),
     };
   },
 });
+
+export const GET = server.GET;
 

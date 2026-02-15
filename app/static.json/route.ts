@@ -13,9 +13,14 @@ export async function GET(): Promise<Response> {
       includeRoot: true,
     });
 
+    const loaded = await (page.data as any).load?.();
+    const structuredData = (loaded?.structuredData ?? (page.data as any).structuredData) as
+      | OramaDocument['structured']
+      | undefined;
+
     return {
       id: page.url,
-      structured: (await page.data.load()).structuredData,
+      structured: structuredData,
       tag: getSection(page.slugs[0]),
       url: page.url,
       title: page.data.title,
