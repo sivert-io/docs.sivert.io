@@ -26,7 +26,17 @@ COPY . .
 RUN yarn run postinstall
 
 # Build Next.js app
-RUN yarn build
+# Note: This project relies on Turbopack-only module schemes (e.g. `fumadocs-mdx:`),
+# so we cannot use `next build --webpack`.
+# The build can occasionally crash in container environments; retry a few times.
+RUN set -e; \
+  for i in 1 2 3; do \
+    echo "Next build attempt $i/3"; \
+    yarn build && exit 0; \
+    echo "Build failed; retrying in 2s..."; \
+    sleep 2; \
+  done; \
+  exit 1
 
 
 FROM node:20-bookworm-slim AS runner

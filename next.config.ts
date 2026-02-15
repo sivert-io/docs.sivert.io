@@ -8,6 +8,13 @@ const withAnalyzer = createBundleAnalyzer({
 
 const config: NextConfig = {
   reactStrictMode: true,
+  // Reduce build-time parallelism to avoid occasional worker crashes in
+  // containerized builds when statically generating many pages.
+  experimental: {
+    staticGenerationMaxConcurrency: 1,
+    staticGenerationMinPagesPerWorker: 100000,
+    staticGenerationRetryCount: 2,
+  },
   logging: {
     fetches: {
       fullUrl: true,
