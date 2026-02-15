@@ -5,7 +5,9 @@ WORKDIR /app
 RUN corepack enable
 
 COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+# Install deps without running lifecycle scripts.
+# `fumadocs-mdx` runs on postinstall and needs the repo files, which are copied in the build stage.
+RUN yarn install --frozen-lockfile --ignore-scripts
 
 
 FROM node:20-alpine AS build
@@ -14,6 +16,9 @@ RUN corepack enable
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Run postinstall now that repo files exist (generates MDX artifacts).
+RUN yarn run postinstall
 
 # Build Next.js app
 RUN yarn build
