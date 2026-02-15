@@ -7,23 +7,32 @@ export interface GenerateProps {
   description?: ReactNode;
 }
 
-const font = readFile('./lib/og/JetBrainsMono-Regular.ttf').then((data) => ({
-  name: 'Mono',
-  data,
-  weight: 400,
-}));
-const fontBold = readFile('./lib/og/JetBrainsMono-Bold.ttf').then((data) => ({
-  name: 'Mono',
-  data,
-  weight: 600,
-}));
+async function safeFont(
+  filePath: string,
+  opts: { name: string; weight: number },
+): Promise<{ name: string; data: Buffer; weight: number } | null> {
+  try {
+    const data = await readFile(filePath);
+    return { ...opts, data };
+  } catch {
+    // Fonts are optional; fall back to default fonts if missing.
+    return null;
+  }
+}
 
 export async function getImageResponseOptions(): Promise<ImageResponseOptions> {
+  const fonts = (
+    await Promise.all([
+      safeFont('./lib/og/JetBrainsMono-Regular.ttf', { name: 'Mono', weight: 400 }),
+      safeFont('./lib/og/JetBrainsMono-Bold.ttf', { name: 'Mono', weight: 600 }),
+    ])
+  ).filter((f): f is NonNullable<typeof f> => f != null);
+
   return {
     width: 1200,
     height: 630,
     format: 'webp',
-    fonts: await Promise.all([font, fontBold]),
+    fonts,
   };
 }
 

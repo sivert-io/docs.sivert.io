@@ -9,25 +9,29 @@ export interface GenerateProps {
   logo?: ReactNode;
 }
 
-const font = fs.readFile('./lib/og/JetBrainsMono-Regular.ttf');
-const fontBold = fs.readFile('./lib/og/JetBrainsMono-Bold.ttf');
+async function safeRead(filePath: string): Promise<Buffer | null> {
+  try {
+    return await fs.readFile(filePath);
+  } catch {
+    // Fonts are optional; fall back to default fonts if missing.
+    return null;
+  }
+}
 
 export async function getImageResponseOptions(): Promise<ImageResponseOptions> {
+  const [regular, bold] = await Promise.all([
+    safeRead('./lib/og/JetBrainsMono-Regular.ttf'),
+    safeRead('./lib/og/JetBrainsMono-Bold.ttf'),
+  ]);
+
+  const fonts: ImageResponseOptions['fonts'] = [];
+  if (regular) fonts.push({ name: 'Mono', data: regular, weight: 400 });
+  if (bold) fonts.push({ name: 'Mono', data: bold, weight: 600 });
+
   return {
     width: 1200,
     height: 630,
-    fonts: [
-      {
-        name: 'Mono',
-        data: await font,
-        weight: 400,
-      },
-      {
-        name: 'Mono',
-        data: await fontBold,
-        weight: 600,
-      },
-    ],
+    fonts,
   };
 }
 
