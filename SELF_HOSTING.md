@@ -103,6 +103,15 @@ If you don’t want a “deploy on commit” workflow, you can have the server p
 
 This repo includes a safe updater script: `scripts/auto_update.sh`.
 
+### How it decides to update
+
+The updater compares:
+
+- the **currently deployed commit** (read from the running container image label / `/app/BUILD_COMMIT`)
+- vs the latest **`origin/main`** commit hash
+
+If they differ, it rebuilds and restarts the container. This means it will still deploy when you are developing in the same checkout and `HEAD` already matches `origin/main`.
+
 ### Setup (cron)
 
 On the server:

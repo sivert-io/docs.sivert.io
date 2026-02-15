@@ -2,6 +2,9 @@ services:
   docs:
     build:
       context: .
+      args:
+        # Set by scripts/auto_update.sh at deploy time.
+        GIT_COMMIT_SHA: ${GIT_COMMIT_SHA:-dev}
     container_name: project-docs
     restart: unless-stopped
     environment:

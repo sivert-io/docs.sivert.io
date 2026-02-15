@@ -1,5 +1,8 @@
+ARG GIT_COMMIT_SHA=unknown
+
 FROM node:20-alpine AS deps
 WORKDIR /app
+ARG GIT_COMMIT_SHA
 
 # Enable yarn via Corepack (ships with Node)
 RUN corepack enable
@@ -12,6 +15,7 @@ RUN yarn install --frozen-lockfile --ignore-scripts
 
 FROM node:20-alpine AS build
 WORKDIR /app
+ARG GIT_COMMIT_SHA
 RUN corepack enable
 RUN apk add --no-cache git
 
@@ -27,10 +31,16 @@ RUN yarn build
 
 FROM node:20-alpine AS runner
 WORKDIR /app
+ARG GIT_COMMIT_SHA
+LABEL org.opencontainers.image.revision=$GIT_COMMIT_SHA
 ENV NODE_ENV=production
 ENV PORT=3000
+ENV APP_GIT_SHA=$GIT_COMMIT_SHA
 
 RUN corepack enable
+
+# Record the built git revision for deploy checks.
+RUN echo "$GIT_COMMIT_SHA" > /app/BUILD_COMMIT
 
 # Only copy the runtime bits
 COPY --from=build /app/package.json ./package.json
