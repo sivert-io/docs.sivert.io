@@ -37,7 +37,7 @@ docker compose up -d --build
 Verify it is listening locally:
 
 ```bash
-curl -I http://127.0.0.1:3000
+curl -I http://127.0.0.1:31234
 ```
 
 ## 3) Cloudflared tunnel (no open firewall ports)
@@ -68,7 +68,7 @@ credentials-file: /home/<user>/.cloudflared/<TUNNEL_UUID>.json
 
 ingress:
   - hostname: docs.sivert.io
-    service: http://127.0.0.1:3000
+    service: http://127.0.0.1:31234
   - service: http_status:404
 ```
 

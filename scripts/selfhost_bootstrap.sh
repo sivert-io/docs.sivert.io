@@ -81,7 +81,7 @@ cat <<EOF
 Next steps / verification
 -------------------------
 1) Verify docs is up locally:
-   curl -I http://127.0.0.1:3000
+   curl -I http://127.0.0.1:31234
 
 2) Verify cron entry:
    crontab -l | grep project-docs-autoupdate

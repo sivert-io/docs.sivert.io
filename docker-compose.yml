@@ -8,6 +8,7 @@ services:
       - NODE_ENV=production
       - PORT=3000
     ports:
-      # Bind only on localhost; expose publicly via Cloudflared.
-      - "127.0.0.1:3000:3000"
+      # Bind on all interfaces so another machine can proxy to it.
+      # NOTE: This exposes the service on your LAN/WAN depending on firewall.
+      - "0.0.0.0:31234:3000"
 

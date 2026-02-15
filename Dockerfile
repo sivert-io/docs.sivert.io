@@ -13,6 +13,7 @@ RUN yarn install --frozen-lockfile --ignore-scripts
 FROM node:20-alpine AS build
 WORKDIR /app
 RUN corepack enable
+RUN apk add --no-cache git
 
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
