@@ -4,7 +4,6 @@ set -euo pipefail
 # Bootstrap self-hosting for docs.sivert.io on a server:
 # - Builds + starts Docker container (localhost only)
 # - Installs an auto-update cron job (git pull + docker compose up --build when origin/main changes)
-# - Prints GitHub Actions secrets needed for optional deploy workflow
 #
 # Usage:
 #   ./scripts/selfhost_bootstrap.sh
@@ -87,26 +86,9 @@ Next steps / verification
 2) Verify cron entry:
    crontab -l | grep project-docs-autoupdate
 
-Optional: GitHub Actions deploy (push-to-main)
-----------------------------------------------
-This repo includes: .github/workflows/deploy-selfhost.yml
-
-Add these GitHub repo secrets:
-- DEPLOY_HOST: <your-server-hostname-or-ip>
-- DEPLOY_PORT: 22
-- DEPLOY_USER: <ssh-user>
-- DEPLOY_PATH: $REPO_DIR
-- DEPLOY_SSH_KEY: <private key contents>
-
-Server prerequisites for the workflow:
-- rsync installed (Debian/Ubuntu): sudo apt install -y rsync
-- docker + docker compose installed and usable by DEPLOY_USER
-
-Create a deploy key (run on your local machine):
-  ssh-keygen -t ed25519 -C "project-docs deploy" -f ./project-docs_deploy_key -N ""
-
-Then:
-- Put the PUBLIC key (project-docs_deploy_key.pub) into: ~DEPLOY_USER/.ssh/authorized_keys on the server
-- Put the PRIVATE key (project-docs_deploy_key) into GitHub secret DEPLOY_SSH_KEY
+Notes
+-----
+- This setup does not require any GitHub repo secrets.
+- Updates are pulled by the server itself (cron).
 
 EOF
