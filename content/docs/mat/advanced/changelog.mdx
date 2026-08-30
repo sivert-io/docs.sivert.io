@@ -23,6 +23,57 @@ This page is generated from git tags and commit subjects in the `matchzy-auto-to
 
 - (none yet)
 
+## v2.2.0 (2026-08-30) — **MINOR**
+
+### Features
+
+- Add `ADMIN_STEAM_IDS` to grant admin from the environment, so an instance with players but no admin can be recovered without wiping the database
+- Check the Steam Web API key at startup and log whether it is missing, invalid or unreachable
+- Warn when a saved team puts a player on two teams of the same tournament
+
+### Fixes
+
+- Fix the team page reading membership from the match config snapshot, which hid the server from a player added after the match was created and still showed it to a removed one
+- Fix admin refusals redirecting to the player profile without saying why
+- Fix IP-ban tracking being skipped whenever the game-port query failed, even though the server answered RCON
+
+## v2.1.1 (2026-08-29) — **PATCH**
+
+### Fixes
+
+- Fix an assigned, answering server reading as "waiting for server assignment"
+- Add the missing endpoint behind "Add player to match", which failed for spectators and backup players
+- Fix Copy Console Command doing nothing over plain HTTP
+
+### Ops/Docs
+
+- Sweep every main page for WCAG 2.1 A/AA accessibility violations
+- Cover a drawn decider ending the series
+
+## v2.1.0 (2026-08-29) — **MINOR**
+
+### Features
+
+- Add a server hostname format setting, including an empty value that keeps the hostname from your `server.cfg`
+- Add admin impersonation, so an admin can view the site as another player
+
+### Fixes
+
+- Fix match reports never reaching MAT, which left live phase tracking, connection snapshots and server status reconciliation dead
+- Fix the knife round showing the match as warmup throughout side selection
+- Fix End Match ending only the round, leaving the match showing LIVE
+- Fix a stale match record pinning a server forever
+- Fix a BO3/BO5 recording only the last map in series stats and profile KDA
+- Fix a player on two teams deadlocking the veto
+- Fix upgrades failing on missing columns by deriving column migrations from the schema
+- Fix one unhandled promise rejection taking down the API
+- Fix the container serving 502s when the API dies
+
+### Ops/Docs
+
+- Run lint, type checking and the E2E suite on every pull request
+- Fix the release workflow, which referenced Docker Hub secrets that did not exist
+
 ## v2.0.14 (2026-02-15) — **PATCH**
 
 ### Features
