@@ -5,6 +5,18 @@ description: Beginner-friendly guide for safely updating MAT when running via Do
 
 This guide is for operators who run **MatchZy Auto Tournament (MAT)** via Docker and want a simple, safe upgrade workflow.
 
+## If you lose admin access after updating
+
+An instance that has players but no admin cannot promote anyone by signing in. The
+first-user-becomes-admin rule only applies while the database is empty. Add your Steam64 ID to
+`.env` and restart:
+
+```bash
+ADMIN_STEAM_IDS=76561198000000001
+```
+
+You do not need to wipe anything.
+
 ## Before you update
 
 ### 1) Find your MAT folder

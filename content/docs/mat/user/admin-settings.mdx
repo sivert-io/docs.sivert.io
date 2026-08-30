@@ -33,6 +33,18 @@ The **Sync CS2 Maps** button downloads or updates the list of available CS2 maps
 
 Click **“Sync CS2 Maps”** and wait until you see a success message. Existing maps are kept; only new ones are added.
 
+## Server hostname
+
+Under **Matches and rating**, **Server hostname format** controls the name your CS2 servers
+take when a match loads.
+
+Tokens: `{MATCH_ID}`, `{MAP}`, `{MAPNUMBER}`, `{TEAM1}`, `{TEAM2}`, `{TEAM1_SCORE}`,
+`{TEAM2_SCORE}`. The default is `{TEAM1} vs {TEAM2}`.
+
+Leave it empty to keep the hostname each server sets in its own `server.cfg`. MatchZy rewrites
+the hostname on every match load, so an empty value here is the only way to stop it replacing
+yours.
+
 ## MatchZy Enhanced configuration
 
 The platform automatically applies MatchZy Enhanced configuration to matches based on tournament type (official vs shuffle vs manual). No manual configuration required.

@@ -93,6 +93,9 @@ STEAM_API_KEY=
 AUTH_STEAM_ENABLED=true
 LOG_LEVEL=info
 
+# optional: Steam64 IDs that always have admin rights
+# ADMIN_STEAM_IDS=76561198000000001
+
 # database (defaults are fine for most installs)
 DB_USER=postgres
 DB_PASSWORD=postgres
@@ -120,8 +123,22 @@ Open [http://localhost:3069](http://localhost:3069).
 
 #### 4) First admin login
 
-- Click **Sign in with Steam**.
-- If there are **no admins yet**, the **first Steam user to sign in** is automatically promoted to admin.
+Click **Sign in with Steam**. On a fresh install with no players yet, the first Steam user to
+sign in is promoted to admin.
+
+That only works while the database is empty. Once more than one player exists, nobody is
+auto-promoted. An instance that already has players but no admin, such as an import or an
+upgrade from 1.x, cannot make anyone an admin this way.
+
+Set `ADMIN_STEAM_IDS` instead:
+
+```bash
+ADMIN_STEAM_IDS=76561198000000001
+```
+
+Restart and sign in. MAT re-applies this on every start, so it also works as a way back in if
+you ever lose admin access. Separate several IDs with commas. It only grants admin. Removing an
+ID does not take admin away from anyone.
 
 ### Option B: clone the repo (dev / contributing)
 
