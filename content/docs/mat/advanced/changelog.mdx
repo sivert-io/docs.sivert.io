@@ -23,6 +23,27 @@ This page is generated from git tags and commit subjects in the `matchzy-auto-to
 
 - (none yet)
 
+## v2.3.0 (2026-09-07) — **MINOR**
+
+### Features
+
+- Add API tokens (`API_TOKENS`, `API_TOKENS_READONLY`) so a bot or script can call the admin API without signing in through a browser
+- Publish an OpenAPI spec covering every endpoint, at `/api-docs.json` and in the repository, so you can generate a client in any language
+- Add an example Discord bot under `examples/discord-bot`, with a scoreboard that updates itself while a match is played
+
+### Fixes
+
+- Require `X-MatchZy-Token` on the game event webhooks. They accepted events from anyone who could reach the API, so anyone could report match results. Servers that MAT set up already send the token. Set `ALLOW_UNAUTHENTICATED_EVENTS=true` to keep accepting events without one while you reconnect a server that does not
+- Fix `/api-docs` and `/api-docs.json` returning the dashboard instead of the API documentation. The reverse proxy in the Docker image only forwarded paths under `/api/`, so Swagger UI had never worked in a Docker deployment
+- Fix the OpenAPI spec served by the Docker image having no descriptions. The image ships bundled JavaScript, and the descriptions are read from the TypeScript sources, which are not in it
+- Fix three `/api/templates/{id}` endpoints appearing twice in the OpenAPI spec, from documentation comments written with Express-style `:id` instead of `{id}`
+
+### Ops/Docs
+
+- Generate the endpoint reference and the OpenAPI spec from the Express routers, and fail CI when either drifts from the code
+- Add a guide for calling the API from a bot or script, with a worked Discord scoreboard example
+- Mark routes that are registered twice and never reached. `GET /api/tournament/{id}/leaderboard` is registered both before and after the admin guard, so it answers without one
+
 ## v2.2.0 (2026-08-30) — **MINOR**
 
 ### Features

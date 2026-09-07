@@ -10,8 +10,8 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000",
-      "description": "API server (from API_BASE_URL, FRONTEND_BASE_URL, or localhost)"
+      "url": "http://localhost:3069",
+      "description": "Your MAT instance. Replace with its base URL."
     }
   ],
   "components": {
@@ -19,14 +19,20 @@
       "bearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "description": "Dashboard/admin authentication. Send `Authorization: Bearer <token>`."
+        "bearerFormat": "opaque",
+        "description": "Service token for machine clients (bots, scripts, CI). Send `Authorization: Bearer <token>`, where the token is one configured in API_TOKENS (full admin) or API_TOKENS_READONLY (GET only). Human admins authenticate with a session cookie instead."
       },
       "BearerAuth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT",
-        "description": "Dashboard/admin authentication. Send `Authorization: Bearer <token>`."
+        "bearerFormat": "opaque",
+        "description": "Service token for machine clients (bots, scripts, CI). Send `Authorization: Bearer <token>`, where the token is one configured in API_TOKENS (full admin) or API_TOKENS_READONLY (GET only). Human admins authenticate with a session cookie instead."
+      },
+      "apiToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Token",
+        "description": "Service token, as an alternative to `Authorization: Bearer <token>`."
       },
       "matchzyServerToken": {
         "type": "apiKey",
@@ -78,58 +84,6 @@
             "type": "integer",
             "description": "Unix timestamp of last update",
             "example": 1699000000
-          },
-          "pluginVersion": {
-            "type": "string",
-            "nullable": true,
-            "description": "MatchZy Enhanced version reported by the server (from server_configured).",
-            "example": "1.4.12"
-          },
-          "hostname": {
-            "type": "string",
-            "nullable": true,
-            "description": "CS2 server hostname (from hostname convar, reported by MatchZy Enhanced).",
-            "example": "Server #1"
-          },
-          "lastSeen": {
-            "type": "integer",
-            "nullable": true,
-            "description": "Unix timestamp of last event received from this server (heartbeat).",
-            "example": 1769805517
-          },
-          "status": {
-            "type": "string",
-            "nullable": true,
-            "description": "Tracked server status (online/offline/unknown).",
-            "example": "online"
-          },
-          "persistentConfigSent": {
-            "type": "integer",
-            "nullable": true,
-            "description": "Unix timestamp when MAT last sent persistent MatchZy config via RCON.",
-            "example": 1769805400
-          },
-          "cs2RequiredVersion": {
-            "type": "integer",
-            "nullable": true,
-            "description": "If set, the server reported a required CS2 update (Steam required_version).",
-            "example": 14134
-          },
-          "cs2UpdatePhase": {
-            "type": "string",
-            "nullable": true,
-            "description": "Best-effort phase reported by MatchZy Enhanced ('available' when update is detected, 'shutdown' right before quitting).",
-            "enum": [
-              "available",
-              "shutdown"
-            ],
-            "example": "available"
-          },
-          "cs2UpdateRequiredAt": {
-            "type": "integer",
-            "nullable": true,
-            "description": "Unix timestamp when the update-required state was last reported.",
-            "example": 1769805517
           }
         }
       },
@@ -241,19 +195,915 @@
   },
   "tags": [
     {
+      "name": "Auth",
+      "description": "Sign-in flows, admin identity, impersonation."
+    },
+    {
+      "name": "Demos",
+      "description": "Demo upload from the game server, and download."
+    },
+    {
+      "name": "ELO templates",
+      "description": "Rating calculation presets."
+    },
+    {
+      "name": "Events",
+      "description": "MatchZy webhooks in, and the recorded event log out."
+    },
+    {
+      "name": "Generation",
+      "description": "Shared generators, e.g. random team names."
+    },
+    {
       "name": "Health",
       "description": "Health check endpoints"
+    },
+    {
+      "name": "Logs",
+      "description": "Server-side event logs."
+    },
+    {
+      "name": "Manual match templates",
+      "description": "Saved configurations for one-off matches."
+    },
+    {
+      "name": "Map pools",
+      "description": "Named sets of maps for veto and match config."
+    },
+    {
+      "name": "Maps",
+      "description": "The map catalogue."
+    },
+    {
+      "name": "Matches",
+      "description": "Create, load, restart and cancel matches; read match state."
+    },
+    {
+      "name": "MatchZy",
+      "description": "MatchZy Enhanced version information."
+    },
+    {
+      "name": "Players",
+      "description": "Player records, ratings, match history and profiles."
+    },
+    {
+      "name": "RCON",
+      "description": "RCON command endpoints (authentication required)"
+    },
+    {
+      "name": "Recovery",
+      "description": "Reconcile matches after an API restart or a server going away."
+    },
+    {
+      "name": "Server bootstrap",
+      "description": "Self-registration for a CS2 server coming online."
+    },
+    {
+      "name": "Server status",
+      "description": "Liveness, connectivity and CS2 update state per server."
     },
     {
       "name": "Servers",
       "description": "Server management endpoints"
     },
     {
-      "name": "RCON",
-      "description": "RCON command endpoints (authentication required)"
+      "name": "Settings",
+      "description": "Instance-wide settings."
+    },
+    {
+      "name": "Steam",
+      "description": "Steam Web API lookups (profiles, avatars, key health)."
+    },
+    {
+      "name": "Team match view",
+      "description": "A team's current match, oriented to that team. Public."
+    },
+    {
+      "name": "Team stats",
+      "description": "Past results and aggregates for a team. Public."
+    },
+    {
+      "name": "Teams",
+      "description": "Team roster CRUD, including batch create and delete."
+    },
+    {
+      "name": "Test helpers",
+      "description": "E2E helpers. Disabled in production unless ENABLE_TEST_ENDPOINTS is set."
+    },
+    {
+      "name": "Tournament",
+      "description": "The tournament itself — setup, bracket, rounds, standings."
+    },
+    {
+      "name": "Tournament templates",
+      "description": "Saved tournament configurations."
+    },
+    {
+      "name": "Veto",
+      "description": "Map veto state and actions."
     }
   ],
   "paths": {
+    "/": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Get API information",
+        "description": "Returns basic information about the API and available endpoints",
+        "responses": {
+          "200": {
+            "description": "API information"
+          }
+        }
+      }
+    },
+    "/api/auth/admin-status": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "GET /api/auth/admin-status",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/admin/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "POST /api/auth/admin/logout",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/admin/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "GET /api/auth/admin/me",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/discord": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "GET /api/auth/discord",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/discord/callback": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "GET /api/auth/discord/callback",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/github": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "GET /api/auth/github",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/github/callback": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "GET /api/auth/github/callback",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/impersonate": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Current impersonation state for the signed-in admin",
+        "responses": {
+          "200": {
+            "description": "Impersonation state"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Start impersonating a player (admin only)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "steamId"
+                ],
+                "properties": {
+                  "steamId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Impersonation started"
+          },
+          "400": {
+            "description": "Invalid Steam ID"
+          },
+          "403": {
+            "description": "Target is an admin, or caller is not an admin"
+          },
+          "404": {
+            "description": "No such player"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/auth/impersonate/stop": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Stop impersonating and return to your own identity",
+        "responses": {
+          "200": {
+            "description": "Impersonation cleared"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/auth/keycloak": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "GET /api/auth/keycloak",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/keycloak/callback": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "GET /api/auth/keycloak/callback",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/logout": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "POST /api/auth/logout",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "GET /api/auth/me",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/providers": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "GET /api/auth/providers",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/self-register": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "POST /api/auth/self-register",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/steam": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "GET /api/auth/steam",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/auth/steam/callback": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "GET /api/auth/steam/callback",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/demos/{matchSlug}/download/{mapNumber}?": {
+      "get": {
+        "tags": [
+          "Demos"
+        ],
+        "summary": "GET /api/demos/:matchSlug/download/:mapNumber?",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mapNumber",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/demos/{matchSlug}/info": {
+      "get": {
+        "tags": [
+          "Demos"
+        ],
+        "summary": "GET /api/demos/:matchSlug/info",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/demos/{matchSlug}/status": {
+      "get": {
+        "tags": [
+          "Demos"
+        ],
+        "summary": "GET /api/demos/:matchSlug/status",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/demos/{matchSlug}/upload": {
+      "post": {
+        "tags": [
+          "Demos"
+        ],
+        "summary": "POST /api/demos/:matchSlug/upload",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "matchzyServerToken": []
+          }
+        ]
+      }
+    },
+    "/api/elo-templates": {
+      "get": {
+        "tags": [
+          "ELO templates"
+        ],
+        "summary": "GET /api/elo-templates",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "ELO templates"
+        ],
+        "summary": "POST /api/elo-templates",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/elo-templates/{id}": {
+      "get": {
+        "tags": [
+          "ELO templates"
+        ],
+        "summary": "GET /api/elo-templates/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "ELO templates"
+        ],
+        "summary": "PUT /api/elo-templates/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ELO templates"
+        ],
+        "summary": "DELETE /api/elo-templates/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/events": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "POST /api/events",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "matchzyServerToken": []
+          }
+        ]
+      }
+    },
+    "/api/events/connections/{matchSlug}": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "GET /api/events/connections/:matchSlug",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/events/live/{matchSlug}": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "GET /api/events/live/:matchSlug",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/events/report": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "POST /api/events/report",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "matchzyServerToken": []
+          }
+        ]
+      }
+    },
+    "/api/events/server/{serverId}": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "GET /api/events/server/:serverId",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "serverId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/events/test": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "GET /api/events/test",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/events/{matchSlugOrServerId}": {
+      "post": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "POST /api/events/:matchSlugOrServerId",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchSlugOrServerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "matchzyServerToken": []
+          }
+        ]
+      }
+    },
+    "/api/events/{matchSlug}": {
+      "get": {
+        "tags": [
+          "Events"
+        ],
+        "summary": "GET /api/events/:matchSlug",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/generation/team-name": {
+      "get": {
+        "tags": [
+          "Generation"
+        ],
+        "summary": "GET /api/generation/team-name",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/health/fleet": {
+      "get": {
+        "tags": [
+          "Health"
+        ],
+        "summary": "Fleet health snapshot",
+        "description": "Quick operator snapshot of enabled servers and CS2 update status.",
+        "responses": {
+          "200": {
+            "description": "Fleet snapshot"
+          }
+        }
+      }
+    },
     "/api/logs": {
       "get": {
         "tags": [
@@ -263,7 +1113,10 @@
         "description": "Returns recent log entries for debugging and auditing",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "parameters": [
@@ -301,419 +1154,1202 @@
         }
       }
     },
-    "/api/rcon/test": {
+    "/api/manual-match-templates": {
       "get": {
         "tags": [
-          "RCON"
+          "Manual match templates"
         ],
-        "summary": "Test all RCON connections",
-        "description": "Test RCON connectivity to all enabled servers",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
+        "summary": "GET /api/manual-match-templates",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
         "responses": {
           "200": {
-            "description": "Test results"
-          },
-          "401": {
-            "description": "Unauthorized"
+            "description": "Success"
           }
-        }
-      }
-    },
-    "/api/rcon/test/{serverId}": {
-      "get": {
-        "tags": [
-          "RCON"
-        ],
-        "summary": "Test RCON connection to specific server",
+        },
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Manual match templates"
         ],
+        "summary": "POST /api/manual-match-templates",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/map-pools": {
+      "get": {
+        "tags": [
+          "Map pools"
+        ],
+        "summary": "GET /api/map-pools",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Map pools"
+        ],
+        "summary": "POST /api/map-pools",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/map-pools/{id}": {
+      "get": {
+        "tags": [
+          "Map pools"
+        ],
+        "summary": "GET /api/map-pools/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
         "parameters": [
           {
+            "name": "id",
             "in": "path",
-            "name": "serverId",
             "required": true,
             "schema": {
               "type": "string"
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Connection successful"
+        "security": [
+          {
+            "bearerAuth": []
           },
-          "400": {
-            "description": "Connection failed"
+          {
+            "apiToken": []
           }
-        }
-      }
-    },
-    "/api/rcon/practice-mode": {
-      "post": {
+        ]
+      },
+      "put": {
         "tags": [
-          "RCON"
+          "Map pools"
         ],
-        "summary": "Start practice mode",
-        "description": "Execute css_prac command on server",
+        "summary": "PUT /api/map-pools/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "security": [
           {
             "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "serverId"
-                ],
-                "properties": {
-                  "serverId": {
-                    "type": "string",
-                    "example": "cs1"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Command executed",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RconResponse"
-                }
-              }
-            }
           },
-          "401": {
-            "description": "Unauthorized"
+          {
+            "apiToken": []
           }
-        }
-      }
-    },
-    "/api/rcon/start-match": {
-      "post": {
+        ]
+      },
+      "delete": {
         "tags": [
-          "RCON"
+          "Map pools"
         ],
-        "summary": "Force start match",
-        "description": "Execute css_start command on server",
+        "summary": "DELETE /api/map-pools/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "security": [
           {
             "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "serverId"
-                ],
-                "properties": {
-                  "serverId": {
-                    "type": "string",
-                    "example": "cs1"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Match started"
-          }
-        }
-      }
-    },
-    "/api/rcon/change-map": {
-      "post": {
-        "tags": [
-          "RCON"
-        ],
-        "summary": "Change map",
-        "description": "Execute css_map command on server",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "serverId",
-                  "mapName"
-                ],
-                "properties": {
-                  "serverId": {
-                    "type": "string",
-                    "example": "cs1"
-                  },
-                  "mapName": {
-                    "type": "string",
-                    "example": "de_dust2",
-                    "description": "Map name (alphanumeric, underscores, hyphens only)"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Map changed"
           },
-          "400": {
-            "description": "Invalid map name"
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/map-pools/{id}/disable": {
+      "put": {
+        "tags": [
+          "Map pools"
+        ],
+        "summary": "PUT /api/map-pools/:id/disable",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/map-pools/{id}/enable": {
+      "put": {
+        "tags": [
+          "Map pools"
+        ],
+        "summary": "PUT /api/map-pools/:id/enable",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/map-pools/{id}/set-default": {
+      "put": {
+        "tags": [
+          "Map pools"
+        ],
+        "summary": "PUT /api/map-pools/:id/set-default",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/maps": {
+      "get": {
+        "tags": [
+          "Maps"
+        ],
+        "summary": "GET /api/maps",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Maps"
+        ],
+        "summary": "POST /api/maps",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/maps/sync": {
+      "post": {
+        "tags": [
+          "Maps"
+        ],
+        "summary": "POST /api/maps/sync",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/maps/{id}": {
+      "get": {
+        "tags": [
+          "Maps"
+        ],
+        "summary": "GET /api/maps/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Maps"
+        ],
+        "summary": "PUT /api/maps/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Maps"
+        ],
+        "summary": "PATCH /api/maps/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Maps"
+        ],
+        "summary": "DELETE /api/maps/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/maps/{id}/upload-image": {
+      "post": {
+        "tags": [
+          "Maps"
+        ],
+        "summary": "POST /api/maps/:id/upload-image",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/matches": {
+      "get": {
+        "tags": [
+          "Matches"
+        ],
+        "summary": "GET /api/matches",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "summary": "POST /api/matches",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/matches/bulk-delete": {
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "summary": "POST /api/matches/bulk-delete",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/matches/{slug}": {
+      "get": {
+        "tags": [
+          "Matches"
+        ],
+        "summary": "GET /api/matches/:slug",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Matches"
+        ],
+        "summary": "DELETE /api/matches/:slug",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/matches/{slug}.json": {
+      "get": {
+        "tags": [
+          "Matches"
+        ],
+        "summary": "GET /api/matches/:slug.json",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/matches/{slug}/force-cancel": {
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "summary": "POST /api/matches/:slug/force-cancel",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/matches/{slug}/load": {
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "summary": "POST /api/matches/:slug/load",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/matches/{slug}/reallocate": {
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "summary": "POST /api/matches/:slug/reallocate",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/matches/{slug}/restart": {
+      "post": {
+        "tags": [
+          "Matches"
+        ],
+        "summary": "POST /api/matches/:slug/restart",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/matches/{slug}/status": {
+      "patch": {
+        "tags": [
+          "Matches"
+        ],
+        "summary": "PATCH /api/matches/:slug/status",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/matchzy/latest-version": {
+      "get": {
+        "tags": [
+          "MatchZy"
+        ],
+        "summary": "GET /api/matchzy/latest-version",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
           }
         }
       }
     },
-    "/api/rcon/pause-match": {
-      "post": {
+    "/api/players": {
+      "get": {
         "tags": [
-          "RCON"
+          "Players"
         ],
-        "summary": "Pause match",
-        "description": "Execute css_pause command",
+        "summary": "GET /api/players",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Players"
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "serverId"
-                ],
-                "properties": {
-                  "serverId": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
+        "summary": "POST /api/players",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
         "responses": {
           "200": {
-            "description": "Match paused"
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/players/bulk-delete": {
+      "post": {
+        "tags": [
+          "Players"
+        ],
+        "summary": "POST /api/players/bulk-delete",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/players/bulk-import": {
+      "post": {
+        "tags": [
+          "Players"
+        ],
+        "summary": "POST /api/players/bulk-import",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/players/find": {
+      "get": {
+        "tags": [
+          "Players"
+        ],
+        "summary": "GET /api/players/find",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
           }
         }
       }
     },
-    "/api/rcon/unpause-match": {
-      "post": {
+    "/api/players/me/match-status": {
+      "get": {
         "tags": [
-          "RCON"
+          "Players"
         ],
-        "summary": "Unpause match",
-        "description": "Execute css_unpause command",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "serverId"
-                ],
-                "properties": {
-                  "serverId": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
+        "summary": "GET /api/players/me/match-status",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
         "responses": {
           "200": {
-            "description": "Match unpaused"
+            "description": "Success"
           }
         }
       }
     },
-    "/api/rcon/restart-match": {
-      "post": {
+    "/api/players/public-selection": {
+      "get": {
         "tags": [
-          "RCON"
+          "Players"
         ],
-        "summary": "Restart match",
-        "description": "Execute mp_restartgame command (restarts current round)",
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "serverId"
-                ],
-                "properties": {
-                  "serverId": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
+        "summary": "GET /api/players/public-selection",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
         "responses": {
           "200": {
-            "description": "Match restarted"
+            "description": "Success"
           }
         }
       }
     },
-    "/api/rcon/end-warmup": {
-      "post": {
+    "/api/players/selection": {
+      "get": {
         "tags": [
-          "RCON"
+          "Players"
         ],
-        "summary": "End warmup",
-        "description": "Execute mp_warmup_end command",
+        "summary": "GET /api/players/selection",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "serverId"
-                ],
-                "properties": {
-                  "serverId": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Warmup ended"
-          }
-        }
+        ]
       }
     },
-    "/api/rcon/reload-admins": {
-      "post": {
+    "/api/players/{playerId}": {
+      "get": {
         "tags": [
-          "RCON"
+          "Players"
         ],
-        "summary": "Reload admins",
-        "description": "Execute reload_admins command",
+        "summary": "GET /api/players/:playerId",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Players"
+        ],
+        "summary": "PUT /api/players/:playerId",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Players"
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "serverId"
-                ],
-                "properties": {
-                  "serverId": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
+        "summary": "DELETE /api/players/:playerId",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
         "responses": {
           "200": {
-            "description": "Admins reloaded"
+            "description": "Success"
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
       }
     },
-    "/api/rcon/say": {
+    "/api/players/{playerId}/avatar.svg": {
+      "get": {
+        "tags": [
+          "Players"
+        ],
+        "summary": "GET /api/players/:playerId/avatar.svg",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/players/{playerId}/current-match": {
+      "get": {
+        "tags": [
+          "Players"
+        ],
+        "summary": "GET /api/players/:playerId/current-match",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/players/{playerId}/matches": {
+      "get": {
+        "tags": [
+          "Players"
+        ],
+        "summary": "GET /api/players/:playerId/matches",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/players/{playerId}/rating-history": {
+      "get": {
+        "tags": [
+          "Players"
+        ],
+        "summary": "GET /api/players/:playerId/rating-history",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/players/{playerId}/summary": {
+      "get": {
+        "tags": [
+          "Players"
+        ],
+        "summary": "GET /api/players/:playerId/summary",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/players/{playerId}/team": {
+      "get": {
+        "tags": [
+          "Players"
+        ],
+        "summary": "GET /api/players/:playerId/team",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "playerId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/rcon/add-time": {
       "post": {
         "tags": [
           "RCON"
         ],
-        "summary": "Send message to server",
-        "description": "Send a chat message to a specific server (sanitized, max 200 chars)",
+        "summary": "POST /api/rcon/add-time",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "serverId",
-                  "message"
-                ],
-                "properties": {
-                  "serverId": {
-                    "type": "string",
-                    "example": "cs1"
-                  },
-                  "message": {
-                    "type": "string",
-                    "example": "Welcome to the tournament!",
-                    "maxLength": 200
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Message sent"
-          }
-        }
+        ]
       }
     },
     "/api/rcon/broadcast": {
@@ -726,6 +2362,9 @@
         "security": [
           {
             "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "requestBody": {
@@ -770,6 +2409,738 @@
         }
       }
     },
+    "/api/rcon/change-map": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "Change map",
+        "description": "Execute css_map command on server",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "serverId",
+                  "mapName"
+                ],
+                "properties": {
+                  "serverId": {
+                    "type": "string",
+                    "example": "cs1"
+                  },
+                  "mapName": {
+                    "type": "string",
+                    "example": "de_dust2",
+                    "description": "Map name (alphanumeric, underscores, hyphens only)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Map changed"
+          },
+          "400": {
+            "description": "Invalid map name"
+          }
+        }
+      }
+    },
+    "/api/rcon/command": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "POST /api/rcon/command",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/rcon/end-match": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "POST /api/rcon/end-match",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/rcon/end-warmup": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "End warmup",
+        "description": "Execute mp_warmup_end command",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "serverId"
+                ],
+                "properties": {
+                  "serverId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Warmup ended"
+          }
+        }
+      }
+    },
+    "/api/rcon/force-pause": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "POST /api/rcon/force-pause",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/rcon/force-unpause": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "POST /api/rcon/force-unpause",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/rcon/pause-match": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "Pause match",
+        "description": "Execute css_pause command",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "serverId"
+                ],
+                "properties": {
+                  "serverId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Match paused"
+          }
+        }
+      }
+    },
+    "/api/rcon/practice-mode": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "Start practice mode",
+        "description": "Execute css_prac command on server",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "serverId"
+                ],
+                "properties": {
+                  "serverId": {
+                    "type": "string",
+                    "example": "cs1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Command executed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RconResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/rcon/reload-admins": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "Reload admins",
+        "description": "Execute reload_admins command",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "serverId"
+                ],
+                "properties": {
+                  "serverId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Admins reloaded"
+          }
+        }
+      }
+    },
+    "/api/rcon/restart-match": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "Restart match",
+        "description": "Execute mp_restartgame command (restarts current round)",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "serverId"
+                ],
+                "properties": {
+                  "serverId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Match restarted"
+          }
+        }
+      }
+    },
+    "/api/rcon/restart-round": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "POST /api/rcon/restart-round",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/rcon/restore-backup": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "POST /api/rcon/restore-backup",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/rcon/say": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "Send message to server",
+        "description": "Send a chat message to a specific server (sanitized, max 200 chars)",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "serverId",
+                  "message"
+                ],
+                "properties": {
+                  "serverId": {
+                    "type": "string",
+                    "example": "cs1"
+                  },
+                  "message": {
+                    "type": "string",
+                    "example": "Welcome to the tournament!",
+                    "maxLength": 200
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Message sent"
+          }
+        }
+      }
+    },
+    "/api/rcon/skip-veto": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "POST /api/rcon/skip-veto",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/rcon/start-match": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "Force start match",
+        "description": "Execute css_start command on server",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "serverId"
+                ],
+                "properties": {
+                  "serverId": {
+                    "type": "string",
+                    "example": "cs1"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Match started"
+          }
+        }
+      }
+    },
+    "/api/rcon/swap-teams": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "POST /api/rcon/swap-teams",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/rcon/test": {
+      "get": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "Test all RCON connections",
+        "description": "Test RCON connectivity to all enabled servers",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Test results"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/api/rcon/test-connection": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "POST /api/rcon/test-connection",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/rcon/test/{serverId}": {
+      "get": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "Test RCON connection to specific server",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "serverId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connection successful"
+          },
+          "400": {
+            "description": "Connection failed"
+          }
+        }
+      }
+    },
+    "/api/rcon/unpause-match": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "Unpause match",
+        "description": "Execute css_unpause command",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "serverId"
+                ],
+                "properties": {
+                  "serverId": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Match unpaused"
+          }
+        }
+      }
+    },
+    "/api/rcon/{serverId}/add-player": {
+      "post": {
+        "tags": [
+          "RCON"
+        ],
+        "summary": "POST /api/rcon/:serverId/add-player",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "serverId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/recovery/recover": {
+      "post": {
+        "tags": [
+          "Recovery"
+        ],
+        "summary": "POST /api/recovery/recover",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/recovery/replay/{matchSlug}": {
+      "post": {
+        "tags": [
+          "Recovery"
+        ],
+        "summary": "POST /api/recovery/replay/:matchSlug",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "matchSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
     "/api/servers": {
       "get": {
         "tags": [
@@ -812,7 +3183,15 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
       },
       "post": {
         "tags": [
@@ -882,7 +3261,15 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
       }
     },
     "/api/servers/batch": {
@@ -922,7 +3309,79 @@
           "207": {
             "description": "Partial success (some servers failed)"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Servers"
+        ],
+        "summary": "PATCH /api/servers/batch",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/servers/bulk-delete": {
+      "post": {
+        "tags": [
+          "Servers"
+        ],
+        "summary": "POST /api/servers/bulk-delete",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/servers/reset-all-initialization": {
+      "post": {
+        "tags": [
+          "Servers"
+        ],
+        "summary": "POST /api/servers/reset-all-initialization",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
       }
     },
     "/api/servers/{id}": {
@@ -972,7 +3431,45 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Servers"
+        ],
+        "summary": "PUT /api/servers/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
       },
       "patch": {
         "tags": [
@@ -1007,7 +3504,15 @@
           "404": {
             "description": "Server not found"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -1032,30 +3537,44 @@
           "404": {
             "description": "Server not found"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
       }
     },
-    "/api/servers/{id}/enable": {
-      "post": {
+    "/api/servers/{id}/bootstrap": {
+      "get": {
         "tags": [
-          "Servers"
+          "Server bootstrap"
         ],
-        "summary": "Enable server",
+        "summary": "GET /api/servers/:id/bootstrap",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
         "parameters": [
           {
-            "in": "path",
             "name": "id",
+            "in": "path",
             "required": true,
             "schema": {
               "type": "string"
             }
           }
         ],
-        "responses": {
-          "200": {
-            "description": "Server enabled"
+        "security": [
+          {
+            "matchzyServerToken": []
           }
-        }
+        ]
       }
     },
     "/api/servers/{id}/disable": {
@@ -1078,7 +3597,78 @@
           "200": {
             "description": "Server disabled"
           }
-        }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/servers/{id}/enable": {
+      "post": {
+        "tags": [
+          "Servers"
+        ],
+        "summary": "Enable server",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server enabled"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/servers/{id}/reset-initialization": {
+      "post": {
+        "tags": [
+          "Servers"
+        ],
+        "summary": "POST /api/servers/:id/reset-initialization",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
       }
     },
     "/api/servers/{id}/status": {
@@ -1090,7 +3680,10 @@
         "description": "Attempts to connect to the server via RCON and returns online/offline status",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "parameters": [
@@ -1114,24 +3707,97 @@
         }
       }
     },
-    "/api/steam/status": {
+    "/api/settings": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "GET /api/settings",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "PUT /api/settings",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/settings/version": {
+      "get": {
+        "tags": [
+          "Settings"
+        ],
+        "summary": "GET /api/settings/version",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/steam/player/{steamId}": {
       "get": {
         "tags": [
           "Steam"
         ],
-        "summary": "Check Steam API connectivity",
-        "description": "Verifies whether a Steam Web API key is configured and reachable.",
+        "summary": "Get player information by Steam ID64",
+        "description": "Fetches player name and avatar from Steam API",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "steamId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Steam ID64"
           }
         ],
         "responses": {
           "200": {
-            "description": "Steam API status. Returns configured=true when key is set and reachable, otherwise configured=false."
+            "description": "Player information retrieved"
+          },
+          "404": {
+            "description": "Player not found"
           },
           "503": {
-            "description": "Steam API key is set but Steam could not be reached"
+            "description": "Steam API not configured"
           }
         }
       }
@@ -1145,7 +3811,10 @@
         "description": "Resolves various Steam input formats (vanity URL, vanity ID, profile URL) to a Steam ID64 and fetches player info",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "requestBody": {
@@ -1181,40 +3850,301 @@
         }
       }
     },
-    "/api/steam/player/{steamId}": {
+    "/api/steam/status": {
       "get": {
         "tags": [
           "Steam"
         ],
-        "summary": "Get player information by Steam ID64",
-        "description": "Fetches player name and avatar from Steam API",
+        "summary": "Check Steam API connectivity",
+        "description": "Verifies whether a Steam Web API key is configured and reachable.",
         "security": [
           {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
+            "bearerAuth": []
+          },
           {
-            "in": "path",
-            "name": "steamId",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Steam ID64"
+            "apiToken": []
           }
         ],
         "responses": {
           "200": {
-            "description": "Player information retrieved"
-          },
-          "404": {
-            "description": "Player not found"
+            "description": "Steam API status. Returns configured=true when key is set and reachable, otherwise configured=false."
           },
           "503": {
-            "description": "Steam API not configured"
+            "description": "Steam API key is set but Steam could not be reached"
           }
         }
+      }
+    },
+    "/api/steam/workshop-map": {
+      "get": {
+        "tags": [
+          "Steam"
+        ],
+        "summary": "GET /api/steam/workshop-map",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/team/{teamId}/history": {
+      "get": {
+        "tags": [
+          "Team stats"
+        ],
+        "summary": "GET /api/team/:teamId/history",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/team/{teamId}/match": {
+      "get": {
+        "tags": [
+          "Team match view"
+        ],
+        "summary": "GET /api/team/:teamId/match",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/team/{teamId}/stats": {
+      "get": {
+        "tags": [
+          "Team stats"
+        ],
+        "summary": "GET /api/team/:teamId/stats",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "teamId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/teams": {
+      "get": {
+        "tags": [
+          "Teams"
+        ],
+        "summary": "GET /api/teams",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Teams"
+        ],
+        "summary": "POST /api/teams",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/teams/batch": {
+      "patch": {
+        "tags": [
+          "Teams"
+        ],
+        "summary": "PATCH /api/teams/batch",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/teams/bulk-delete": {
+      "post": {
+        "tags": [
+          "Teams"
+        ],
+        "summary": "POST /api/teams/bulk-delete",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/teams/{id}": {
+      "get": {
+        "tags": [
+          "Teams"
+        ],
+        "summary": "GET /api/teams/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Teams"
+        ],
+        "summary": "PUT /api/teams/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Teams"
+        ],
+        "summary": "DELETE /api/teams/:id",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
       }
     },
     "/api/templates": {
@@ -1226,7 +4156,10 @@
         "description": "Returns all saved tournament templates",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "responses": {
@@ -1246,7 +4179,10 @@
         "description": "Creates a new tournament template from the provided configuration",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "requestBody": {
@@ -1314,7 +4250,7 @@
         }
       }
     },
-    "/api/templates/:id": {
+    "/api/templates/{id}": {
       "get": {
         "tags": [
           "Templates"
@@ -1323,7 +4259,10 @@
         "description": "Returns a specific tournament template",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "responses": {
@@ -1333,7 +4272,17 @@
           "404": {
             "description": "Template not found"
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
       },
       "put": {
         "tags": [
@@ -1343,7 +4292,10 @@
         "description": "Updates an existing tournament template",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "requestBody": {
@@ -1363,7 +4315,17 @@
           "404": {
             "description": "Template not found"
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
       },
       "delete": {
         "tags": [
@@ -1373,7 +4335,10 @@
         "description": "Deletes a tournament template",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "responses": {
@@ -1382,6 +4347,44 @@
           },
           "404": {
             "description": "Template not found"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/api/test/login-admin": {
+      "post": {
+        "tags": [
+          "Test helpers"
+        ],
+        "summary": "POST /api/test/login-admin",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/api/test/login-player": {
+      "post": {
+        "tags": [
+          "Test helpers"
+        ],
+        "summary": "POST /api/test/login-player",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
           }
         }
       }
@@ -1395,7 +4398,10 @@
         "description": "Helper endpoint for E2E tests to label log output with the current test name or context. The message is sanitized (length-limited and restricted to safe characters) before logging.\n",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "requestBody": {
@@ -1430,6 +4436,50 @@
         }
       }
     },
+    "/api/test/match-report": {
+      "post": {
+        "tags": [
+          "Test helpers"
+        ],
+        "summary": "POST /api/test/match-report",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/test/match-state": {
+      "post": {
+        "tags": [
+          "Test helpers"
+        ],
+        "summary": "POST /api/test/match-state",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
     "/api/test/reset-database": {
       "post": {
         "tags": [
@@ -1439,7 +4489,10 @@
         "description": "Drops and recreates the entire database schema and re-initializes default data. This endpoint is **development only** and is disabled when NODE_ENV=production.\n",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "responses": {
@@ -1455,38 +4508,24 @@
         }
       }
     },
-    "/api/tournament/{id}/leaderboard": {
-      "get": {
+    "/api/test/server-status": {
+      "post": {
         "tags": [
-          "Tournament"
+          "Test helpers"
         ],
-        "summary": "Get player leaderboard for shuffle tournament",
-        "description": "Returns leaderboard sorted by match wins, then ELO. Includes player stats (wins, losses, win rate, ELO change).",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "Tournament ID (currently only \"1\" is supported)"
-          }
-        ],
+        "summary": "POST /api/test/server-status",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
         "responses": {
           "200": {
-            "description": "Leaderboard retrieved successfully"
-          },
-          "400": {
-            "description": "Invalid tournament ID"
-          },
-          "500": {
-            "description": "Server error"
+            "description": "Success"
           }
         },
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ]
       }
@@ -1500,7 +4539,10 @@
         "description": "Returns the current tournament configuration and status",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "responses": {
@@ -1520,7 +4562,10 @@
         "description": "Creates a new tournament (replaces existing if any)",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "requestBody": {
@@ -1626,7 +4671,10 @@
         "description": "Update tournament settings (only allowed before tournament starts)",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "requestBody": {
@@ -1656,12 +4704,29 @@
         "description": "Ends all matches on servers and deletes the current tournament and all associated data",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "responses": {
           "200": {
             "description": "Tournament deleted successfully"
+          }
+        }
+      }
+    },
+    "/api/tournament/allocation-status": {
+      "get": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "GET /api/tournament/allocation-status",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
           }
         }
       }
@@ -1675,7 +4740,10 @@
         "description": "Returns the tournament bracket with all matches",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "responses": {
@@ -1697,7 +4765,10 @@
         "description": "Deletes all existing matches and regenerates bracket. Requires force=true for live tournaments.",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "requestBody": {
@@ -1725,6 +4796,31 @@
         }
       }
     },
+    "/api/tournament/dev/reset-simulation-state": {
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Reset simulation state while preserving core configuration (DEV ONLY)",
+        "description": "Clears all matches, match events, map results, player match stats, and rating history so you can restart simulations from a clean slate, while preserving servers, teams, maps, map pools, and the current tournament configuration (name, type, maps, teams, settings). Player records are kept, but their current ELO and match counts are reset based on their starting values.\n",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Simulation state reset successfully"
+          },
+          "500": {
+            "description": "Failed to reset simulation state"
+          }
+        }
+      }
+    },
     "/api/tournament/reset": {
       "post": {
         "tags": [
@@ -1734,7 +4830,10 @@
         "description": "Ends all matches on servers and resets tournament status to setup",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "responses": {
@@ -1744,24 +4843,27 @@
         }
       }
     },
-    "/api/tournament/start": {
+    "/api/tournament/restart": {
       "post": {
         "tags": [
           "Tournament"
         ],
-        "summary": "Start tournament and allocate servers",
-        "description": "Automatically allocates available servers to ready matches and loads them via RCON. Updates tournament status to 'in_progress'.",
+        "summary": "Restart tournament matches and reallocate servers",
+        "description": "Runs css_restart on all servers with loaded/live matches, resets matches to ready status, then reallocates servers. Useful for restarting stuck matches.",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "responses": {
           "200": {
-            "description": "Tournament started successfully with match allocation results"
+            "description": "Tournament restarted successfully with allocation results"
           },
           "400": {
-            "description": "Tournament not ready or no available servers"
+            "description": "Tournament not ready or restart failed"
           },
           "404": {
             "description": "No tournament exists"
@@ -1778,124 +4880,15 @@
         "description": "Returns the number of servers currently available for match allocation",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "responses": {
           "200": {
             "description": "Server availability retrieved successfully"
-          }
-        }
-      }
-    },
-    "/api/tournament/restart": {
-      "post": {
-        "tags": [
-          "Tournament"
-        ],
-        "summary": "Restart tournament matches and reallocate servers",
-        "description": "Runs css_restart on all servers with loaded/live matches, resets matches to ready status, then reallocates servers. Useful for restarting stuck matches.",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Tournament restarted successfully with allocation results"
-          },
-          "400": {
-            "description": "Tournament not ready or restart failed"
-          },
-          "404": {
-            "description": "No tournament exists"
-          }
-        }
-      }
-    },
-    "/api/tournament/wipe-database": {
-      "post": {
-        "tags": [
-          "Tournament"
-        ],
-        "summary": "Reset entire database (DEV ONLY)",
-        "description": "Drops all tables and reinitializes the database schema with default data (maps, map pools). This resets the database to its initial state as if starting fresh. USE WITH CAUTION!",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Database reset successfully"
-          }
-        }
-      }
-    },
-    "/api/tournament/wipe-table/{table}": {
-      "post": {
-        "tags": [
-          "Tournament"
-        ],
-        "summary": "Wipe specific table (DEV ONLY)",
-        "description": "Deletes all data from a specific table",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "parameters": [
-          {
-            "name": "table",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "enum": [
-                "teams",
-                "servers",
-                "tournament",
-                "matches",
-                "players",
-                "maps",
-                "map_pools",
-                "tournament_templates",
-                "elo_calculation_templates",
-                "match_events",
-                "match_map_results",
-                "player_rating_history",
-                "player_match_stats",
-                "shuffle_tournament_players",
-                "app_settings"
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Table wiped successfully"
-          }
-        }
-      }
-    },
-    "/api/tournament/dev/reset-simulation-state": {
-      "post": {
-        "tags": [
-          "Tournament"
-        ],
-        "summary": "Reset simulation state while preserving core configuration (DEV ONLY)",
-        "description": "Clears all matches, match events, map results, player match stats, and rating history so you can restart simulations from a clean slate, while preserving servers, teams, maps, map pools, and the current tournament configuration (name, type, maps, teams, settings). Player records are kept, but their current ELO and match counts are reset based on their starting values.\n",
-        "security": [
-          {
-            "BearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Simulation state reset successfully"
-          },
-          "500": {
-            "description": "Failed to reset simulation state"
           }
         }
       }
@@ -1909,7 +4902,10 @@
         "description": "Creates a new shuffle tournament with dynamic team balancing. Shuffle tournaments are individual player competitions where teams are automatically balanced and reshuffled each round based on ELO ratings.",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "requestBody": {
@@ -1973,6 +4969,333 @@
         }
       }
     },
+    "/api/tournament/start": {
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Start tournament and allocate servers",
+        "description": "Automatically allocates available servers to ready matches and loads them via RCON. Updates tournament status to 'in_progress'.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tournament started successfully with match allocation results"
+          },
+          "400": {
+            "description": "Tournament not ready or no available servers"
+          },
+          "404": {
+            "description": "No tournament exists"
+          }
+        }
+      }
+    },
+    "/api/tournament/wipe-database": {
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Reset entire database (DEV ONLY)",
+        "description": "Drops all tables and reinitializes the database schema with default data (maps, map pools). This resets the database to its initial state as if starting fresh. USE WITH CAUTION!",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Database reset successfully"
+          }
+        }
+      }
+    },
+    "/api/tournament/wipe-table/{table}": {
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Wipe specific table (DEV ONLY)",
+        "description": "Deletes all data from a specific table",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "table",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "teams",
+                "servers",
+                "tournament",
+                "matches",
+                "players",
+                "maps",
+                "map_pools",
+                "tournament_templates",
+                "elo_calculation_templates",
+                "match_events",
+                "match_map_results",
+                "player_rating_history",
+                "player_match_stats",
+                "shuffle_tournament_players",
+                "app_settings"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Table wiped successfully"
+          }
+        }
+      }
+    },
+    "/api/tournament/{id}/check-completion": {
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "POST /api/tournament/:id/check-completion",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/tournament/{id}/elo-template": {
+      "get": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "GET /api/tournament/:id/elo-template",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "PUT /api/tournament/:id/elo-template",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/tournament/{id}/generate-round": {
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "POST /api/tournament/:id/generate-round",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/tournament/{id}/leaderboard": {
+      "get": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Get player leaderboard for shuffle tournament",
+        "description": "Returns leaderboard sorted by match wins, then ELO. Includes player stats (wins, losses, win rate, ELO change).",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tournament ID (currently only \"1\" is supported)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Leaderboard retrieved successfully"
+          },
+          "400": {
+            "description": "Invalid tournament ID"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/tournament/{id}/manual-matches": {
+      "post": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "POST /api/tournament/:id/manual-matches",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
+      }
+    },
+    "/api/tournament/{id}/players": {
+      "get": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Get registered players for shuffle tournament",
+        "description": "Returns list of all players registered for the shuffle tournament with their current ELO ratings.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tournament ID (currently only \"1\" is supported)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Registered players retrieved successfully"
+          },
+          "400": {
+            "description": "Invalid tournament ID"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
     "/api/tournament/{id}/register-players": {
       "post": {
         "tags": [
@@ -1982,7 +5305,10 @@
         "description": "Register one or more players to a shuffle tournament. Players must exist in the players table. Only works when tournament is in \"setup\" status.",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "parameters": [
@@ -2035,6 +5361,45 @@
         }
       }
     },
+    "/api/tournament/{id}/round-status": {
+      "get": {
+        "tags": [
+          "Tournament"
+        ],
+        "summary": "Get current round status for shuffle tournament",
+        "description": "Returns current round number, map, match completion status, and progress. Used for displaying round status indicators.",
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Tournament ID (currently only \"1\" is supported)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Round status retrieved successfully"
+          },
+          "400": {
+            "description": "Invalid tournament ID or not a shuffle tournament"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
     "/api/tournament/{id}/set-players": {
       "put": {
         "tags": [
@@ -2044,7 +5409,10 @@
         "description": "Sets the complete list of registered players. Players not in the list will be unregistered, new players will be registered.",
         "security": [
           {
-            "BearerAuth": []
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
           }
         ],
         "parameters": [
@@ -2097,90 +5465,84 @@
         }
       }
     },
-    "/api/tournament/{id}/players": {
+    "/api/veto/{matchSlug}": {
       "get": {
         "tags": [
-          "Tournament"
+          "Veto"
         ],
-        "summary": "Get registered players for shuffle tournament",
-        "description": "Returns list of all players registered for the shuffle tournament with their current ELO ratings.",
-        "security": [
-          {
-            "BearerAuth": []
+        "summary": "GET /api/veto/:matchSlug",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
           }
-        ],
+        },
         "parameters": [
           {
+            "name": "matchSlug",
             "in": "path",
-            "name": "id",
             "required": true,
             "schema": {
               "type": "string"
-            },
-            "description": "Tournament ID (currently only \"1\" is supported)"
+            }
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "Registered players retrieved successfully"
-          },
-          "400": {
-            "description": "Invalid tournament ID"
-          },
-          "500": {
-            "description": "Server error"
-          }
-        }
+        ]
       }
     },
-    "/api/tournament/{id}/round-status": {
-      "get": {
+    "/api/veto/{matchSlug}/action": {
+      "post": {
         "tags": [
-          "Tournament"
+          "Veto"
         ],
-        "summary": "Get current round status for shuffle tournament",
-        "description": "Returns current round number, map, match completion status, and progress. Used for displaying round status indicators.",
-        "security": [
-          {
-            "BearerAuth": []
+        "summary": "POST /api/veto/:matchSlug/action",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
+        "responses": {
+          "200": {
+            "description": "Success"
           }
-        ],
+        },
         "parameters": [
           {
+            "name": "matchSlug",
             "in": "path",
-            "name": "id",
             "required": true,
             "schema": {
               "type": "string"
-            },
-            "description": "Tournament ID (currently only \"1\" is supported)"
+            }
           }
-        ],
-        "responses": {
-          "200": {
-            "description": "Round status retrieved successfully"
-          },
-          "400": {
-            "description": "Invalid tournament ID or not a shuffle tournament"
-          },
-          "500": {
-            "description": "Server error"
-          }
-        }
+        ]
       }
     },
-    "/": {
-      "get": {
+    "/api/veto/{matchSlug}/reset": {
+      "post": {
         "tags": [
-          "Health"
+          "Veto"
         ],
-        "summary": "Get API information",
-        "description": "Returns basic information about the API and available endpoints",
+        "summary": "POST /api/veto/:matchSlug/reset",
+        "description": "Generated from the router. No hand-written `@openapi` block exists for this endpoint yet, so the request and response shapes are not described — read the handler.",
         "responses": {
           "200": {
-            "description": "API information"
+            "description": "Success"
           }
-        }
+        },
+        "parameters": [
+          {
+            "name": "matchSlug",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          },
+          {
+            "apiToken": []
+          }
+        ]
       }
     },
     "/health": {
