@@ -20,7 +20,7 @@ import { Banner } from 'fumadocs-ui/components/banner';
 import { Installation } from '@/components/preview/installation';
 import { Customisation } from '@/components/preview/customisation';
 import { DocsBody, DocsPage, PageLastUpdate } from 'fumadocs-ui/layouts/docs/page';
-import { GithubInfo } from 'fumadocs-ui/components/github-info';
+import { SafeGithubInfo } from '@/components/safe-github-info';
 import { NotFound } from '@/components/not-found';
 import { getSuggestions } from './suggestions';
 import { PathUtils } from 'fumadocs-core/source';
@@ -97,7 +97,7 @@ export default async function Page(props: PageProps<'/docs/[[...slug]]'>) {
           githubUrl={`https://github.com/${owner}/${repo}/blob/dev/apps/docs/content/docs/${page.path}`}
         />
         {repoInfo ? (
-          <GithubInfo owner={repoInfo.owner} repo={repoInfo.repo} className="ms-auto" />
+          <SafeGithubInfo owner={repoInfo.owner} repo={repoInfo.repo} className="ms-auto" />
         ) : null}
       </div>
       <div className="prose flex-1 text-fd-foreground/90">
