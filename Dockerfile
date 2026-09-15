@@ -1,6 +1,6 @@
 ARG GIT_COMMIT_SHA=unknown
 
-FROM node:20-bookworm-slim AS deps
+FROM node:24-bookworm-slim AS deps
 WORKDIR /app
 ARG GIT_COMMIT_SHA
 
@@ -13,7 +13,7 @@ COPY package.json yarn.lock ./
 RUN yarn install --frozen-lockfile --ignore-scripts
 
 
-FROM node:20-bookworm-slim AS build
+FROM node:24-bookworm-slim AS build
 WORKDIR /app
 ARG GIT_COMMIT_SHA
 RUN corepack enable
@@ -39,7 +39,7 @@ RUN set -e; \
   exit 1
 
 
-FROM node:20-bookworm-slim AS runner
+FROM node:24-bookworm-slim AS runner
 WORKDIR /app
 ARG GIT_COMMIT_SHA
 LABEL org.opencontainers.image.revision=$GIT_COMMIT_SHA
@@ -54,7 +54,7 @@ RUN echo "$GIT_COMMIT_SHA" > /app/BUILD_COMMIT
 
 # Only copy the runtime bits
 COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/next.config.ts ./next.config.ts
+COPY --from=build /app/next.config.mts ./next.config.mts
 COPY --from=build /app/source.config.ts ./source.config.ts
 COPY --from=build /app/source.script.ts ./source.script.ts
 COPY --from=build /app/.source ./.source
