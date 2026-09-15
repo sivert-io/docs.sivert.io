@@ -3,23 +3,23 @@ import {
   type InferPageType,
   type LoaderPlugin,
   loader,
-  multiple,
 } from 'fumadocs-core/source';
-import { openapiPlugin, openapiSource } from 'fumadocs-openapi/server';
 import { docs } from 'fumadocs-mdx:collections/server';
 import { lucideIconsPlugin } from 'fumadocs-core/source/lucide-icons';
 import { openapi } from '@/lib/openapi';
 
+// Each key becomes the page's `type`: `page.type === 'openapi'` marks a page
+// generated from the OpenAPI spec, anything else is an MDX document.
 export const source = loader(
-  multiple({
+  {
     docs: docs.toFumadocsSource(),
-    openapi: await openapiSource(openapi, {
+    openapi: await openapi.staticSource({
       baseDir: 'mat/api/(generated)',
     }),
-  }),
+  },
   {
     baseUrl: '/docs',
-    plugins: [pageTreeCodeTitles(), lucideIconsPlugin(), openapiPlugin()],
+    plugins: [pageTreeCodeTitles(), lucideIconsPlugin(), openapi.loaderPlugin()],
   },
 );
 

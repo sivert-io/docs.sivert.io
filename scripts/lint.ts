@@ -36,9 +36,9 @@ async function checkLinks() {
   );
 }
 
-async function getHeadings({ data }: InferPageType<AnySource>): Promise<string[]> {
-  if ('type' in data && data.type === 'openapi') return [];
-  const { _exports, toc } = await data.load();
+async function getHeadings(page: InferPageType<AnySource>): Promise<string[]> {
+  if (page.type === 'openapi') return [];
+  const { _exports, toc } = await page.data.load();
   const headings = toc.map((item) => item.url.slice(1));
   const elementIds = _exports?.elementIds;
   if (Array.isArray(elementIds)) {
@@ -51,7 +51,7 @@ async function getHeadings({ data }: InferPageType<AnySource>): Promise<string[]
 async function getFiles(source: AnySource) {
   const files: FileObject[] = [];
   for (const page of source.getPages()) {
-    if ('type' in page.data && page.data.type === 'openapi') continue;
+    if (page.type === 'openapi') continue;
 
     files.push({
       data: page.data,
