@@ -10,6 +10,9 @@ REPO_DIR="${REPO_DIR:-/home/$USER/apps/project-docs}"
 BRANCH="${BRANCH:-main}"
 COMPOSE_DIR="${COMPOSE_DIR:-$REPO_DIR}"
 LOCK_FILE="${LOCK_FILE:-/tmp/project-docs-autoupdate.lock}"
+# A build that runs longer than this is treated as hung and killed, so the lock
+# is released and the next run retries. A normal build takes a few minutes.
+BUILD_TIMEOUT="${BUILD_TIMEOUT:-20m}"
 
 log() {
   echo "[$(date -Is)] $*"
@@ -52,9 +55,20 @@ if [[ "$LOCAL" != "$REMOTE" ]]; then
   git pull --ff-only origin "$BRANCH"
 fi
 
-log "Rebuilding + restarting container..."
 cd "$COMPOSE_DIR"
 export GIT_COMMIT_SHA="$REMOTE"
-docker compose up -d --build
+
+# Build and restart are separate steps so the timeout only covers the build.
+# A build once hung inside `apt-get update` for good, and since it held the
+# lock, every later run exited without deploying. Killing it leaves the old
+# container serving the site; nothing is restarted until a build succeeds.
+log "Building image (timeout $BUILD_TIMEOUT)..."
+if ! timeout --kill-after=30s "$BUILD_TIMEOUT" docker compose build; then
+  log "ERROR: build failed or timed out; the running container is unchanged. Retrying next run."
+  exit 1
+fi
+
+log "Restarting container..."
+docker compose up -d
 
 log "Done."
