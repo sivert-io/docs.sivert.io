@@ -23,6 +23,27 @@ Notable changes in each release of [MatchZy Auto Tournament](https://github.com/
 
 - (none yet)
 
+## v2.4.5 (2026-09-15) — **PATCH**
+
+Versions 2.4.2 to 2.4.4 were never published. Their release builds failed before any image was pushed, and the tags were removed.
+
+### Fixes
+
+- Fix Bo3 and Bo5 series being marked finished after the first map. The plugin reports `postgame` between maps, and MAT treated that as the end of the match, so the winner never advanced in the bracket and the rest of the series was ignored. Only the real series end completes a match now. A match that was closed this way opens again when the server keeps sending events for it
+- Fix setting up a server that another MAT instance had configured before. MAT sent the bootstrap URL before the new token, so the plugin fetched its config with the old token, got a 401 and never received its config. The token is now sent first
+- Stop reporting "Failed to end match" when a tournament reset restarts a server. The server restarts before it can answer the RCON command, so the missing reply is now treated as sent
+- Complete pending map vetoes when simulation mode is turned on while a tournament is running. Before, only matches that started after that point got an automatic veto
+- Fix the veto page saying the opponent had made their choice right after your own ban or pick
+- Show translated action names in the veto history instead of raw values such as `SIDE_PICK`
+- Translate the remaining text on the veto and match pages. Norwegian has all the new text; other languages show English for it until translated
+- Make veto map tiles real buttons, so a veto can be done with a keyboard or a screen reader
+- Remove leftover debug output from the API logs, which printed veto state and map lists every time a match loaded
+
+### Ops/Docs
+
+- Build the arm64 release image natively instead of under QEMU, where builds had started crashing, and push images before creating the tag
+- Split the E2E tests across parallel CI jobs, build the test image once, and skip E2E for pull requests that only change docs
+
 ## v2.4.1 (2026-09-15) — **PATCH**
 
 ### Fixes

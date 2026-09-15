@@ -17,11 +17,13 @@ At a high level:
 
 ## What MAT sets via RCON
 
-During initialization MAT sets:
+During initialization MAT sets, in this order:
 
 - `matchzy_server_id`
-- `matchzy_bootstrap_url`
 - `matchzy_bootstrap_token`
+- `matchzy_bootstrap_url`
+
+The order matters. MatchZy Enhanced fetches the payload as soon as the URL is set, using whatever token it has stored at that moment, and does not fetch again when the token changes. The URL therefore goes last.
 
 ## Bootstrap endpoint
 
