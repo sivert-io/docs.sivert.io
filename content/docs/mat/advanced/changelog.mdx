@@ -23,6 +23,25 @@ Notable changes in each release of [MatchZy Auto Tournament](https://github.com/
 
 - (none yet)
 
+## v2.4.0 (2026-09-15) — **MINOR**
+
+### Features
+
+- Store a Discord ID on each player, so a Discord bot can find the player behind a Discord user. Admins set it in the player editor, players set their own on their profile page, and team imports fill it in. An import only fills an empty ID and never changes one that was set or removed by hand. Only admins and API tokens can read it
+- Add `GET /api/players/by-discord-id/{discordId}`, which works with a read-only API token. It returns a list, because a parent may put their own Discord ID on several children
+- Add a `/mymatch` command to the example Discord bot, which shows the current match of the player (or players) behind the Discord user who ran it
+
+### Fixes
+
+- Check OAuth `state` on the Discord, GitHub and Keycloak login callbacks. Without it, a link could attach an attacker's SSO account to an admin who had signed in with Steam, and the attacker could then sign in as that admin. Steam-only instances were not affected
+- Sign the `pending_steam_link` cookie. It was plain JSON, so anyone could point someone else's Discord, GitHub or Keycloak login at their own Steam account
+- Clear the Steam, pending-link and impersonation cookies on logout. `/logout` also chose the cookie's `secure` flag from `NODE_ENV` rather than the connection, so on a production install served over plain HTTP the cookie was never cleared
+- Stop logging OAuth access and refresh tokens at info level on SSO callbacks
+
+### Ops/Docs
+
+- Generate release notes from squash-merged pull requests. Earlier releases on GitHub listed only the version bump
+
 ## v2.3.0 (2026-09-07) — **MINOR**
 
 ### Features
