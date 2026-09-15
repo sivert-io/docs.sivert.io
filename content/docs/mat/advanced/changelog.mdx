@@ -23,6 +23,17 @@ Notable changes in each release of [MatchZy Auto Tournament](https://github.com/
 
 - (none yet)
 
+## v2.4.1 (2026-09-15) — **PATCH**
+
+### Fixes
+
+- Remove the second registrations of `GET /api/tournament/{id}/leaderboard` and `DELETE /api/matches/{slug}`. Neither ever ran, since Express answers with the first. The leaderboard stays public, as the leaderboard page needs, and deleting a match still refuses bracket matches
+- Fix the OpenAPI spec describing the leaderboard with the unused copy's summary
+
+### Ops/Docs
+
+- Fail CI when a route is registered twice
+
 ## v2.4.0 (2026-09-15) — **MINOR**
 
 ### Features
