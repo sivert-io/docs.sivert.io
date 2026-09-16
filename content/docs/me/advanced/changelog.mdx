@@ -23,6 +23,56 @@ This page is generated from git tags and commit subjects in the `MatchZy-Enhance
 
 - (none yet)
 
+## v1.4.31 (2026-09-16) — **PATCH**
+
+### Fixes
+
+- Fix simulated matches getting stuck in warmup when a bot left and a new bot took its user ID. The plugin kept the old bot, so a team never had enough players ready. The simulated roster is now repaired when bots change, a warmup watchdog force-starts a simulated match that does not go live, and `mp_warmup_end` starts a simulated match (real matches are unaffected)
+- Fix the first match after a server restart having no demo. When the match map was already loaded, SourceTV was never started and nothing was recorded. The plugin now reloads the map when SourceTV is missing, and looks for the demo file by match ID and map before upload
+
+## v1.4.30 (2026-09-16) — **PATCH**
+
+### Fixes
+
+- Never record a draw when draws are disabled. A tied map is decided on damage, then kills, then headshot kills, then utility damage, and if all of those tie, a coin flip based on the match ID and map number. The coin flip is logged
+- End the series when no maps are left. Drawn maps were not counted, so a Bo3 with a drawn map tried to load a fourth map, threw an error and never sent `series_end`
+- Open a new database connection per operation. Sharing one connection between the game thread and background tasks caused "Can't replace active reader" errors, after which every database write failed
+- Log the correct map number for `map_result`
+
+## v1.4.29 (2026-09-16) — **PATCH**
+
+### Fixes
+
+- Clear `matchzy_tournament_match` when the server goes idle. It kept the last match ID after a series end, `css_restart` or `css_endmatch`, so tournament managers could see a free server as busy
+
+## v1.4.28 (2026-09-16) — **PATCH**
+
+### Fixes
+
+- Hide secrets in logs, console output and chat. Saved config lines printed the bootstrap token and remote log header value in plain text, and those equal the MAT server token. Match config dumps, URLs and error bodies are redacted too. If you shared logs from an older version, rotate the token
+- Wait about 1.5 seconds after the bootstrap URL or token changes before fetching the bootstrap config, so the fetch uses both new values. Setting them one at a time could fetch another server's config
+
+## v1.4.27 (2026-09-16) — **PATCH**
+
+### Fixes
+
+- Read the config scope from the game process's real command line. In 1.4.26 the plugin could not see `+matchzy_config_scope` or `-port`, so every server on a box ended up with the same scope. The fallback is now based on the game directory, with a warning to set `+matchzy_config_scope`
+
+## v1.4.26 (2026-09-16) — **PATCH**
+
+### Fixes
+
+- Store saved config per server, so several servers can share one MySQL database. Rows were keyed by setting name only, so servers overwrote each other's server ID, bootstrap URL and tokens. The event retry queue is per server too. Set the scope with `+matchzy_config_scope`
+
+## v1.4.25 (2026-09-16) — **PATCH**
+
+### Fixes
+
+- Send the actual winner in `map_result` for maps decided by the damage tiebreak. Every tied map was reported as won by team 2
+- Give simulation bots identities from the team playing their side, so player stats are not filed under the wrong team
+- Raise the simulation timescale limit from 4 to 10
+- Drop a queued match load on `css_restart`, `css_endmatch` and load failures, and add `matchzy_clear_queued_match`. A load sent during postgame now replies with `queued_match=<id>`, and a new load replaces a queued one
+
 ## v1.4.21 (2026-02-15) — **PATCH**
 
 ### Features

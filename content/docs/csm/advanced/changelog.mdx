@@ -11,6 +11,38 @@ This page is generated from git tags and commit subjects in the `cs2-server-mana
 
 ## Unreleased
 
+## v1.7.9 (2026-09-16) — **PATCH**
+
+### Fixes
+
+- Make `csm doctor` read MatchZy facts only from the current server run. Server logs are appended across restarts, so right after `csm update-plugins` the check could read the old plugin version and report a false failure, and old duplicate `matchzy_server_id` lines kept failing after a fix. While a server is still starting, it warns and uses the deployed plugin version instead
+
+## v1.7.8 (2026-09-16) — **PATCH**
+
+### Fixes
+
+- Give each server its own MatchZy config scope. Servers sharing the MatchZy MySQL database overwrote each other's saved settings, so they all reported the same server ID. CSM now passes `+matchzy_config_scope <hostname>-server-<N>` on every start command (prefix can be changed with `CSM_MATCHZY_SCOPE_PREFIX`). Needs MatchZy-Enhanced 1.4.26 or newer
+- Pass the install wizard's database choice and external database settings to bootstrap. They were asked for but never used
+- Never rewrite a `database.json` that CSM did not create
+
+### Features
+
+- Offer a SQLite database per server in the install wizard (`MATCHZY_DB_ENGINE` for bootstrap). Shared MySQL stays the default
+- Add a `csm doctor` check for servers sharing MySQL without a config scope or with MatchZy older than 1.4.26, and for duplicate `matchzy_server_id` in server logs
+
+## v1.7.7 (2026-09-15) — **PATCH**
+
+### Features
+
+- Hardlink the read-only VPK files from the master install into each server instead of copying them. A server used to be a full 67 GB copy, and about 66 GB of that was VPKs. Set `CSM_VPK_HARDLINK=0` to keep full copies. If a link fails, CSM copies the file instead
+- Add `csm dedupe-vpk` to convert existing servers, with `--dry-run`, `--verify` and `--undo`
+
+## v1.7.6 (2026-09-15) — **PATCH**
+
+### Fixes
+
+- Pin Metamod:Source to 2.0.0.1411. Newer Metamod builds refuse CounterStrikeSharp v1.0.374, so neither CounterStrikeSharp nor MatchZy loaded on fresh installs and updates. Set `CSM_METAMOD_VERSION` to another release tag, or `latest` for the old behaviour. Running `csm update-plugins` repairs servers that already got the broken build
+
 ## v1.7.3 (2026-02-07) — **PATCH**
 
 ### Refactors

@@ -12,6 +12,7 @@
     "cs2-server-manager",
     "teams",
     "tournaments",
+    "tournament-formats",
     "maps",
     "running-matches",
     "manual-matches",

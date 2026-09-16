@@ -23,6 +23,80 @@ Notable changes in each release of [MatchZy Auto Tournament](https://github.com/
 
 - (none yet)
 
+## v2.4.10 (2026-09-16) — **PATCH**
+
+### Fixes
+
+- Fix Swiss tournaments getting stuck after round 1. Advancing the round failed with a database error on the last result of the round, and nothing paired the later rounds anyway. Rounds 2 and on are now paired from the standings when the previous round is done: teams with the same record play each other, the lowest team of an odd group moves down, rematches are avoided, and odd team counts get one bye per round (never a second bye for a team while another has none). Tournaments already stuck are paired the next time the tournament is loaded. See [Match rules and formats](/docs/mat/user/tournament-formats#swiss)
+- Complete a Swiss tournament after its last round and name the top of the standings as champion. Standings count byes and sort by wins, losses, Buchholz and round difference
+- Show "Waiting for pairing" on unpaired Swiss matches instead of "Veto pending", and "BYE" for a bye
+- Show the format as "Best of 3" in the review-changes dialog instead of `bo3`
+- Report the last map's rounds as the map score on completed matches, instead of nothing
+
+## v2.4.9 (2026-09-16) — **PATCH**
+
+### Features
+
+- Add a **Needs decision** status for elimination series that run out of maps while level. MAT first decides such a series itself on maps won, then rounds, then damage. If that is still level, the server is freed and an admin picks the winner in the match window, or with `POST /api/matches/:slug/winner`. Progression, stats and ratings apply as for a normal series end. This also works for a match stuck in live or loaded. See [Match rules and formats](/docs/mat/user/tournament-formats#when-a-series-runs-out-of-maps)
+- Label double elimination matches "UB R1 M1", "LB R2 M1" and "Grand Final" on match cards, the list view, the match window and server chips
+
+### Fixes
+
+- Fix double elimination series that ran out of maps without a winner never ending, which held up the rest of the bracket. Swiss and round robin still allow a drawn series
+- Queue double elimination matches in play order: upper and lower bracket rounds alternate, and the grand final comes last. Only matches with both teams get a queue position
+- Stop match reports from changing the map number of a finished match
+- Name the upper bracket final and lower bracket final in the grand final's empty slots
+- List a changed grand final mode in the wizard's confirm dialog, and apply the double elimination default (Simple) when switching type
+- Clear live stats when a tournament is deleted. Match slugs are reused, so a new match could start with the old one's series score
+
+## v2.4.8 (2026-09-16) — **PATCH**
+
+### Fixes
+
+- Fix servers staying "busy" after a restart. With autostart on, the plugin puts an empty server in warmup, and MAT treated every warmup as a running match. Warmup with no match loaded now counts as free
+- Give servers to matches in queue order. Each ready match polled on its own timer, so whichever polled first after a server freed up took it, and match 3 could start before match 2
+- Stop applying plugin reports from an idle server to the match it finished last. Reports now only apply to the match that server is running
+- Fix the stored config after a simulated veto ignoring the tournament's max rounds and overtime. Servers already got the right config, but the stored copy showed 24 rounds
+- Keep `settings.matchFormat` in sync with the format after editing a tournament
+- Show "Winner of" and the feeder match in empty bracket slots instead of "#1" and "#2", which looked like seeds but were not
+- Fix the "You" chip on a team roster pointing at the wrong player when viewing someone else's profile
+- Translate the servers page, admin tools, match admin controls and the remaining wizard text, and fix plurals that showed raw text such as "3 server3}"
+- Move noisy log lines (match config dumps, allocation status on every poll, player lists) to debug, and fix "SERIES ENDED: undefined 0-1 undefined"
+
+## v2.4.7 (2026-09-16) — **PATCH**
+
+### Features
+
+- Show the champion on the tournament and bracket pages once a tournament is done. `GET /api/tournament` returns it as `winner`
+- Add separate score fields to the match API: `team1SeriesScore`/`team2SeriesScore` for maps won, and `team1MapScore`/`team2MapScore` for rounds on the current map
+- Offer all three overtime options in the tournament wizard and shuffle setup, including "Disabled – no draws (damage tiebreak)", which was API-only. The review step now lists max rounds and overtime
+- Translate the team page and the remaining English text, and fill every missing key in all locales
+
+### Fixes
+
+- Fix one match running on two servers at once. A load sent to a server still in postgame was queued by the plugin, MAT took it as failed and loaded the match somewhere else, and results from both servers were applied. MAT now reads server status correctly, treats a queued load as loaded, cancels queued loads it no longer wants, and ignores events and config fetches from a server the match is not assigned to
+- Fix demos being saved under the next match. The upload URL is per server and was already pointing at the next match when the previous demo finished. Uploads now go to the match the demo was recorded for
+- Fix live Bo3 scores mixing one team's rounds with the other team's maps won, such as "23 vs 1"
+- Fix match history showing 0 kills and 0 damage for everyone when the plugin filed players under the wrong team
+- Stop the header covering the impersonation banner, so the button to stop viewing as a player can be clicked
+- Keep the veto board visible when an action is refused, with the error shown above it
+- Show a server as busy during a live match even when the plugin still reports idle
+- Show no score during warmup between maps, instead of the previous map's score
+- Fix "Total Change" in the ELO summary using a different starting rating than the history above it
+- Stop the wizard changing settings it does not show, such as turning the grand final mode into "none" on save
+- Say the tournament is waiting on vetoes or servers, not "live", before any match has loaded
+
+### Ops/Docs
+
+- Push the release version bump straight to main instead of opening a bot pull request, which left a failed CI run on every release
+- Check in CI that no locale is missing translation keys
+
+## v2.4.6 (2026-09-15) — **PATCH**
+
+### Features
+
+- Allow a simulation timescale up to 10×, up from 4×. A simulated Bo3 bracket took hours at 4×. The speed is set in the match config, so it applies to matches that load after the change. Needs MatchZy-Enhanced 1.4.25 or newer above 4×
+
 ## v2.4.5 (2026-09-15) — **PATCH**
 
 Versions 2.4.2 to 2.4.4 were never published. Their release builds failed before any image was pushed, and the tags were removed.
