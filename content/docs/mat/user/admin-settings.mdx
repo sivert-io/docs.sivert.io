@@ -78,3 +78,8 @@ Only enable this in test/staging environments.
 
 The simulation timescale controls how fast simulated matches run. Higher values speed up bots and round flow.
 
+It goes up to **10×** (it was capped at 4× before MAT 2.4.6). The value is sent in the match config, so a change applies to matches that load after it, not to one already running. Values above 2× show a warning. MatchZy-Enhanced 1.4.25 or newer is needed for anything above 4×.
+
+For a fast test bracket, create the tournament with **Max Rounds per Map: 4** and overtime **Disabled – no draws (damage tiebreak)**. Every map then ends after at most 4 rounds and always has a winner. See **[Match rules and formats](/docs/mat/user/tournament-formats)**.
+
+The timescale does not change how long a server waits after a series ends. The plugin keeps players on the server for a while (`mp_match_restart_delay` plus `matchzy_series_end_kick_delay_*`, which is 60 seconds extra when demos are uploaded) before it resets, and the next match queued for that server only loads after the reset. Lower those delays on test servers if queued matches start too slowly.

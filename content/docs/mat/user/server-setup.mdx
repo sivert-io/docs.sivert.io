@@ -53,6 +53,28 @@ You should see:
 
 If this fails, fix DNS/firewall/reverse-proxy first.
 
+## Several servers, one MatchZy database
+
+Several CS2 servers can share one MatchZy MySQL database. Use MatchZy-Enhanced **1.4.28** or newer on every server.
+
+Older versions stored the plugin's saved settings (server ID, bootstrap URL, tokens) once per database instead of once per server. Servers sharing a database overwrote each other's settings, so after a restart they all reported the same server ID and MAT saw one server several times. Since 1.4.26 each server keeps its own settings, 1.4.27 fixed how the plugin tells servers apart, and 1.4.28 fixed a first configure that could fetch another server's bootstrap config.
+
+Each server needs its own scope name. Pass it as a start argument:
+
+```bash
++matchzy_config_scope cs2-server-1
+```
+
+CSM **1.7.8** and newer add this to every server's start command automatically (`<hostname>-server-<N>`), and `sudo csm doctor` fails when servers share MySQL without it. On a manual setup, add it yourself. Without it the plugin falls back to a name based on the host and game directory and logs a warning.
+
+If you would rather not share a database, a separate SQLite file per server also works.
+
+### Rotate your server token if you shared old logs
+
+MatchZy-Enhanced before **1.4.28** wrote the MAT server token in plain text to server logs (`matchzy_bootstrap_token` and `matchzy_remote_log_header_value` lines). Anyone with that token can post fake match results to MAT. From 1.4.28 secrets are hidden in logs, console output and chat.
+
+If you have posted or shared server logs from an older version, change `SERVER_TOKEN` in MAT, restart MAT, and configure your servers again from the **Servers** page.
+
 ## After any change: refresh status
 
 After updating configs, plugins, or CS2 itself:

@@ -1,0 +1,75 @@
+---
+title: Match rules and formats
+description: Max rounds, overtime, how ties are decided, Swiss pairing and double elimination.
+---
+
+This page explains the match rules you pick in the tournament wizard, and how the Swiss and double elimination formats play out.
+
+## Match rules
+
+### Max rounds
+
+**Max Rounds per Map** sets how many rounds a map can last (1–30, default 24). The winner is the first team to reach more than half, so max rounds 24 means first to 13, and max rounds 4 means first to 3.
+
+### Overtime
+
+When a map is tied at max rounds, the **Overtime** setting decides what happens:
+
+- **Enabled (standard overtime)**: MatchZy plays overtime segments until a team finishes ahead. You can limit the number of segments, or leave it at the MatchZy default.
+- **Disabled – draws allowed**: the map ends as a draw.
+- **Disabled – no draws (damage tiebreak)**: no overtime, and the map always gets a winner.
+
+### How a tied map is decided (no draws)
+
+With "no draws", the plugin compares the two teams on the tied map in this order and stops at the first difference:
+
+1. Total damage
+2. Kills
+3. Headshot kills
+4. Utility damage
+5. A coin flip. It is deterministic (based on the match and map number), so the same tie always gives the same result, and it is written to the server log.
+
+This order needs MatchZy-Enhanced **1.4.30** or newer. Older versions only compared damage and could still record a draw when damage was tied.
+
+### When a series runs out of maps
+
+A series can end level after every map is played, for example when draws are allowed on a map. MAT then decides the series itself:
+
+1. Maps won
+2. Total rounds won
+3. Damage
+
+In single and double elimination, if it is still level, the match gets the status **Needs decision** and its server is freed. An admin opens the match and picks the winner. The bracket then continues as if the plugin had ended the series, so progression, stats and ratings all apply. The same action works for a match stuck in live or loaded. From the API, use `POST /api/matches/:slug/winner` (admin).
+
+In Swiss and round robin, a level series can still end as a draw.
+
+## Swiss
+
+Every team plays every round. There are no win or loss thresholds.
+
+- **Number of rounds**: `ceil(log2(teams))`. 8 teams play 3 rounds, 16 teams play 4.
+- **Round 1** is generated when you create the tournament. Each later round is paired when the round before it has finished.
+- **Pairing**:
+  - Teams are grouped by record (wins and losses).
+  - If a group has an odd number of teams, its lowest team moves down to the next group.
+  - Within a group, the top team plays the bottom team.
+  - Teams that have already played each other are not paired again, unless there is no other way to pair the round.
+- **Byes**: with an odd number of teams, one team gets a bye each round. A bye counts as a win. No team gets a second bye while another team has not had one. In round 1 the bye goes to the last seed.
+- **Standings** are sorted by wins, then fewest losses, then Buchholz (the sum of your opponents' wins), then round difference.
+- **Winner**: when the last round is done, the tournament completes and the team at the top of the standings is the champion.
+
+Matches waiting for the previous round show **Waiting for pairing**. A bye shows as **BYE**.
+
+## Double elimination
+
+Teams drop to the lower bracket after their first loss and are out after the second.
+
+Match labels show where a match sits: **UB R1 M1** (upper bracket, round 1, match 1), **LB R2 M1** (lower bracket), and **Grand Final**. Upper and lower bracket rounds are queued in play order, and the grand final is played last.
+
+**Grand Final Mode** sets how the tournament ends:
+
+- **Simple** (default): one grand final between the upper bracket winner and the lower bracket winner.
+- **None**: no grand final. The upper bracket final decides the champion.
+- **Double**: meant for a bracket reset. It currently behaves like Simple.
+
+In the grand final, the first slot is the upper bracket final's winner and the second slot is the lower bracket final's winner.
