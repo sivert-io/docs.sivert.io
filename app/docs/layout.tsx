@@ -4,6 +4,13 @@ import { source } from '@/lib/source';
 import 'katex/dist/katex.min.css';
 import { getSection } from '@/lib/source/navigation';
 
+// Project icons for the sidebar tab switcher, keyed by the top-level docs folder.
+const projectIcons: Record<string, string> = {
+  mat: '/docs-assets/matchzy/icon.svg',
+  me: '/docs-assets/matchzy-enhanced/icon.svg',
+  csm: '/docs-assets/server-manager/icon.svg',
+};
+
 export default function Layout({ children }: LayoutProps<'/docs'>) {
   const base = baseOptions();
 
@@ -30,6 +37,13 @@ export default function Layout({ children }: LayoutProps<'/docs'>) {
             const meta = source.getNodeMeta(node);
             if (!meta || !node.icon) return option;
             const color = `var(--${getSection(meta.path)}-color, var(--color-fd-foreground))`;
+            const projectIcon = projectIcons[meta.path.split('/', 1)[0] ?? ''];
+            if (projectIcon) {
+              return {
+                ...option,
+                icon: <img src={projectIcon} alt="" className="size-full rounded-lg" />,
+              };
+            }
 
             return {
               ...option,
